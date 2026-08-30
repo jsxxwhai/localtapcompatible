@@ -13,7 +13,7 @@
 
 ![演示动画](./docs/demo.gif)
 
-## ✨ 为什么是 TapNow Local？
+## ✨ 为什么是 local‑tap‑compatible？
 
 一个**完全本地**的类 ComfyUI / TapNow 无限画布：把「提示词 → 图片/视频生成 → 倒推提示词 → 预览输出」串成一条可视化的节点链路，所有 API 都用**你自己的 Key**，不上传任何云端。
 
