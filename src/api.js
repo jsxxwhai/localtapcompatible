@@ -1,0 +1,55 @@
+// 桥接层：桌面端（C# WebView2）走 window.tapnowApi 直连宿主进程；
+// 浏览器开发模式（npm run dev）自动退回 fetch。
+const hasBridge = () =>
+  typeof window !== 'undefined' &&
+  window.chrome?.webview?.postMessage &&
+  typeof window.tapnowApi !== 'undefined'
+
+export async function apiRun(config, inputs) {
+  if (hasBridge()) return window.tapnowApi.run(config, inputs)
+  const res = await fetch('/api/run', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ config, inputs }),
+  })
+  const data = await res.json()
+  if (!data.ok) throw new Error(data.error || '接口调用失败')
+  return data
+}
+
+export async function apiPresets() {
+  if (hasBridge()) return window.tapnowApi.getPresets()
+  const res = await fetch('/api/presets')
+  return res.json()
+}
+
+export async function apiDownload(url) {
+  if (hasBridge()) return window.tapnowApi.download(url)
+  // 浏览器兜底：直接 fetch 转 Blob（可能受目标接口 CORS 限制）
+  const res = await fetch(url)
+  if (!res.ok) throw new Error('HTTP ' + res.status)
+  const blob = await res.blob()
+  return { dataUrl: await blobToDataUrl(blob), filename: '' }
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
+}
+
+// 拉取某接口的模型列表（OpenAI 兼容 /v1/models 等）
+export async function apiListModels({ baseUrl, apiKey, path = '/models' } = {}) {
+  if (hasBridge()) return window.tapnowApi.listModels({ baseUrl, apiKey, path })
+  const res = await fetch('/api/models', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ baseUrl, apiKey, path }),
+  })
+  const data = await res.json()
+  if (!data.ok) throw new Error(data.error || '拉取模型失败')
+  return data
+}

@@ -1,0 +1,29 @@
+{
+  "name": "tapnow-local",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "本地运行的类 TapNow 无限画布：节点式 AI 工作流，图片/视频等节点均可自定义 API",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"node server/index.js\" \"vite\"",
+    "dev:api": "node server/index.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "preview": "vite preview",
+    "desktop:build": "npm run build && node scripts/copy-dist.mjs && dotnet publish desktop/TapNowLocal.csproj -c Release -o release",
+    "desktop:run": "npm run build && node scripts/copy-dist.mjs && dotnet run --project desktop/TapNowLocal.csproj"
+  },
+  "dependencies": {
+    "@xyflow/react": "^12.3.6",
+    "express": "^4.21.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "vite": "^5.4.11"
+  }
+}
+

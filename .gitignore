@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+release/
+
+# dotnet build output
+desktop/bin/
+desktop/obj/
+*.user
+
+# local debug / test tooling
+.test-tools/
+
+# logs & OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# environment & secrets
+.env
+.env.*
+!.env.example
+
+# vite
+.vite/
