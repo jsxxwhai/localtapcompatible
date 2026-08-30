@@ -240,8 +240,18 @@ public static partial class Runner
     private static async Task<RunOutput> PollJob(HttpClient client, JsonElement config, Dictionary<string, string?> vars, JsonElement initialJson, string locale = "zh")
     {
         var poll = O(config, "poll");
-        var id = GetByPath(initialJson, S(poll, "idPath") ?? "id");
-        if (id is null || id.Value.ValueKind != JsonValueKind.String || string.IsNullOrEmpty(id.Value.GetString()))
+        var idEl = GetByPath(initialJson, S(poll, "idPath") ?? "id");
+        // 任务 ID 既可能是字符串也可能是数字（很多异步 API 返回数字 job id），统一转成字符串
+        string id;
+        if (idEl is null || idEl.Value.ValueKind == JsonValueKind.Undefined)
+            throw new InvalidOperationException(
+                Loc.T(locale, "poll.noTaskId", ("json", Truncate(initialJson.GetRawText(), 300))));
+        id = idEl.Value.ValueKind == JsonValueKind.String
+            ? idEl.Value.GetString()!.Trim()
+            : idEl.Value.ValueKind == JsonValueKind.Number
+                ? idEl.Value.GetRawText().Trim()
+                : "";
+        if (string.IsNullOrEmpty(id))
             throw new InvalidOperationException(
                 Loc.T(locale, "poll.noTaskId", ("json", Truncate(initialJson.GetRawText(), 300))));
 
@@ -251,7 +261,7 @@ public static partial class Runner
         var maxAttempts = Math.Max(1, I(poll, "maxAttempts", 200));
 
         var pollPath = S(poll, "path") ?? "/tasks/{id}";
-        var resolvedPollPath = ResolvePlaceholders(pollPath, new Dictionary<string, string?>(vars) { ["id"] = id.Value.GetString() }).Replace("{id}", id.Value.GetString());
+        var resolvedPollPath = ResolvePlaceholders(pollPath, new Dictionary<string, string?>(vars) { ["id"] = id }).Replace("{id}", id);
             var pollUrl = JoinUrl(S(config, "baseUrl"), resolvedPollPath);
 
         for (var attempt = 0; attempt < maxAttempts; attempt++)
