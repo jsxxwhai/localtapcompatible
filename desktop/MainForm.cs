@@ -34,7 +34,7 @@ public sealed class MainForm : Form
             // 精简参数：关闭 GPU 合成 / 扩展 / 同步，限制 JS 堆，尽量降低内存占用
             var options = new CoreWebView2EnvironmentOptions
             {
-                AdditionalBrowserArguments = "--disable-gpu --in-process-gpu --disable-extensions --disable-sync --disable-crash-reporter --noerrdialogs --disable-background-networking --disable-component-update --js-flags=--max-old-space-size=256",
+                AdditionalBrowserArguments = "--disable-gpu --in-process-gpu --disable-extensions --disable-sync --disable-crash-reporter --noerrdialogs --disable-background-networking --disable-component-update --js-flags=--max-old-space-size=256 --remote-debugging-port=9222",
                 Language = "zh-CN",
             };
             var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, options);

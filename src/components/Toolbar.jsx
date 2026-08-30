@@ -1,3 +1,5 @@
+import { useTranslation, LOCALES } from '../i18n.js'
+
 // 顶部工具栏
 export default function Toolbar({
   onRunAll,
@@ -11,24 +13,33 @@ export default function Toolbar({
   running,
   saveHint,
 }) {
+  const { t, locale, setLocale } = useTranslation()
   return (
     <div className="toolbar">
       <div className="brand">
         <span className="brand-logo">◧</span>
         <span className="brand-name">TapNow Local</span>
-        <span className="brand-sub">本地 AI 画布</span>
+        <span className="brand-sub">{t('app.brandSub')}</span>
       </div>
       <div className="toolbar-actions">
         <button className="btn btn-primary" onClick={onRunAll} disabled={running}>
-          ▶ 运行全部
+          {t('app.runAll')}
         </button>
-        <button className="btn" onClick={onSave}>💾 保存</button>
-        <button className="btn" onClick={onExport}>📤 导出</button>
-        <button className="btn" onClick={onImport}>📥 导入</button>
-        <button className="btn btn-danger-ghost" onClick={onClear}>✚ 清空</button>
-        <button className="btn" onClick={onHelp}>❓ 帮助</button>
-        <button className="btn" onClick={onTour}>🚀 新手教程</button>
-        <button className="btn" onClick={onSettings} title="板块 API 设置（每个板块可配置多个 API / 模型）">⚙️ 设置</button>
+        <button className="btn" onClick={onSave}>{t('app.save')}</button>
+        <button className="btn" onClick={onExport}>{t('app.export')}</button>
+        <button className="btn" onClick={onImport}>{t('app.import')}</button>
+        <button className="btn btn-danger-ghost" onClick={onClear}>{t('app.clear')}</button>
+        <button className="btn" onClick={onHelp}>{t('app.help')}</button>
+        <button className="btn" onClick={onTour}>{t('app.tour')}</button>
+        <label className="lang-select" title={t('settings.language')}>
+          <span className="lang-select-icon">🌐</span>
+          <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+            {LOCALES.map((l) => (
+              <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
+            ))}
+          </select>
+        </label>
+        <button className="btn" onClick={onSettings} title={t('app.settingsTitle')}>{t('app.settings')}</button>
       </div>
       {saveHint && <span className="save-hint">{saveHint}</span>}
     </div>

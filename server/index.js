@@ -55,6 +55,10 @@ app.post('/api/models', async (req, res) => {
 const distDir = path.join(__dirname, '..', 'dist')
 if (fs.existsSync(distDir)) {
   app.use(express.static(distDir))
+  // 未知 API 路径返回 JSON 404，而不是 SPA 首页 HTML
+  app.use('/api', (_req, res) => {
+    res.status(404).json({ ok: false, error: '接口不存在' })
+  })
   app.get('*', (_req, res) => {
     res.sendFile(path.join(distDir, 'index.html'))
   })

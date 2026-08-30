@@ -1,9 +1,28 @@
 {
   "name": "tapnow-local",
-  "private": true,
   "version": "0.1.0",
-  "type": "module",
   "description": "本地运行的类 TapNow 无限画布：节点式 AI 工作流，图片/视频等节点均可自定义 API",
+  "type": "module",
+  "license": "MIT",
+  "author": "jsxxwhai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jsxxwhai/tapnow-local.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jsxxwhai/tapnow-local/issues"
+  },
+  "keywords": [
+    "ai",
+    "canvas",
+    "workflow",
+    "node-based",
+    "image-generation",
+    "video-generation",
+    "tapnow",
+    "comfyui",
+    "local"
+  ],
   "scripts": {
     "dev": "concurrently -k -n api,web -c cyan,magenta \"node server/index.js\" \"vite\"",
     "dev:api": "node server/index.js",
@@ -26,4 +45,3 @@
     "vite": "^5.4.11"
   }
 }
-

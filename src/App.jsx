@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from './i18n.js'
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -27,6 +28,7 @@ import { ImageNode } from './nodes/ImageNode.jsx'
 import { VideoNode } from './nodes/VideoNode.jsx'
 import { ReverseNode } from './nodes/ReverseNode.jsx'
 import { UploadNode } from './nodes/UploadNode.jsx'
+import { AssetNode } from './nodes/AssetNode.jsx'
 import { OutputNode } from './nodes/OutputNode.jsx'
 import {
   createNode,
@@ -34,7 +36,7 @@ import {
   normalizeEdges,
   topoSort,
   isRunnable,
-  sanitizeForSave,
+  serializeForExport,
   saveToLocalStorage,
   loadFromLocalStorage,
   downloadFile,
@@ -43,6 +45,7 @@ import {
 } from './utils.js'
 import { apiRun, apiPresets } from './api.js'
 import { buildRunConfig, loadSettings, saveSettings, GEN_CATS } from './categorySettings.js'
+import { idbPutMedia, idbDeleteMedia, idbClearMedia, idbGetAllMedia, isDataUrl } from './mediaStore.js'
 
 const nodeTypes = {
   text: TextNode,
@@ -50,11 +53,12 @@ const nodeTypes = {
   video: VideoNode,
   reverse: ReverseNode,
   upload: UploadNode,
+  asset: AssetNode,
   output: OutputNode,
 }
 
-function starterCanvas() {
-  const text = { id: uid('text'), type: 'text', position: { x: 40, y: 200 }, data: { ...createNode('text'), text: '赛博朋克风格的霓虹城市夜景，电影感构图' } }
+function starterCanvas(t) {
+  const text = { id: uid('text'), type: 'text', position: { x: 40, y: 200 }, data: { ...createNode('text'), text: t('starter.prompt') } }
   const image = { id: uid('image'), type: 'image', position: { x: 380, y: 160 }, data: createNode('image') }
   const output = { id: uid('output'), type: 'output', position: { x: 760, y: 180 }, data: createNode('output') }
   return {
@@ -67,7 +71,8 @@ function starterCanvas() {
 }
 
 function CanvasApp() {
-  const initial = useMemo(() => loadFromLocalStorage() || starterCanvas(), [])
+  const { t } = useTranslation()
+  const initial = useMemo(() => loadFromLocalStorage() || starterCanvas(t), [t])
   const [nodes, setNodes, onNodesChange] = useNodesState(initial.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges)
 
@@ -89,6 +94,11 @@ function CanvasApp() {
     }
   })
   const runChainRef = useRef(Promise.resolve())
+  const saveGen = useRef(0)
+  const mediaCacheRef = useRef(new Map()) // nodeId -> 上次写入 IDB 的媒体值（去重，避免反复写）
+  const displayCacheRef = useRef(new Map()) // nodeId -> { node, nodeData }（拖拽时只重渲变化的节点）
+  const displaySettingsRef = useRef(null)
+  const displayEdgesRef = useRef(null)
   const selectedIdsRef = useRef([]) // 当前框选/点选的所有节点 id
   const canvasRef = useRef({ nodes, edges })
   canvasRef.current = { nodes, edges }
@@ -109,15 +119,85 @@ function CanvasApp() {
       .catch(() => {})
   }, [])
 
+  // 把画布里所有 data URL 媒体增量写入 IndexedDB；值没变则跳过（减少 IO 与 GC）
+  const persistMedia = useCallback((ns) => {
+    const cache = mediaCacheRef.current
+    const jobs = []
+    const live = new Set()
+    for (const n of ns) {
+      live.add(n.id)
+      const m = n.data.media
+      const imgs = Array.isArray(n.data.images) ? n.data.images.filter((v) => typeof v === 'string' && isDataUrl(v)) : []
+      if (m && isDataUrl(m.value)) {
+        if (cache.get(n.id) !== 'm:' + m.value) {
+          cache.set(n.id, 'm:' + m.value)
+          jobs.push(idbPutMedia(n.id, { value: m.value, mediaType: m.mediaType }))
+        }
+      } else if (imgs.length) {
+        const sig = 'i:' + imgs.join('\u0001')
+        if (cache.get(n.id) !== sig) {
+          cache.set(n.id, sig)
+          jobs.push(idbPutMedia(n.id, { images: imgs }))
+        }
+      } else if (cache.has(n.id)) {
+        cache.delete(n.id)
+        jobs.push(idbDeleteMedia(n.id))
+      }
+    }
+    for (const id of [...cache.keys()]) {
+      if (!live.has(id)) {
+        cache.delete(id)
+        jobs.push(idbDeleteMedia(id))
+      }
+    }
+    return Promise.all(jobs)
+  }, [])
+
   // 自动保存
   const saveTimer = useRef(null)
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => {
+    const gen = ++saveGen.current
+    saveTimer.current = setTimeout(async () => {
+      await persistMedia(nodes)
+      if (gen !== saveGen.current) return // 保存期间画布又变了，丢弃本次旧快照
       saveToLocalStorage(nodes, edges)
     }, 800)
     return () => clearTimeout(saveTimer.current)
-  }, [nodes, edges])
+  }, [nodes, edges, persistMedia])
+
+  // 启动时从 IndexedDB 恢复大图（localStorage 里只有 __idb 占位标记）
+  useEffect(() => {
+    let cancelled = false
+    idbGetAllMedia().then((list) => {
+      if (cancelled) return
+      const byId = new Map(list.map((e) => [e.nodeId, e]))
+      setNodes((ns) => {
+        let changed = false
+        const next = ns.map((n) => {
+          const entry = byId.get(n.id)
+          if (!entry) return n
+          if (typeof entry.value === 'string' && entry.value) {
+            const m = n.data.media
+            if (m && m.value === entry.value) return n
+            changed = true
+            mediaCacheRef.current.set(n.id, 'm:' + entry.value)
+            return { ...n, data: { ...n.data, media: { value: entry.value, mediaType: entry.mediaType || 'image' }, status: 'success', error: '' } }
+          }
+          if (Array.isArray(entry.images) && entry.images.length) {
+            const cur = Array.isArray(n.data.images) ? n.data.images : []
+            if (cur.length === entry.images.length && cur.every((v, i) => v === entry.images[i])) return n
+            changed = true
+            mediaCacheRef.current.set(n.id, 'i:' + entry.images.join('\u0001'))
+            return { ...n, data: { ...n.data, images: entry.images, status: 'success', error: '' } }
+          }
+          return n
+        })
+        return changed ? next : ns
+      })
+    })
+    return () => { cancelled = true }
+  }, [setNodes])
 
   const showToast = useCallback((msg, kind = 'info') => {
     setToast({ msg, kind })
@@ -168,7 +248,13 @@ function CanvasApp() {
         if (!edge) return n
         const src = ns.find((s) => s.id === edge.source)
         if (!src) return n
-        const media = src.data.media ?? null
+        // 图片素材节点没有 media，用它的第一张图预览
+        const media =
+          src.type === 'asset'
+            ? Array.isArray(src.data.images) && src.data.images.length
+              ? { value: src.data.images[0], mediaType: 'image' }
+              : null
+            : src.data.media ?? null
         if (media?.value === n.data.media?.value) return n
         changed = true
         return { ...n, data: { ...n.data, media, status: media ? 'success' : 'idle', error: '' } }
@@ -190,17 +276,32 @@ function CanvasApp() {
       const { nodes: ns, edges: es } = canvasRef.current
       const byId = new Map(ns.map((n) => [n.id, n]))
       const inputs = {}
+      const imageList = []
       for (const edge of es) {
         if (edge.target !== id) continue
         const src = byId.get(edge.source)
         if (!src) continue
+        if (edge.targetHandle === 'image') {
+          // 多图：把所有上游图片收集进 imageList
+          if (src.type === 'asset') {
+            for (const v of src.data.images || []) {
+              if (typeof v === 'string' && v) imageList.push(v)
+            }
+          } else if (src.data.media?.value) {
+            imageList.push(src.data.media.value)
+          }
+          continue
+        }
         let value = null
         if (src.type === 'text' || src.type === 'reverse') value = src.data.text
         else value = src.data.media?.value
         if (value == null || value === '') continue
         if (edge.targetHandle === 'prompt') inputs.prompt = value
-        else if (edge.targetHandle === 'image') inputs.image = value
         else if (edge.targetHandle === 'media') inputs.media = value
+      }
+      if (imageList.length) {
+        inputs.image = imageList[0]
+        inputs.images = imageList
       }
       // 节点本地提示词兜底：没连上游文本时，直接用节点里的输入
       const target = byId.get(id)
@@ -224,7 +325,7 @@ function CanvasApp() {
         const inputs = collectInputs(id)
         try {
           const cfg = buildRunConfig(cur.type, settingsRef.current)
-          if (!cfg) throw new Error(`「${cur.data.label || cur.type}」板块还没配置 API，点右上角 ⚙️ 设置`)
+          if (!cfg) throw new Error(t('toast.noApi', { name: cur.data.name || cur.data.label || cur.type }))
           const data = await apiRun(cfg, inputs)
           if (cur.type === 'reverse') {
             setNodeStatus(id, 'success', { text: data.output?.value ?? '', error: '' })
@@ -252,7 +353,7 @@ function CanvasApp() {
     }
     const targets = order.filter((id) => isRunnable(canvasRef.current.nodes.find((n) => n.id === id)))
     if (!targets.length) {
-      showToast('画布中没有可运行的节点', 'info')
+      showToast(t('toast.noRunnable'), 'info')
       return
     }
     for (const id of targets) {
@@ -287,7 +388,7 @@ function CanvasApp() {
         (nid) => needed.has(nid) && isRunnable(ns.find((n) => n.id === nid))
       )
       if (!targets.length) {
-        showToast('该节点没有可运行的上游节点', 'info')
+        showToast(t('toast.noUpstream'), 'info')
         return
       }
       for (const nid of targets) {
@@ -308,29 +409,29 @@ function CanvasApp() {
       setTestingId(id)
       try {
         const cfg = buildRunConfig(node.type, settingsRef.current)
-        if (!cfg) throw new Error('该板块还没配置 API，点右上角 ⚙️ 设置')
+        if (!cfg) throw new Error(t('toast.noApi', { name: node.data.name || node.data.label || node.type }))
         const data = await apiRun(cfg, {
-          prompt: '接口连通性测试',
+          prompt: t('settings.testPrompt'),
           image: collectInputs(id).image || '',
         })
         if (node.type === 'reverse') {
-          showToast(`测试成功（文本）${(data.output?.value || '').slice(0, 60)}`, 'success')
+          showToast(t('toast.testText') + ' ' + (data.output?.value || '').slice(0, 60), 'success')
           setNodeStatus(id, 'success', { text: data.output?.value ?? '', error: '' })
         } else {
-          showToast(`测试成功（${data.output?.mediaType || 'unknown'}）${(data.output?.value || '').slice(0, 60)}`, 'success')
+          showToast(t('toast.testOk', { type: data.output?.mediaType || 'unknown' }) + ' ' + (data.output?.value || '').slice(0, 60), 'success')
           setNodeStatus(id, 'success', { media: data.output, error: '' })
         }
       } catch (err) {
-        showToast(`测试失败：${err.message}`, 'error')
+        showToast(t('toast.testFail', { msg: err.message }), 'error')
         setNodeStatus(id, 'error', { error: err.message })
       } finally {
         setTestingId(null)
       }
     },
-    [nodeMap, collectInputs, showToast, setNodeStatus]
+    [nodeMap, collectInputs, showToast, setNodeStatus, t]
   )
 
-  const updateNodeConfig = useCallback(
+const updateNodeConfig = useCallback(
     (id, config) => {
       setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, config } } : n)))
     },
@@ -367,6 +468,30 @@ function CanvasApp() {
     [addNodeAt]
   )
 
+  // 把本地图片文件读成 data URL，塞进一个新的「图片素材」节点（多选/多张）
+  const addAssetFromFiles = useCallback(
+    async (files, position) => {
+      const list = Array.from(files || []).filter((f) => f && typeof f.type === 'string' && f.type.startsWith('image/'))
+      if (!list.length) return null
+      const values = []
+      for (const f of list) {
+        const v = await new Promise((resolve) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
+          reader.onerror = () => resolve('')
+          reader.readAsDataURL(f)
+        })
+        if (v && v.length <= 12 * 1024 * 1024) values.push(v)
+      }
+      if (!values.length) return null
+      const node = addNodeAt('asset', position)
+      notifyNode(node.id, { images: values, status: 'success' })
+      showToast(t('toast.addedAssets', { count: values.length }), 'success')
+      return node
+    },
+    [addNodeAt, notifyNode, showToast]
+  )
+
   // 新建节点并自动连到来源节点
   const addLinkedNode = useCallback(
     (type, fromNodeId, targetHandle, position) => {
@@ -384,6 +509,10 @@ function CanvasApp() {
   const deleteNodes = useCallback(
     (ids) => {
       const idSet = new Set(ids)
+      for (const id of idSet) {
+        idbDeleteMedia(id)
+        mediaCacheRef.current.delete(id)
+      }
       setNodes((ns) => ns.filter((n) => !idSet.has(n.id)))
       setEdges((eds) => eds.filter((e) => !idSet.has(e.source) && !idSet.has(e.target)))
       setSelectedId((s) => (idSet.has(s) ? null : s))
@@ -408,20 +537,21 @@ function CanvasApp() {
         case 'text':
         case 'reverse':
           return [
-            { label: '🖼️ 文生图', hint: '提示词 → 图片生成', action: add('image', 'prompt') },
-            { label: '🎬 文生视频', hint: '提示词 → 视频生成', action: add('video', 'prompt') },
+            { label: t('menu.next.text2image'), hint: t('menu.next.text2imageHint'), action: add('image', 'prompt') },
+            { label: t('menu.next.text2video'), hint: t('menu.next.text2videoHint'), action: add('video', 'prompt') },
           ]
         case 'image':
         case 'upload':
+        case 'asset':
           return [
-            { label: '🖼️ 图生图', hint: '作为参考图生成新图片', action: add('image', 'image') },
-            { label: '🎬 图生视频', hint: '作为起始帧生成视频', action: add('video', 'image') },
-            { label: '🔍 倒推提示词', hint: '用视觉模型描述这张图', action: add('reverse', 'image') },
-            { label: '🖥️ 预览输出', hint: '连接并查看结果', action: add('output', 'media') },
+            { label: t('menu.next.image2image'), hint: t('menu.next.image2imageHint'), action: add('image', 'image') },
+            { label: t('menu.next.image2video'), hint: t('menu.next.image2videoHint'), action: add('video', 'image') },
+            { label: t('menu.next.reverse'), hint: t('menu.next.reverseHint'), action: add('reverse', 'image') },
+            { label: t('menu.next.output'), hint: t('menu.next.outputHint'), action: add('output', 'media') },
           ]
         case 'video':
           return [
-            { label: '🖥️ 预览输出', hint: '连接并查看视频', action: add('output', 'media') },
+            { label: t('menu.next.output'), hint: t('menu.next.outputVideoHint'), action: add('output', 'media') },
           ]
         default:
           return []
@@ -434,12 +564,13 @@ function CanvasApp() {
   const onConnect = useCallback(
     (params) => {
       if (params.source === params.target) {
-        showToast('不能连接到自身节点', 'error')
+        showToast(t('toast.cantSelf'), 'error')
         return
       }
       const hasSame = edges.some((e) => e.target === params.target && e.targetHandle === params.targetHandle)
-      if (hasSame) {
-        showToast('该输入口已连接，请先断开原有连线', 'error')
+      // 参考图输入口支持多张图同时接入；提示词/媒体输入口仍只允许一条
+      if (hasSame && params.targetHandle !== 'image') {
+        showToast(t('toast.portTaken'), 'error')
         return
       }
       setEdges((eds) => addEdge({ ...params, animated: false }, eds))
@@ -473,16 +604,16 @@ function CanvasApp() {
     (event) => {
       event.preventDefault()
       const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY })
-      const items = NODE_TYPES.map((t) => ({
-        label: `${t.icon} ${t.label}`,
-        hint: t.desc,
-        action: () => addNodeAt(t.type, pos),
+      const items = NODE_TYPES.map((it) => ({
+        label: `${it.icon} ${t(it.labelKey)}`,
+        hint: t(it.descKey),
+        action: () => addNodeAt(it.type, pos),
       }))
       items.push({ divider: true })
-      items.push({ label: '▶ 运行全部', hint: '按连线顺序执行', action: runAll })
+      items.push({ label: t('menu.runAll'), hint: t('menu.runAllHint'), action: runAll })
       openMenu(event.clientX, event.clientY, items)
     },
-    [screenToFlowPosition, addNodeAt, runAll, openMenu]
+    [screenToFlowPosition, addNodeAt, runAll, openMenu, t]
   )
 
   // 节点右键
@@ -490,27 +621,26 @@ function CanvasApp() {
     (event, node) => {
       event.preventDefault()
       const sel = selectedIdsRef.current
-      // 多选状态下右键选中节点：提供批量删除
       if (sel.length > 1 && sel.includes(node.id)) {
         const items = [
-          { label: `🗑 删除选中的 ${sel.length} 个节点`, hint: '同时删除相连的连线', action: () => deleteNodes(sel) },
+          { label: t('menu.deleteSel', { count: sel.length }), hint: t('menu.deleteSelHint'), action: () => deleteNodes(sel) },
           { divider: true },
-          { label: '▶ 运行全部', hint: '按连线顺序执行', action: runAll },
+          { label: t('menu.runAll'), hint: t('menu.runAllHint'), action: runAll },
         ]
         openMenu(event.clientX, event.clientY, items)
         return
       }
       const items = []
       if (isRunnable(node)) {
-        items.push({ label: '▶ 运行此节点（含上游）', hint: '', action: () => runUpstream(node.id) })
+        items.push({ label: t('menu.runNode'), hint: '', action: () => runUpstream(node.id) })
       }
       const pos = { x: node.position.x + 100, y: node.position.y + 80 }
       items.push(...buildQuickItems(node.id, pos))
       items.push({ divider: true })
-      items.push({ label: '🗑 删除节点', hint: '也可按 Delete 键', action: () => deleteNode(node.id) })
+      items.push({ label: t('menu.deleteNode'), hint: t('menu.deleteNodeHint'), action: () => deleteNode(node.id) })
       openMenu(event.clientX, event.clientY, items)
     },
-    [buildQuickItems, deleteNode, deleteNodes, runUpstream, runAll, openMenu]
+    [buildQuickItems, deleteNode, deleteNodes, runUpstream, runAll, openMenu, t]
   )
 
   // 左侧面板拖拽进画布
@@ -521,29 +651,38 @@ function CanvasApp() {
   const onDrop = useCallback(
     (event) => {
       event.preventDefault()
+      const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY })
+      // 本地图片拖进画布 → 自动创建「图片素材」节点
+      const files = Array.from(event.dataTransfer.files || [])
+      if (files.some((f) => f && typeof f.type === 'string' && f.type.startsWith('image/'))) {
+        addAssetFromFiles(files, pos)
+        return
+      }
+      // 左侧面板拖拽
       const type = event.dataTransfer.getData('application/reactflow')
       if (!type) return
-      const pos = screenToFlowPosition({ x: event.clientX, y: event.clientY })
       addNodeAt(type, pos)
     },
-    [screenToFlowPosition, addNodeAt]
+    [screenToFlowPosition, addNodeAt, addAssetFromFiles]
   )
 
   // ---------- 保存 / 导入导出 ----------
   const handleSave = useCallback(() => {
-    const ok = saveToLocalStorage(nodes, edges)
-    showToast(ok ? '已保存到本地浏览器' : '保存失败（本地存储空间不足）', ok ? 'success' : 'error')
-  }, [nodes, edges, showToast])
+    persistMedia(nodes).then(() => {
+      const ok = saveToLocalStorage(nodes, edges)
+      showToast(ok ? t('toast.saved') : t('toast.saveFail'), ok ? 'success' : 'error')
+    })
+  }, [nodes, edges, persistMedia, showToast])
 
   const handleExport = useCallback(() => {
     const payload = {
       app: 'tapnow-local',
       version: 1,
-      nodes: sanitizeForSave(nodes),
+      nodes: serializeForExport(nodes),
       edges,
     }
     downloadFile(`tapnow-canvas-${Date.now()}.json`, JSON.stringify(payload, null, 2), 'application/json')
-    showToast('已导出 JSON 工程文件', 'success')
+    showToast(t('toast.exported'), 'success')
   }, [nodes, edges, showToast])
 
   const handleImport = useCallback(() => fileInputRef.current?.click(), [])
@@ -554,14 +693,14 @@ function CanvasApp() {
       reader.onload = () => {
         try {
           const payload = JSON.parse(reader.result)
-          if (!Array.isArray(payload.nodes) || !Array.isArray(payload.edges)) throw new Error('文件格式不对')
+          if (!Array.isArray(payload.nodes) || !Array.isArray(payload.edges)) throw new Error(t('toast.badFormat'))
           const nodes = payload.nodes.map(normalizeNode).filter(Boolean)
-          if (!nodes.length) throw new Error('文件中没有有效节点')
+          if (!nodes.length) throw new Error(t('toast.noValidNode'))
           setNodes(nodes)
           setEdges(normalizeEdges(payload.edges, nodes.map((n) => n.id)))
-          showToast('导入成功', 'success')
+          showToast(t('toast.importOk'), 'success')
         } catch (err) {
-          showToast(`导入失败：${err.message}`, 'error')
+          showToast(t('toast.importFail', { msg: err.message }), 'error')
         }
       }
       reader.readAsText(file)
@@ -570,17 +709,19 @@ function CanvasApp() {
   )
 
   const handleClear = useCallback(() => {
-    if (!window.confirm('确定清空当前画布？会自动备份到浏览器后再重置。')) return
+    if (!window.confirm(t('confirm.clear'))) return
+    idbClearMedia()
+    mediaCacheRef.current.clear()
     try {
       localStorage.setItem('tapnow-local-canvas-backup', JSON.stringify({ nodes, edges }))
     } catch {}
-    const fresh = starterCanvas()
+    const fresh = starterCanvas(t)
     setNodes(fresh.nodes)
     setEdges(fresh.edges)
     setSelectedId(null)
-    setSaveHint('已清空并重置示例画布（备份在 tapnow-local-canvas-backup）')
-    showToast('画布已重置', 'success')
-  }, [nodes, edges, setNodes, setEdges, showToast])
+    setSaveHint(t('toast.clearHint'))
+    showToast(t('toast.cleared'), 'success')
+  }, [nodes, edges, setNodes, setEdges, showToast, t])
 
   // 画布快照（给 Agent 看的精简状态）
   const canvasSnapshot = useMemo(
@@ -625,7 +766,14 @@ function CanvasApp() {
         return node.id
       },
       connect: (from, to, handle) => {
-        if (from === to) return
+        if (!from || !to || from === to) return
+        const es = canvasRef.current.edges
+        const hasSame = es.some((e) => e.target === to && e.targetHandle === handle)
+        // 参考图输入口支持多图；其他输入口仍只允许一条
+        if (hasSame && handle !== 'image') {
+          showToast(t('toast.portTaken'), 'error')
+          return
+        }
         setEdges((eds) => [
           ...eds,
           { id: uid('edge'), source: from, sourceHandle: 'output', target: to, targetHandle: handle },
@@ -644,13 +792,34 @@ function CanvasApp() {
       clear: () => handleClear(),
       toast: (msg, kind) => showToast(msg, kind),
     }),
-    [addNodeAt, notifyNode, setNodes, setEdges, runUpstream, runAll, deleteNode, handleClear, showToast]
+    [addNodeAt, notifyNode, setNodes, setEdges, runUpstream, runAll, deleteNode, handleClear, showToast, t]
   )
 
   // 给节点注入交互回调
   const displayNodes = useMemo(
-    () =>
-      nodes.map((n) => ({
+    () => {
+      // 节点对象引用没变就复用上次注入的回调对象：拖拽/缩放时只有变化的节点重渲染
+      const cache = displayCacheRef.current
+      if (displaySettingsRef.current !== settings) {
+        cache.clear()
+        displaySettingsRef.current = settings
+      }
+      if (displayEdgesRef.current !== edges) {
+        cache.clear() // 连线变化会影响 inputImageCount 等派生信息
+        displayEdgesRef.current = edges
+      }
+      const byId = new Map(nodes.map((x) => [x.id, x]))
+      const countConnectedImages = (nodeId) =>
+        edges.reduce((sum, e) => {
+          if (e.target !== nodeId || e.targetHandle !== 'image') return sum
+          const src = byId.get(e.source)
+          if (!src) return sum
+          if (src.type === 'asset') {
+            return sum + (Array.isArray(src.data.images) ? src.data.images.filter((v) => typeof v === 'string' && v).length : 0)
+          }
+          return sum + (src.data.media?.value ? 1 : 0)
+        }, 0)
+      const inject = (n) => ({
         ...n,
         data: {
           ...n.data,
@@ -659,6 +828,16 @@ function CanvasApp() {
           onText: (text) => notifyNode(n.id, { text, status: 'idle' }),
           onFile: (value) => notifyNode(n.id, { media: { value, mediaType: 'image' }, status: 'success' }),
           onError: (error) => notifyNode(n.id, { error, status: 'error' }),
+          onRename: (name) => notifyNode(n.id, { name, status: 'idle' }),
+          onImages: (images) => notifyNode(n.id, { images, status: 'success' }),
+          onRemoveImage: (i) =>
+            setNodes((ns) =>
+              ns.map((x) =>
+                x.id === n.id
+                  ? { ...x, data: { ...x.data, images: (x.data.images || []).filter((_, idx) => idx !== i) } }
+                  : x
+              )
+            ),
           ...(GEN_CATS.has(n.type)
             ? {
                 category: n.type,
@@ -669,9 +848,23 @@ function CanvasApp() {
                 onOpenSettings: () => setSettingsOpen(true),
               }
             : {}),
+          ...(n.type === 'image' || n.type === 'video' ? { inputImageCount: countConnectedImages(n.id) } : {}),
         },
-      })),
-    [nodes, runSingle, notifyNode, settings, selectCategoryApi]
+      })
+      const next = nodes.map((n) => {
+        const hit = cache.get(n.id)
+        if (hit && hit.node === n) return hit.nodeData
+        const nodeData = inject(n)
+        cache.set(n.id, { node: n, nodeData })
+        return nodeData
+      })
+      if (cache.size !== nodes.length) {
+        const live = new Set(nodes.map((x) => x.id))
+        for (const id of [...cache.keys()]) if (!live.has(id)) cache.delete(id)
+      }
+      return next
+    },
+    [nodes, edges, runSingle, notifyNode, setNodes, settings, selectCategoryApi]
   )
 
   return (
@@ -699,6 +892,12 @@ function CanvasApp() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            onNodesDelete={(deleted) => {
+              for (const n of deleted || []) {
+                idbDeleteMedia(n.id)
+                mediaCacheRef.current.delete(n.id)
+              }
+            }}
             onConnectStart={onConnectStart}
             onConnectEnd={onConnectEnd}
             onPaneContextMenu={onPaneContextMenu}
@@ -727,10 +926,10 @@ function CanvasApp() {
         <div className="right-col">
           <div className="right-tabs">
             <button className={rightTab === 'node' ? 'active' : ''} onClick={() => setRightTab('node')}>
-              节点配置
+              {t('panel.tabNode')}
             </button>
             <button className={rightTab === 'agent' ? 'active' : ''} onClick={() => setRightTab('agent')}>
-              🤖 AI Agent
+              {t('panel.tabAgent')}
             </button>
           </div>
           {rightTab === 'node' ? (
@@ -799,6 +998,7 @@ function nodeColor(type) {
       video: '#f0abfc',
       reverse: '#c4b5fd',
       upload: '#fcd34d',
+      asset: '#a3e635',
       output: '#6ee7b7',
     }[type] || '#94a3b8'
   )

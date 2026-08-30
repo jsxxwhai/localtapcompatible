@@ -71,6 +71,13 @@ function resolvePlaceholders(template, vars, jsonEscape = false) {
   let out = source
   for (const [key, value] of Object.entries(vars)) {
     if (value === undefined) continue
+    if (jsonEscape && typeof value !== 'string') {
+      // 数组/对象占位符：模板里通常写成 "{{key}}"，需连外层引号一起替换成 JSON 字面量
+      const replacement = JSON.stringify(value)
+      out = out.split(`"{{${key}}}"`).join(replacement)
+      out = out.split(`{{${key}}}`).join(replacement)
+      continue
+    }
     let replacement = typeof value === 'string' ? value : JSON.stringify(value)
     if (jsonEscape && typeof value === 'string') {
       replacement = JSON.stringify(value).slice(1, -1)
@@ -203,11 +210,19 @@ async function pollJob({ config, vars, initialJson }) {
 // config: 节点配置（baseUrl / apiKey / model / path / bodyTemplate / outputExtract / poll ...）
 // inputs: { prompt?: string, image?: string }
 export async function runNode({ config, inputs = {} }) {
+  const images = Array.isArray(inputs.images)
+    ? inputs.images.filter((v) => typeof v === 'string' && v)
+    : []
   const vars = {
     prompt: inputs.prompt ?? '',
     image: inputs.image ?? '',
+    images, // 多图：替换成 JSON 数组字面量
     model: config.model ?? '',
     apiKey: config.apiKey ?? '',
+    ...images.reduce((acc, v, i) => {
+      acc[`image${i + 1}`] = v
+      return acc
+    }, {}),
     ...(inputs.vars ?? {}), // 自定义占位符（如 {{system}}）
   }
 
@@ -259,4 +274,3 @@ export async function runNode({ config, inputs = {} }) {
   const normalized = normalizeOutput(extracted, config.outputMediaType, config.outputKind)
   return { ok: true, output: normalized, raw: json ?? raw }
 }
-

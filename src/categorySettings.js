@@ -2,10 +2,10 @@
 // 每个 API 可拉取模型列表 / 自选模型 ID / 测试；运行前下拉选模型，默认记住上次用的。
 
 export const CATEGORY_DEFS = [
-  { id: 'image', label: '图片生成', icon: '🖼️' },
-  { id: 'video', label: '视频生成', icon: '🎬' },
-  { id: 'reverse', label: '倒推提示词', icon: '🔍' },
-  { id: 'agent', label: 'AI Agent', icon: '🤖' },
+  { id: 'image', labelKey: 'settings.cat.image', icon: '🖼️' },
+  { id: 'video', labelKey: 'settings.cat.video', icon: '🎬' },
+  { id: 'reverse', labelKey: 'settings.cat.reverse', icon: '🔍' },
+  { id: 'agent', labelKey: 'settings.cat.agent', icon: '🤖' },
 ]
 export const CATEGORY_MAP = Object.fromEntries(CATEGORY_DEFS.map((c) => [c.id, c]))
 export const GEN_CATS = new Set(['image', 'video', 'reverse'])

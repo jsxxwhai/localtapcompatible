@@ -1,16 +1,20 @@
 import { memo } from 'react'
 import { Handle, Position } from '@xyflow/react'
+import { useTranslation } from '../i18n.js'
 
 // 节点通用外壳 + 共享小组件
-export const STATUS_META = {
-  idle: { label: '待运行', color: '#64748b' },
-  running: { label: '运行中', color: '#f59e0b' },
-  success: { label: '完成', color: '#22c55e' },
-  error: { label: '出错', color: '#ef4444' },
+export function statusMeta(t) {
+  return {
+    idle: { label: t('status.idle'), color: '#64748b' },
+    running: { label: t('status.running'), color: '#f59e0b' },
+    success: { label: t('status.success'), color: '#22c55e' },
+    error: { label: t('status.error'), color: '#ef4444' },
+  }
 }
 
 export function StatusBadge({ status }) {
-  const meta = STATUS_META[status] || STATUS_META.idle
+  const { t } = useTranslation()
+  const meta = statusMeta(t)[status] || statusMeta(t).idle
   return (
     <span className="status-badge" style={{ color: meta.color }}>
       <span className="dot" style={{ background: meta.color }} />
@@ -20,15 +24,16 @@ export function StatusBadge({ status }) {
 }
 
 export function MediaView({ media, maxHeight }) {
+  const { t } = useTranslation()
   if (!media || !media.value) {
-    return <div className="media-empty">尚无输出</div>
+    return <div className="media-empty">{t('media.empty')}</div>
   }
   const isVideo = media.mediaType === 'video' || /^data:video/i.test(media.value)
   const common = { style: { maxHeight: maxHeight || 180, maxWidth: '100%' } }
   return isVideo ? (
-    <video src={media.value} controls playsInline {...common} />
+    <video src={media.value} controls playsInline preload="none" {...common} />
   ) : (
-    <img src={media.value} alt="输出" {...common} />
+    <img src={media.value} alt={t('output.alt')} loading="lazy" decoding="async" {...common} />
   )
 }
 
@@ -49,9 +54,10 @@ export function NodeShell({ title, color, status, actions, children }) {
 }
 
 export function RunButton({ onRun, running }) {
+  const { t } = useTranslation()
   return (
     <button className="btn btn-small btn-primary" onClick={onRun} disabled={running}>
-      {running ? '…' : '▶ 运行'}
+      {running ? '…' : t('run.button')}
     </button>
   )
 }
@@ -95,20 +101,21 @@ export const NodeHandleSource = memo(function NodeHandleSource({ id, top, label 
 
 // 板块 API/模型 下拉：默认记住上次用的，可随时切换，运行就用选中的
 export function ApiSelect({ apiOptions, currentApiId, onSelect, onOpenSettings }) {
+  const { t } = useTranslation()
   return (
     <div className="node-api-row">
       <select
         className="node-api-select"
         value={currentApiId || ''}
-        title="选择该板块使用的 API / 模型（默认是上次运行用的那个）"
+        title={t('inspector.selectApi')}
         onChange={(e) => onSelect?.(e.target.value)}
       >
-        {!apiOptions?.length && <option value="">未配置 API</option>}
+        {!apiOptions?.length && <option value="">{t('api.none')}</option>}
         {apiOptions.map((a) => (
-          <option key={a.id} value={a.id}>{a.name} · {a.model || '未设模型'}</option>
+          <option key={a.id} value={a.id}>{a.name} · {a.model || t('settings.noModel')}</option>
         ))}
       </select>
-      <button className="btn-icon" title="打开板块 API 设置" onClick={() => onOpenSettings?.()}>⚙️</button>
+      <button className="btn-icon" title={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>
     </div>
   )
 }

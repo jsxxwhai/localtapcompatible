@@ -8,26 +8,27 @@ import {
   ErrorText,
   ApiSelect,
 } from './CanvasNode.jsx'
+import { useTranslation } from '../i18n.js'
 
 // 视频生成节点：可接收 prompt + 起始图，支持异步任务轮询
 function VideoNodeInner({ data }) {
+  const { t } = useTranslation()
   const running = data.status === 'running'
-  const isPoll = data.config?.poll?.enabled
   return (
     <NodeShell
-      title="视频生成"
+      title={t('node.video')}
       color="video"
       status={data.status}
       actions={<RunButton onRun={() => data.onRun?.()} running={running} />}
     >
-      <NodeHandleTarget id="prompt" top={26} label="提示词" />
-      <NodeHandleTarget id="image" top={72} label="起始图" />
-      <NodeHandleSource id="output" top={50} label="视频" />
+      <NodeHandleTarget id="prompt" top={26} label={t('handle.prompt')} />
+      <NodeHandleTarget id="image" top={72} label={t('handle.startImage')} />
+      <NodeHandleSource id="output" top={50} label={t('handle.image')} />
 
       <textarea
         className="tn-textarea tn-textarea-sm"
         rows={2}
-        placeholder="提示词（可选；连了上游文本则用上游的）"
+        placeholder={t('gen.placeholder')}
         value={data.text}
         onChange={(e) => data.onText?.(e.target.value)}
       />
@@ -37,6 +38,9 @@ function VideoNodeInner({ data }) {
         onSelect={data.onSelectApi}
         onOpenSettings={data.onOpenSettings}
       />
+      {data.inputImageCount > 1 && (
+        <div className="multi-img-note">{t('multiImageVideo', { count: data.inputImageCount })}</div>
+      )}
       <div className="node-preview">
         <MediaView media={data.media} maxHeight={140} />
       </div>

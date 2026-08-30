@@ -1,15 +1,18 @@
 // 前端工具函数
 
 // 全部节点类型（面板 / 右键菜单 / 拖拽共用）
+// labelKey / descKey 用于 i18n 翻译，icon 固定
 export const NODE_TYPES = [
-  { type: 'text', label: '提示词', desc: '输入文本，作为上游提示词', icon: '✏️' },
-  { type: 'image', label: '图片生成', desc: '文生图 / 图生图 API', icon: '🖼️' },
-  { type: 'video', label: '视频生成', desc: '文生视频 / 图生视频 API（支持轮询）', icon: '🎬' },
-  { type: 'reverse', label: '倒推提示词', desc: '视觉模型把图片描述成提示词', icon: '🔍' },
-  { type: 'upload', label: '图片上传', desc: '上传本地图片作为参考图', icon: '📁' },
-  { type: 'output', label: '预览输出', desc: '预览/下载上游图片或视频', icon: '🖥️' },
+  { type: 'text', labelKey: 'node.text', descKey: 'node.text.desc', icon: '✏️' },
+  { type: 'image', labelKey: 'node.image', descKey: 'node.image.desc', icon: '🖼️' },
+  { type: 'video', labelKey: 'node.video', descKey: 'node.video.desc', icon: '🎬' },
+  { type: 'reverse', labelKey: 'node.reverse', descKey: 'node.reverse.desc', icon: '🔍' },
+  { type: 'upload', labelKey: 'node.upload', descKey: 'node.upload.desc', icon: '📁' },
+  { type: 'asset', labelKey: 'node.asset', descKey: 'node.asset.desc', icon: '📂' },
+  { type: 'output', labelKey: 'node.output', descKey: 'node.output.desc', icon: '🖥️' },
 ]
 
+export const NODE_TYPE_MAP = Object.fromEntries(NODE_TYPES.map((t) => [t.type, t]))
 
 export function uid(prefix = 'node') {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -64,23 +67,17 @@ export function defaultNodeConfig(type) {
 
 // 新节点工厂
 export function createNode(type) {
-  const labels = {
-    text: '提示词',
-    image: '图片生成',
-    video: '视频生成',
-    reverse: '倒推提示词',
-    upload: '图片上传',
-    output: '预览输出',
-  }
   const data = {
     type,
-    label: labels[type] || type,
+    labelKey: NODE_TYPE_MAP[type]?.labelKey || type,
+    label: '', // 兼容旧数据；展示优先用 labelKey 翻译
     status: 'idle',
     error: '',
     text: '',
     media: null, // { value, mediaType }
     config: defaultNodeConfig(type),
   }
+  if (type === 'asset') data.images = [] // 图片素材：可放多张本地图片
   return data
 }
 
@@ -138,8 +135,9 @@ export function topoSort(nodes, edges) {
 
   const queue = [...nodes].filter((n) => indegree.get(n.id) === 0).map((n) => n.id)
   const order = []
-  while (queue.length) {
-    const id = queue.shift()
+  let head = 0
+  while (head < queue.length) {
+    const id = queue[head++]
     order.push(id)
     for (const next of adj.get(id)) {
       indegree.set(next, indegree.get(next) - 1)
@@ -147,7 +145,9 @@ export function topoSort(nodes, edges) {
     }
   }
   if (order.length !== nodes.length) {
-    throw new Error('图中存在循环依赖，请先断开循环连线')
+    const err = new Error('cycle')
+    err.code = 'CYCLE'
+    throw err
   }
   return order
 }
@@ -156,18 +156,31 @@ export function isRunnable(node) {
   return node.type === 'image' || node.type === 'video' || node.type === 'reverse'
 }
 
-// 序列化保存时去掉运行时大字段
-export function sanitizeForSave(nodes) {
+// data URL 媒体的本地存储占位：大图存 IndexedDB，localStorage 只留标记
+function offloadMedia(media) {
+  if (!media || typeof media.value !== 'string' || !media.value.startsWith('data:')) return media
+  return { ...media, value: '', __idb: true }
+}
+
+// 序列化保存时去掉运行时大字段；keepLargeMedia=true 用于导出（完整保留媒体）
+export function sanitizeForSave(nodes, keepLargeMedia = false) {
   return nodes.map((n) => {
-    const copy = structuredClone(n.data)
-    // 运行时状态不保存，避免下次打开时出现“运行中/出错”卡住
+    const copy = { ...n.data }
     delete copy.status
     delete copy.error
-    if (copy.media?.value?.startsWith('data:') && copy.media.value.length > 200_000) {
-      copy.media = { ...copy.media, value: '' }
+    if (!keepLargeMedia && copy.media && typeof copy.media.value === 'string' && copy.media.value.startsWith('data:')) {
+      copy.media = { ...copy.media, value: '', __idb: true }
+    }
+    if (!keepLargeMedia && Array.isArray(copy.images) && copy.images.some((v) => typeof v === 'string' && v.startsWith('data:'))) {
+      copy.images = []
     }
     return { id: n.id, type: n.type, position: n.position, data: copy }
   })
+}
+
+// 导出专用：完整保留媒体（data URL 也保留），供下载 JSON 工程文件
+export function serializeForExport(nodes) {
+  return sanitizeForSave(nodes, true)
 }
 
 export async function saveToLocalStorage(nodes, edges) {
@@ -178,16 +191,18 @@ export async function saveToLocalStorage(nodes, edges) {
     )
     return true
   } catch {
-    // 空间不足：去掉所有大体积 data url 再试
     try {
       localStorage.setItem(
         'tapnow-local-canvas',
         JSON.stringify({
           nodes: nodes.map((n) => {
-            const copy = structuredClone(n.data)
+            const copy = { ...n.data }
             delete copy.status
             delete copy.error
-            copy.media = copy.media?.value?.startsWith('data:') ? null : copy.media
+            copy.media = copy.media?.value?.startsWith('data:') ? offloadMedia(copy.media) : copy.media
+            if (Array.isArray(copy.images) && copy.images.some((v) => typeof v === 'string' && v.startsWith('data:'))) {
+              copy.images = []
+            }
             return { id: n.id, type: n.type, position: n.position, data: copy }
           }),
           edges,
@@ -223,4 +238,3 @@ export function downloadFile(name, content, mime) {
   a.click()
   setTimeout(() => URL.revokeObjectURL(url), 2000)
 }
-

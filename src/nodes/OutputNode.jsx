@@ -1,11 +1,16 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { apiDownload } from '../api.js'
 import { Handle, Position } from '@xyflow/react'
 import { NodeShell, MediaView, ErrorText } from './CanvasNode.jsx'
+import { useTranslation } from '../i18n.js'
 
 // 预览输出节点：展示上游传来的图片/视频
 function OutputNodeInner({ data }) {
+  const { t } = useTranslation()
+  const [dlError, setDlError] = useState('')
+  const isVideo = data.media?.mediaType === 'video' || /^data:video/i.test(data.media?.value || '')
   const handleDownload = async () => {
+    setDlError('')
     try {
       const res = await apiDownload(data.media.value)
       const a = document.createElement('a')
@@ -13,12 +18,11 @@ function OutputNodeInner({ data }) {
       a.download = res.filename || (isVideo ? 'output.mp4' : 'output.png')
       a.click()
     } catch (err) {
-      alert('下载失败：' + err.message)
+      setDlError(t('output.downloadFail') + err.message)
     }
   }
-  const isVideo = data.media?.mediaType === 'video' || /^data:video/i.test(data.media?.value || '')
   return (
-    <NodeShell title="预览输出" color="output" status={data.status}>
+    <NodeShell title={t('node.output')} color="output" status={data.status}>
       <Handle
         type="target"
         position={Position.Left}
@@ -26,14 +30,15 @@ function OutputNodeInner({ data }) {
         style={{ top: '50%' }}
         className="tn-handle tn-handle-target"
       />
-      <div className="handle-label handle-label-left" style={{ top: '50%' }}>媒体</div>
+      <div className="handle-label handle-label-left" style={{ top: '50%' }}>{t('handle.media')}</div>
       <div className="output-stage">
         <MediaView media={data.media} maxHeight={280} />
         {data.media?.value && (
           <button className="btn btn-small btn-ghost" onClick={handleDownload}>
-            ⬇ 下载{isVideo ? '视频' : '图片'}
+            {isVideo ? t('output.downloadVideo') : t('output.downloadImage')}
           </button>
         )}
+        {dlError && <div className="node-error" title={dlError}>{dlError}</div>}
       </div>
       <ErrorText message={data.error} />
     </NodeShell>
@@ -41,5 +46,3 @@ function OutputNodeInner({ data }) {
 }
 
 export const OutputNode = memo(OutputNodeInner)
-
-

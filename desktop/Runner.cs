@@ -202,6 +202,16 @@ public static partial class Runner
             ["model"] = S(config, "model") ?? "",
             ["apiKey"] = S(config, "apiKey") ?? "",
         };
+        // 多图：image1..imageN 命名单张图
+        if (inputs.ValueKind == JsonValueKind.Object && inputs.TryGetProperty("images", out var imgs) && imgs.ValueKind == JsonValueKind.Array)
+        {
+            var idx = 1;
+            foreach (var img in imgs.EnumerateArray())
+            {
+                if (img.ValueKind == JsonValueKind.String)
+                    d[$"image{idx++}"] = img.GetString();
+            }
+        }
         // 自定义占位符（如 {{system}}）
         if (inputs.ValueKind == JsonValueKind.Object && inputs.TryGetProperty("vars", out var vars) && vars.ValueKind == JsonValueKind.Object)
         {
@@ -212,6 +222,19 @@ public static partial class Runner
             }
         }
         return d;
+    }
+
+    // {{images}} 用的 JSON 数组字面量（"[\"a\",\"b\"]"）
+    private static string BuildImagesJson(JsonElement inputs)
+    {
+        if (inputs.ValueKind == JsonValueKind.Object && inputs.TryGetProperty("images", out var imgs) && imgs.ValueKind == JsonValueKind.Array)
+        {
+            var list = new List<string>();
+            foreach (var img in imgs.EnumerateArray())
+                if (img.ValueKind == JsonValueKind.String) list.Add(img.GetString()!);
+            return JsonSerializer.Serialize(list);
+        }
+        return "[]";
     }
 
     private static async Task<RunOutput> PollJob(HttpClient client, JsonElement config, Dictionary<string, string?> vars, JsonElement initialJson)
@@ -303,6 +326,11 @@ public static partial class Runner
             var bodyJson = bodyTemplate.ValueKind == JsonValueKind.Undefined
                 ? JsonSerializer.Serialize(new Dictionary<string, object> { ["prompt"] = "{{prompt}}" }, JsonOpts)
                 : bodyTemplate.GetRawText();
+            // 多图：{{images}} 直接替换成 JSON 数组字面量（不转义），其余占位符正常处理；
+            // 模板里通常写成 "{{images}}"，需连外层引号一起替换成数组
+            var imagesJson = BuildImagesJson(inputs);
+            bodyJson = bodyJson.Replace("\"{{images}}\"", imagesJson, StringComparison.Ordinal);
+            bodyJson = bodyJson.Replace("{{images}}", imagesJson, StringComparison.Ordinal);
             bodyJson = ResolvePlaceholders(bodyJson, vars, true);
             try
             {
@@ -375,7 +403,4 @@ public static partial class Runner
     [GeneratedRegex(@"^(\w+)\[(\d+)\]$")]
     private static partial Regex IndexKey();
 }
-
-
-
 

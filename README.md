@@ -106,3 +106,24 @@ src/
   components/         # 工具栏 / 节点库 / 配置面板 / 帮助
   utils.js            # 拓扑排序、存储等
 ```
+
+## 开源许可
+
+本项目采用 [MIT License](./LICENSE) 开源，可自由使用、修改、分发。
+
+## 隐私与安全
+
+- 所有 **API Key / 接口配置只保存在你本机浏览器**（localStorage），不会上传到任何服务器。
+- 浏览器版请求由本地后端 `localhost:3001` 发出；桌面版经 WebView2 桥接直达本机进程，**均无跨域限制、无云端中转**。
+- 请妥善保管你自己的 API Key，不要提交到公开仓库或分享给他人。
+
+## 参与贡献
+
+欢迎提 Issue / PR。开发环境：
+
+```bash
+npm install
+npm run dev
+```
+
+提交前请运行 `npm run build` 确保构建通过。

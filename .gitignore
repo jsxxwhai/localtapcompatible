@@ -25,5 +25,9 @@ Thumbs.db
 
 # vite
 .vite/
-
 desktop/wwwroot/
+
+# debug scratch files (smoke test dumps)
+.ap.txt
+.app.txt
+.sm*.txt
