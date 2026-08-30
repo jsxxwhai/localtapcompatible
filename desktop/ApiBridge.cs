@@ -163,7 +163,7 @@ public sealed class ApiBridge
             req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
         using var res = await _http.SendAsync(req);
         var raw = await res.Content.ReadAsStringAsync();
-        if (!res.IsSuccessStatusCode) throw new InvalidOperationException($"HTTP {(int)res.StatusCode}: {raw[..Math.Min(120, raw.Length)]}");
+        if (!res.IsSuccessStatusCode) throw new InvalidOperationException(Loc.T(locale, "runner.httpError", ("status", ((int)res.StatusCode).ToString()), ("raw", raw.Length <= 120 ? raw : raw[..120])));
         using var doc = JsonDocument.Parse(raw);
         var root = doc.RootElement;
         var list = new List<string>();

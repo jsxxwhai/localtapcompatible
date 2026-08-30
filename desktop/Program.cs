@@ -10,7 +10,8 @@ internal static class Program
         using var mutex = new Mutex(true, mutexName, out var createdNew);
         if (!createdNew)
         {
-            MessageBox.Show("TapNow Local 已经在运行中。", "TapNow Local");
+            var locale = Loc.Normalize(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+            MessageBox.Show(Loc.T(locale, "ui.alreadyRunning"), "TapNow Local");
             return;
         }
 

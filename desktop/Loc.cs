@@ -8,6 +8,7 @@ public static class Loc
         ["zh"] = new()
         {
             ["ui.windowTitle"] = "TapNow Local — 本地 AI 画布",
+            ["ui.alreadyRunning"] = "TapNow Local 已经在运行中。",
             ["ui.startupFail"] = "启动失败：{msg}",
             ["api.missingConfig"] = "缺少节点配置（config）",
             ["api.missingBaseUrl"] = "缺少接口地址",
@@ -30,6 +31,7 @@ public static class Loc
         ["en"] = new()
         {
             ["ui.windowTitle"] = "TapNow Local — Local AI Canvas",
+            ["ui.alreadyRunning"] = "TapNow Local is already running.",
             ["ui.startupFail"] = "Startup failed: {msg}",
             ["api.missingConfig"] = "Missing node config (config)",
             ["api.missingBaseUrl"] = "Missing API base URL",
@@ -52,6 +54,7 @@ public static class Loc
         ["ja"] = new()
         {
             ["ui.windowTitle"] = "TapNow Local — ローカル AI キャンバス",
+            ["ui.alreadyRunning"] = "TapNow Local はすでに実行中です。",
             ["ui.startupFail"] = "起動に失敗しました：{msg}",
             ["api.missingConfig"] = "ノード設定（config）がありません",
             ["api.missingBaseUrl"] = "API ベースURL がありません",
@@ -74,6 +77,7 @@ public static class Loc
         ["ko"] = new()
         {
             ["ui.windowTitle"] = "TapNow Local — 로컬 AI 캔버스",
+            ["ui.alreadyRunning"] = "TapNow Local이 이미 실행 중입니다.",
             ["ui.startupFail"] = "시작 실패: {msg}",
             ["api.missingConfig"] = "노드 설정(config)이 없습니다",
             ["api.missingBaseUrl"] = "API 기본 URL이 없습니다",
