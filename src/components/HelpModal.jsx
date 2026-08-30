@@ -11,7 +11,7 @@ export default function HelpModal({ onClose, onTour }) {
           {onTour && (
             <button className="btn btn-small btn-primary" onClick={onTour}>{t('help.openTour')}</button>
           )}
-          <button className="btn-icon" onClick={onClose}>{t('help.close')}</button>
+          <button type="button" className="btn-icon" onClick={onClose} aria-label={t('help.close')}>{t('help.close')}</button>
         </div>
         <div className="modal-body">
           <h4>{t('help.wfTitle')}</h4>

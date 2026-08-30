@@ -94,6 +94,7 @@ export default {
   'inspector.test': '🔌 Test',
   'inspector.openSettings': '⚙️ Open settings',
   'settings.title': '⚙️ Category API Settings',
+  'settings.close': 'Close',
   'settings.cat.image': 'Image Gen',
   'settings.cat.video': 'Video Gen',
   'settings.cat.reverse': 'Reverse Prompt',

@@ -94,6 +94,7 @@ export default {
   'inspector.test': '🔌 接続テスト',
   'inspector.openSettings': '⚙️ 設定を開く',
   'settings.title': '⚙️ カテゴリ API 設定',
+  'settings.close': '閉じる',
   'settings.cat.image': '画像生成',
   'settings.cat.video': '動画生成',
   'settings.cat.reverse': '逆プロンプト',

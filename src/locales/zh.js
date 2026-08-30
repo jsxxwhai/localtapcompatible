@@ -94,6 +94,7 @@ export default {
   'inspector.test': '🔌 测试接口',
   'inspector.openSettings': '⚙️ 打开板块设置',
   'settings.title': '⚙️ 板块 API 设置',
+  'settings.close': '关闭',
   'settings.cat.image': '图片生成',
   'settings.cat.video': '视频生成',
   'settings.cat.reverse': '倒推提示词',

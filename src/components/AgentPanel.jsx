@@ -245,6 +245,7 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
         {[1, 2, 3].map((id) => (
           <button
             key={id}
+            type="button"
             className={`mode-card ${mode === id ? 'active' : ''}`}
             onClick={() => setMode(id)}
           >

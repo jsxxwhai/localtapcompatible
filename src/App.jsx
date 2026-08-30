@@ -1012,7 +1012,7 @@ const updateNodeConfig = useCallback(
       />
 
       {ctxMenu && <ContextMenu x={ctxMenu.x} y={ctxMenu.y} items={ctxMenu.items} onClose={closeMenu} />}
-      {toast && <div className={`toast toast-${toast.kind}`}>{toast.msg}</div>}
+      {toast && <div className={`toast toast-${toast.kind}`} role="status" aria-live="polite">{toast.msg}</div>}
       {helpOpen && <HelpModal onClose={() => setHelpOpen(false)} onTour={() => setTourOpen(true)} />}
       {tourOpen && <TourModal onClose={finishTour} onDone={finishTour} />}
       {settingsOpen && (

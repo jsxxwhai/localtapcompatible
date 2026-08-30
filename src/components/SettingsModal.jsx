@@ -309,7 +309,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
       <div className="modal settings-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <span>{t('settings.title')}</span>
-          <button className="btn-icon" onClick={onClose}>×</button>
+          <button type="button" className="btn-icon" onClick={onClose} aria-label={t('settings.close')}>×</button>
         </div>
 
         <div className="settings-language-bar">
@@ -318,6 +318,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
             {LOCALES.map((l) => (
               <button
                 key={l.code}
+                type="button"
                 className={`lang-chip ${localePref === l.code ? 'active' : ''}`}
                 onClick={() => setLocale(l.code)}
                 title={l.labelKey ? t(l.labelKey) : l.label}
@@ -332,7 +333,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
 
         <div className="settings-tabs">
           {CATEGORY_DEFS.map((c) => (
-            <button key={c.id} className={cat === c.id ? 'active' : ''} onClick={() => setCat(c.id)}>
+            <button type="button" key={c.id} className={cat === c.id ? 'active' : ''} onClick={() => setCat(c.id)}>
               {c.icon} {t(c.labelKey)}
             </button>
           ))}
@@ -340,12 +341,14 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
 
         <div className="settings-advanced-toggle">
           <button
+            type="button"
             className={`mode-chip ${!advanced ? 'active' : ''}`}
             onClick={() => setAdvanced(false)}
           >
             {t('settings.modeSimple')}
           </button>
           <button
+            type="button"
             className={`mode-chip ${advanced ? 'active' : ''}`}
             onClick={() => setAdvanced(true)}
           >

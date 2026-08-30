@@ -94,6 +94,7 @@ export default {
   'inspector.test': '🔌 연결 테스트',
   'inspector.openSettings': '⚙️ 설정 열기',
   'settings.title': '⚙️ 카테고리 API 설정',
+  'settings.close': '닫기',
   'settings.cat.image': '이미지 생성',
   'settings.cat.video': '비디오 생성',
   'settings.cat.reverse': '역 프롬프트',
