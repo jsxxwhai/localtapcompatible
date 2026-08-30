@@ -61,6 +61,7 @@ export default {
   'multiImage': '{count} reference images connected',
   'multiImageVideo': '{count} reference images (multi-image video)',
   'reverse.empty': 'Connect an image and run to generate a prompt',
+  'reverse.visionSystem': 'You are a professional prompt engineer. Describe the image in detail in English, covering its content, style, composition, lighting and details. Output a single prompt ready for text-to-image / text-to-video generation.',
   'upload.choose': '📁 Choose image',
   'upload.none': 'No image selected',
   'upload.notImage': 'Please choose an image file',

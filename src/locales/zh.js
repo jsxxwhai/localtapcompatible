@@ -61,6 +61,7 @@ export default {
   'multiImage': '已接入 {count} 张参考图',
   'multiImageVideo': '已接入 {count} 张参考图（多图生视频）',
   'reverse.empty': '连接图片后运行，生成提示词',
+  'reverse.visionSystem': '你是专业的提示词工程师。请用中文详细描述图片的内容、风格、构图、光线与细节，输出一段可直接用于文生图/文生视频的提示词。',
   'upload.choose': '📁 选择本地图片',
   'upload.none': '未选择图片',
   'upload.notImage': '请选择图片文件',

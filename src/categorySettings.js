@@ -1,3 +1,5 @@
+import { translate, loadLocale } from './i18n.js'
+
 // 板块级 API 设置：每个板块（图片/视频/倒推/Agent）可配置多个 API 版本，
 // 每个 API 可拉取模型列表 / 自选模型 ID / 测试；运行前下拉选模型，默认记住上次用的。
 
@@ -234,7 +236,18 @@ export function buildRunConfig(cat, settings) {
   const api = currentApi(catSet)
   if (!api) return null
   const { id: _id, name: _name, models: _models, ...config } = api
-  return { ...config, model: catSet?.model || api.model || '' }
+  const out = { ...config, model: catSet?.model || api.model || '' }
+  // 倒推提示词节点：把视觉模型的 system prompt 换成当前界面语言
+  if (cat === 'reverse' && out.bodyTemplate?.messages) {
+    const vision = translate(loadLocale(), 'reverse.visionSystem')
+    out.bodyTemplate = {
+      ...out.bodyTemplate,
+      messages: out.bodyTemplate.messages.map((m) =>
+        m?.role === 'system' ? { ...m, content: vision } : m
+      ),
+    }
+  }
+  return out
 }
 
 // Agent 用的运行 config

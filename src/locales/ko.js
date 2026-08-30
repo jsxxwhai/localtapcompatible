@@ -61,6 +61,7 @@ export default {
   'multiImage': '참조 이미지 {count}개 연결됨',
   'multiImageVideo': '참조 이미지 {count}개（다중 이미지 비디오）',
   'reverse.empty': '이미지를 연결하고 실행하면 프롬프트를 생성',
+  'reverse.visionSystem': '당신은 전문 프롬프트 엔지니어입니다. 이미지의 내용, 스타일, 구도, 조명, 디테일을 한국어로 자세히 설명하고, 이미지 생성/비디오 생성에 바로 쓸 수 있는 프롬프트를 출력하세요.',
   'upload.choose': '📁 이미지 선택',
   'upload.none': '이미지가 선택되지 않음',
   'upload.notImage': '이미지 파일을 선택하세요',

@@ -61,6 +61,7 @@ export default {
   'multiImage': '参照画像を {count} 枚接続中',
   'multiImageVideo': '参照画像 {count} 枚（複数画像から動画）',
   'reverse.empty': '画像を接続して実行するとプロンプトを生成',
+  'reverse.visionSystem': 'あなたはプロのプロンプトエンジニアです。画像の内容・スタイル・構図・光・細部を日本語で詳しく説明し、画像生成・動画生成にそのまま使えるプロンプトを出力してください。',
   'upload.choose': '📁 画像を選択',
   'upload.none': '画像が選択されていません',
   'upload.notImage': '画像ファイルを選択してください',
