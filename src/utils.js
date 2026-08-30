@@ -1,4 +1,5 @@
 // 前端工具函数
+import { translate, loadLocale } from './i18n.js'
 
 // 全部节点类型（面板 / 右键菜单 / 拖拽共用）
 // labelKey / descKey 用于 i18n 翻译，icon 固定
@@ -53,7 +54,7 @@ export function defaultNodeConfig(type) {
       bodyTemplate: {
         model: '{{model}}',
         messages: [
-          { role: 'system', content: '你是专业的提示词工程师。请用中文详细描述图片的内容、风格、构图、光线与细节，输出一段可直接用于文生图/文生视频的提示词。' },
+          { role: 'system', content: translate(loadLocale(), 'reverse.visionSystem') },
           { role: 'user', content: [{ type: 'image_url', image_url: { url: '{{image}}' } }] },
         ],
         max_tokens: 512,
