@@ -11,8 +11,8 @@ export async function apiRun(config, inputs) {
   if (hasBridge()) return window.tapnowApi.run(config, inputs)
   const res = await fetch('/api/run', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ config, inputs }),
+    headers: { 'Content-Type': 'application/json', 'Accept-Language': loadLocale() },
+    body: JSON.stringify({ config, inputs, locale: loadLocale() }),
   })
   const data = await res.json()
   if (!data.ok) throw new Error(data.error || translate(loadLocale(), 'common.apiRunFail'))
@@ -48,8 +48,8 @@ export async function apiListModels({ baseUrl, apiKey, path = '/models' } = {}) 
   if (hasBridge()) return window.tapnowApi.listModels({ baseUrl, apiKey, path })
   const res = await fetch('/api/models', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ baseUrl, apiKey, path }),
+    headers: { 'Content-Type': 'application/json', 'Accept-Language': loadLocale() },
+    body: JSON.stringify({ baseUrl, apiKey, path, locale: loadLocale() }),
   })
   const data = await res.json()
   if (!data.ok) throw new Error(data.error || translate(loadLocale(), 'common.listModelsFail'))
