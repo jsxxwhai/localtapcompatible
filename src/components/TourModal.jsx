@@ -62,7 +62,7 @@ function buildSlides(t) {
       img: '/tour/01-welcome.png',
       title: t('tour.slide7.title'),
       text: t('tour.slide7.text'),
-      list: [t('tour.slide7.l1'), t('tour.slide7.l2'), t('tour.slide7.l3')],
+      list: [t('tour.slide7.l1'), t('tour.slide7.l2'), t('tour.slide7.l3'), t('tour.slide7.l4')],
       last: true,
     },
   ]

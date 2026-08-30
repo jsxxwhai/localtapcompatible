@@ -336,6 +336,8 @@ export default {
   "tour.slide7.l1": "1️⃣ Drag a Prompt node onto the canvas",
   "tour.slide7.l2": "2️⃣ Drag a wire from its output to an Image Gen node",
   "tour.slide7.l3": "3️⃣ Press ▶ Run on the node and see the result",
+
+  'tour.slide7.l4': '⌨️ Shortcuts: Ctrl+S save · Ctrl+Enter run all · Ctrl+D duplicate · Esc close',
   "starter.prompt": "A cyberpunk neon city night scene, cinematic composition",
 
   'settings.testPrompt': 'API connectivity test',

@@ -336,6 +336,8 @@ export default {
   "tour.slide7.l1": "1️⃣ 左のノードライブラリから「プロンプト」をキャンバスへ",
   "tour.slide7.l2": "2️⃣ 右の出力点から線をドラッグして「画像生成」ノードへ接続",
   "tour.slide7.l3": "3️⃣ ノードの ▶ 実行を押して結果を確認",
+
+  'tour.slide7.l4': '⌨️ ショートカット：Ctrl+S 保存 · Ctrl+Enter 実行 · Ctrl+D 複製 · Esc 閉じる',
   "starter.prompt": "サイバーパンク風のネオン都市夜景、シネマティックな構図",
 
   'settings.testPrompt': 'API接続テスト',

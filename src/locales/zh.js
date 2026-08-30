@@ -336,6 +336,8 @@ export default {
   "tour.slide7.l1": "1️⃣ 左侧节点库拖一个「提示词」到画布",
   "tour.slide7.l2": "2️⃣ 从它右侧输出点拖线连到「图片生成」节点",
   "tour.slide7.l3": "3️⃣ 点节点上的 ▶ 运行，看结果",
+
+  'tour.slide7.l4': '⌨️ 快捷键：Ctrl+S 保存 · Ctrl+Enter 运行全部 · Ctrl+D 复制节点 · Esc 关闭浮层',
   "starter.prompt": "赛博朋克风格的霓虹城市夜景，电影感构图",
 
   'settings.testPrompt': '接口连通性测试',

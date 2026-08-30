@@ -336,6 +336,8 @@ export default {
   "tour.slide7.l1": "1️⃣ 왼쪽 라이브러리에서 「프롬프트」 노드를 캔버스로",
   "tour.slide7.l2": "2️⃣ 출력점에서 선을 드래그해 「이미지 생성」 노드에 연결",
   "tour.slide7.l3": "3️⃣ 노드의 ▶ 실행을 눌러 결과 확인",
+
+  'tour.slide7.l4': '⌨️ 단축키: Ctrl+S 저장 · Ctrl+Enter 실행 · Ctrl+D 복제 · Esc 닫기',
   "starter.prompt": "사이버펑크 네온 도시 야경, 시네마틱 구도",
 
   'settings.testPrompt': 'API 연결 테스트',
