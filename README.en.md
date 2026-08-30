@@ -47,6 +47,16 @@ npm run desktop:build   # outputs release/TapNowLocal.exe
 
 **Zero background residency**: closing the window fully exits the app. ~390MB memory (including system WebView2 runtime), ~5MB on disk — lighter than Electron.
 
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| Ctrl+S | Save canvas |
+| Ctrl+Enter | Run all |
+| Ctrl+D | Duplicate selected node |
+| Ctrl+, | Open settings |
+| Esc | Close help / tour / settings overlay |
+
 ## 📖 Docs
 
 - **Interactions**: drag-connect, canvas context menu, box-select, panel drag, reverse prompting
