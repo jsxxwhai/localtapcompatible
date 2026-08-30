@@ -69,6 +69,9 @@ export function translate(locale, key, vars) {
       val = val.split('{' + k + '}').join(String(v ?? ''))
     }
   }
+  // 语言包里用字面 \n 表示换行（源码中写作 \\n），统一转成真实换行符，
+  // 使 <pre>、普通文本、Agent 系统提示词等处都能正确换行。
+  if (typeof val === 'string') val = val.replace(/\\n/g, '\n')
   return val
 }
 
