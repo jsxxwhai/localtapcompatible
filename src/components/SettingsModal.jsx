@@ -79,9 +79,9 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
           {api.nameKey ? t(api.nameKey) : (api.name || t('settings.unnamed'))}
         </span>
         <span className="api-card-actions">
-          {!current && <button className="btn btn-small" onClick={onSetCurrent}>{t('settings.setCurrent')}</button>}
-          <button className="btn btn-small" onClick={onDuplicate}>{t('settings.duplicate')}</button>
-          <button className="btn btn-small btn-danger-ghost" onClick={onRemove}>{t('settings.remove')}</button>
+          {!current && <button type="button" className="btn btn-small" onClick={onSetCurrent}>{t('settings.setCurrent')}</button>}
+          <button type="button" className="btn btn-small" onClick={onDuplicate}>{t('settings.duplicate')}</button>
+          <button type="button" className="btn btn-small btn-danger-ghost" onClick={onRemove}>{t('settings.remove')}</button>
         </span>
       </div>
 
@@ -119,10 +119,10 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
             }}
             placeholder={t('settings.modelPlaceholder')}
           />
-          <button className="btn btn-small" onClick={fetchModels} disabled={api._busyFetch}>
+          <button type="button" className="btn btn-small" onClick={fetchModels} disabled={api._busyFetch}>
             {api._busyFetch ? t('settings.fetchingShort') : t('settings.fetchModels')}
           </button>
-          <button className="btn btn-small" onClick={test} disabled={api._busyTest}>
+          <button type="button" className="btn btn-small" onClick={test} disabled={api._busyTest}>
             {api._busyTest ? t('inspector.testing') : t('settings.test')}
           </button>
         </div>
@@ -132,7 +132,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
         {(api.models || []).length > 0 && (
           <div className="model-chips">
             {(api.models || []).slice(0, 24).map((m) => (
-              <button key={m} className={`model-chip ${m === modelDraft ? 'active' : ''}`} onClick={() => commitModel(m)}>
+              <button type="button" key={m} className={`model-chip ${m === modelDraft ? 'active' : ''}`} onClick={() => commitModel(m)}>
                 {m}
               </button>
             ))}
@@ -374,8 +374,8 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
                 .filter((p) => p.cat === 'all' || p.cat === cat)
                 .map((p) => <option key={p.id} value={p.id}>{t('preset.' + p.id) || p.label}</option>)}
             </select>
-            <button className="btn btn-small" onClick={addFromPreset} disabled={!presetId}>{t('settings.addPreset')}</button>
-            <button className="btn btn-small btn-primary" onClick={() => addApi({ name: t('settings.newApi') })}>{t('settings.addBlank')}</button>
+            <button type="button" className="btn btn-small" onClick={addFromPreset} disabled={!presetId}>{t('settings.addPreset')}</button>
+            <button type="button" className="btn btn-small btn-primary" onClick={() => addApi({ name: t('settings.newApi') })}>{t('settings.addBlank')}</button>
           </div>
           <div className="settings-apis">
             {catSet.apis.map((api) => (

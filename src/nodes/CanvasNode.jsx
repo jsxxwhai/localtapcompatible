@@ -56,7 +56,7 @@ export function NodeShell({ title, color, status, actions, children }) {
 export function RunButton({ onRun, running }) {
   const { t } = useTranslation()
   return (
-    <button className="btn btn-small btn-primary" onClick={onRun} disabled={running}>
+    <button type="button" className="btn btn-small btn-primary" onClick={onRun} disabled={running}>
       {running ? '…' : t('run.button')}
     </button>
   )
@@ -115,7 +115,7 @@ export function ApiSelect({ apiOptions, currentApiId, onSelect, onOpenSettings }
           <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
         ))}
       </select>
-      <button className="btn-icon" title={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>
+      <button type="button" className="btn-icon" title={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>
     </div>
   )
 }

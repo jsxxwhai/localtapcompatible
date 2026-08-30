@@ -34,7 +34,7 @@ function OutputNodeInner({ data }) {
       <div className="output-stage">
         <MediaView media={data.media} maxHeight={280} />
         {data.media?.value && (
-          <button className="btn btn-small btn-ghost" onClick={handleDownload}>
+          <button type="button" className="btn btn-small btn-ghost" onClick={handleDownload}>
             {isVideo ? t('output.downloadVideo') : t('output.downloadImage')}
           </button>
         )}

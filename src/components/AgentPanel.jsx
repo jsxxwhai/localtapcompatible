@@ -268,7 +268,7 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
       </select>
       <div className="agent-api-row">
         <span>{t('agent.apiCurrentModel', { model: agentSettings?.model || t('settings.unset') })}</span>
-        <button className="btn btn-small" onClick={onOpenSettings}>{t('agent.apiOpenSettings')}</button>
+        <button type="button" className="btn btn-small" onClick={onOpenSettings}>{t('agent.apiOpenSettings')}</button>
       </div>
 
       <div className="agent-section-label">{t('agent.inputLabel')}</div>
@@ -281,12 +281,12 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
       />
       <div className="agent-examples">
         {examples.map((ex) => (
-          <button key={ex} className="agent-example" onClick={() => setUserInput(ex)}>
+          <button type="button" key={ex} className="agent-example" onClick={() => setUserInput(ex)}>
             {ex}
           </button>
         ))}
       </div>
-      <button className="btn btn-primary agent-run" onClick={runAgent} disabled={running}>
+      <button type="button" className="btn btn-primary agent-run" onClick={runAgent} disabled={running}>
         {running ? t('agent.running') : t('agent.run')}
       </button>
 
@@ -302,9 +302,9 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
           <div className="agent-queue-head">
             <span>{t('agent.queueHead', { count: queue.filter((x) => x.status === 'pending').length })}</span>
             <span className="agent-queue-actions">
-              <button className="btn btn-small btn-primary" onClick={confirmAll}>{t('agent.confirmAll')}</button>
-              <button className="btn btn-small" onClick={rejectAll}>{t('agent.rejectAll')}</button>
-              <button className="btn btn-small btn-ghost" onClick={clearQueue}>{t('agent.clearQueue')}</button>
+              <button type="button" className="btn btn-small btn-primary" onClick={confirmAll}>{t('agent.confirmAll')}</button>
+              <button type="button" className="btn btn-small" onClick={rejectAll}>{t('agent.rejectAll')}</button>
+              <button type="button" className="btn btn-small btn-ghost" onClick={clearQueue}>{t('agent.clearQueue')}</button>
             </span>
           </div>
           {queue.map((item, i) => {
@@ -322,9 +322,9 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
                 {item.status === 'error' && <div className="queue-error">{item.error}</div>}
                 {item.status === 'pending' && (
                   <div className="queue-buttons">
-                    <button className="btn btn-small btn-primary" onClick={() => confirmItem(i)}>{t('agent.confirm')}</button>
-                    <button className="btn btn-small" onClick={() => startEdit(i)}>{t('agent.edit')}</button>
-                    <button className="btn btn-small" onClick={() => rejectItem(i)}>{t('agent.reject')}</button>
+                    <button type="button" className="btn btn-small btn-primary" onClick={() => confirmItem(i)}>{t('agent.confirm')}</button>
+                    <button type="button" className="btn btn-small" onClick={() => startEdit(i)}>{t('agent.edit')}</button>
+                    <button type="button" className="btn btn-small" onClick={() => rejectItem(i)}>{t('agent.reject')}</button>
                   </div>
                 )}
                 {editingIdx === i && (
@@ -335,8 +335,8 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                     />
-                    <button className="btn btn-small btn-primary" onClick={() => applyEdit(i)}>{t('agent.apply')}</button>
-                    <button className="btn btn-small" onClick={() => setEditingIdx(null)}>{t('agent.cancel')}</button>
+                    <button type="button" className="btn btn-small btn-primary" onClick={() => applyEdit(i)}>{t('agent.apply')}</button>
+                    <button type="button" className="btn btn-small" onClick={() => setEditingIdx(null)}>{t('agent.cancel')}</button>
                   </div>
                 )}
               </div>

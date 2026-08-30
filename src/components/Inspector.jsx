@@ -36,7 +36,7 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
     <div className="inspector">
       <div className="panel-title">
         {title}
-        <button className="btn-icon" onClick={onClose} title={t('common.close')}>×</button>
+        <button type="button" className="btn-icon" onClick={onClose} title={t('common.close')}>×</button>
       </div>
 
       {!isGen ? (
@@ -64,10 +64,10 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
             />
           </label>
           <div className="inspector-actions">
-            <button className="btn btn-primary" onClick={() => onTest(node.id)} disabled={testing}>
+            <button type="button" className="btn btn-primary" onClick={() => onTest(node.id)} disabled={testing}>
               {testing ? t('inspector.testing') : t('inspector.test')}
             </button>
-            <button className="btn" onClick={onOpenSettings}>{t('inspector.openSettings')}</button>
+            <button type="button" className="btn" onClick={onOpenSettings}>{t('inspector.openSettings')}</button>
           </div>
         </div>
       )}

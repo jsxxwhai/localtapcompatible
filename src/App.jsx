@@ -988,10 +988,10 @@ const updateNodeConfig = useCallback(
         </div>
         <div className="right-col">
           <div className="right-tabs">
-            <button className={rightTab === 'node' ? 'active' : ''} onClick={() => setRightTab('node')}>
+            <button type="button" className={rightTab === 'node' ? 'active' : ''} onClick={() => setRightTab('node')}>
               {t('panel.tabNode')}
             </button>
-            <button className={rightTab === 'agent' ? 'active' : ''} onClick={() => setRightTab('agent')}>
+            <button type="button" className={rightTab === 'agent' ? 'active' : ''} onClick={() => setRightTab('agent')}>
               {t('panel.tabAgent')}
             </button>
           </div>

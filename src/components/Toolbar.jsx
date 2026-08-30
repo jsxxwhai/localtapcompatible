@@ -31,11 +31,11 @@ export default function Toolbar({
         <span className="brand-sub">{t('app.brandSub')}</span>
       </div>
       <div className="toolbar-actions">
-        <button className="btn btn-primary" onClick={onRunAll} disabled={running} title={t('app.kbdRunAll')}>
+        <button type="button" className="btn btn-primary" onClick={onRunAll} disabled={running} title={t('app.kbdRunAll')}>
           {t('app.runAll')}
         </button>
         <div className="menu-wrap" ref={fileRef}>
-          <button
+          <button type="button"
             className="btn"
             onClick={() => setFileOpen((v) => !v)}
             aria-haspopup="true"
@@ -45,16 +45,16 @@ export default function Toolbar({
           </button>
           {fileOpen && (
             <div className="menu-pop">
-              <button className="menu-item" onClick={() => { setFileOpen(false); onSave() }}>{t('app.save')}</button>
-              <button className="menu-item" onClick={() => { setFileOpen(false); onExport() }}>{t('app.export')}</button>
-              <button className="menu-item" onClick={() => { setFileOpen(false); onImport() }}>{t('app.import')}</button>
+              <button type="button" className="menu-item" onClick={() => { setFileOpen(false); onSave() }}>{t('app.save')}</button>
+              <button type="button" className="menu-item" onClick={() => { setFileOpen(false); onExport() }}>{t('app.export')}</button>
+              <button type="button" className="menu-item" onClick={() => { setFileOpen(false); onImport() }}>{t('app.import')}</button>
               <div className="menu-divider" />
-              <button className="menu-item menu-item-danger" onClick={() => { setFileOpen(false); onClear() }}>{t('app.clear')}</button>
+              <button type="button" className="menu-item menu-item-danger" onClick={() => { setFileOpen(false); onClear() }}>{t('app.clear')}</button>
             </div>
           )}
         </div>
-        <button className="btn" onClick={onHelp} aria-label={t('app.help')}>{t('app.help')}</button>
-        <button className="btn" onClick={onTour} aria-label={t('app.tour')}>{t('app.tour')}</button>
+        <button type="button" className="btn" onClick={onHelp} aria-label={t('app.help')}>{t('app.help')}</button>
+        <button type="button" className="btn" onClick={onTour} aria-label={t('app.tour')}>{t('app.tour')}</button>
         <label className="lang-select" title={t('settings.language')}>
           <span className="lang-select-icon">🌐</span>
           <select value={localePref} onChange={(e) => setLocale(e.target.value)}>
@@ -63,7 +63,7 @@ export default function Toolbar({
             ))}
           </select>
         </label>
-        <button className="btn" onClick={onSettings} title={t('app.kbdSettings')} aria-label={t('app.settings')}>{t('app.settings')}</button>
+        <button type="button" className="btn" onClick={onSettings} title={t('app.kbdSettings')} aria-label={t('app.settings')}>{t('app.settings')}</button>
       </div>
       {saveHint && <span className="save-hint">{saveHint}</span>}
     </div>

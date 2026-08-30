@@ -8,7 +8,7 @@ export default function Palette({ onAdd }) {
     <div className="palette">
       <div className="panel-title">{t('palette.title')}</div>
       {NODE_TYPES.map((item) => (
-        <button
+        <button type="button"
           key={item.type}
           className="palette-item"
           title={t(item.descKey)}

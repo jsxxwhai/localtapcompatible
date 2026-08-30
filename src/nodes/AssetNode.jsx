@@ -55,7 +55,7 @@ function AssetNodeInner({ data }) {
           title={t('asset.namePlaceholder')}
         />
       </div>
-      <button className="btn btn-small btn-ghost" onClick={() => inputRef.current?.click()}>
+      <button type="button" className="btn btn-small btn-ghost" onClick={() => inputRef.current?.click()}>
         {t('asset.choose')}
       </button>
       <div
@@ -74,7 +74,7 @@ function AssetNodeInner({ data }) {
         {images.map((v, i) => (
           <div key={i} className="asset-item">
             <img src={v} alt="" loading="lazy" decoding="async" />
-            <button className="asset-remove" title={t('asset.remove')} onClick={() => data.onRemoveImage?.(i)}>
+            <button type="button" className="asset-remove" title={t('asset.remove')} onClick={() => data.onRemoveImage?.(i)}>
               ×
             </button>
           </div>

@@ -32,7 +32,7 @@ export default function ContextMenu({ x, y, items, onClose }) {
         item.divider ? (
           <div key={`div-${i}`} className="ctx-divider" />
         ) : (
-          <button
+          <button type="button"
             key={`${item.label}-${i}`}
             className="ctx-item"
             onClick={() => {

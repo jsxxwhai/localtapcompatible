@@ -33,7 +33,7 @@ function UploadNodeInner({ data }) {
         style={{ display: 'none' }}
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
-      <button className="btn btn-small btn-ghost" onClick={() => inputRef.current?.click()}>
+      <button type="button" className="btn btn-small btn-ghost" onClick={() => inputRef.current?.click()}>
         {t('upload.choose')}
       </button>
       {data.media?.value ? (

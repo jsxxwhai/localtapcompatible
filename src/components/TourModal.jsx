@@ -82,7 +82,7 @@ export default function TourModal({ onClose, onDone }) {
         <div className="tour-head">
           <span className="tour-title">{t('tour.title')}</span>
           <span className="tour-step">{i + 1} / {slides.length}</span>
-          <button className="btn btn-small btn-ghost" onClick={onDone}>{t('tour.skip')}</button>
+          <button type="button" className="btn btn-small btn-ghost" onClick={onDone}>{t('tour.skip')}</button>
         </div>
         <div className="tour-body">
           <div className="tour-visual">
@@ -99,7 +99,7 @@ export default function TourModal({ onClose, onDone }) {
           </div>
         </div>
         <div className="tour-nav">
-          <button className="btn" onClick={() => setI((v) => Math.max(0, v - 1))} disabled={i === 0}>
+          <button type="button" className="btn" onClick={() => setI((v) => Math.max(0, v - 1))} disabled={i === 0}>
             {t('tour.prev')}
           </button>
           <div className="tour-dots">
@@ -107,7 +107,7 @@ export default function TourModal({ onClose, onDone }) {
               <span key={k} className={k === i ? 'active' : ''} onClick={() => setI(k)} />
             ))}
           </div>
-          <button className="btn btn-primary" onClick={next}>
+          <button type="button" className="btn btn-primary" onClick={next}>
             {isLast ? t('tour.start') : t('tour.next')}
           </button>
         </div>
