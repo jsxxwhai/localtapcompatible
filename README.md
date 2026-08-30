@@ -1,4 +1,4 @@
-# TapNow Local — 本地 AI 无限画布
+# local‑tap‑compatible — 本地 AI 无限画布
 
 > [English](./README.en.md) | 简体中文
 
