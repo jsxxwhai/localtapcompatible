@@ -31,7 +31,7 @@ export default function Toolbar({
         <span className="brand-sub">{t('app.brandSub')}</span>
       </div>
       <div className="toolbar-actions">
-        <button className="btn btn-primary" onClick={onRunAll} disabled={running}>
+        <button className="btn btn-primary" onClick={onRunAll} disabled={running} title={t('app.kbdRunAll')}>
           {t('app.runAll')}
         </button>
         <div className="menu-wrap" ref={fileRef}>
@@ -63,7 +63,7 @@ export default function Toolbar({
             ))}
           </select>
         </label>
-        <button className="btn" onClick={onSettings} title={t('app.settingsTitle')}>{t('app.settings')}</button>
+        <button className="btn" onClick={onSettings} title={t('app.kbdSettings')}>{t('app.settings')}</button>
       </div>
       {saveHint && <span className="save-hint">{saveHint}</span>}
     </div>

@@ -723,6 +723,30 @@ const updateNodeConfig = useCallback(
     showToast(t('toast.cleared'), 'success')
   }, [nodes, edges, setNodes, setEdges, showToast, t])
 
+  // 键盘快捷键：Ctrl+S 保存 / Ctrl+Enter 运行全部 / Ctrl+, 打开设置
+  useEffect(() => {
+    const onKey = (e) => {
+      const el = e.target
+      const tag = el && el.tagName ? el.tagName.toUpperCase() : ''
+      const editable = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el && el.isContentEditable)
+      const mod = e.ctrlKey || e.metaKey
+      if (!mod) return
+      const key = e.key.toLowerCase()
+      if (key === 's' && !editable) {
+        e.preventDefault()
+        handleSave()
+      } else if (key === 'enter' && !editable) {
+        e.preventDefault()
+        runAll()
+      } else if (key === ',') {
+        e.preventDefault()
+        setSettingsOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [handleSave, runAll])
+
   // 画布快照（给 Agent 看的精简状态）
   const canvasSnapshot = useMemo(
     () => ({
