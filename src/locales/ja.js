@@ -117,6 +117,8 @@ export default {
   'settings.field.method': 'メソッド',
   'settings.field.apiKey': 'API キー',
   'settings.field.apiKeyHint': 'ローカルのみ保存',
+  'settings.showKey': '表示',
+  'settings.hideKey': '隠す',
   'settings.field.model': 'モデル（取得済みから選択、または ID を入力）',
   'settings.field.modelHint': '一覧取得：GET {baseUrl}/models',
   'settings.newApi': '新しい API',

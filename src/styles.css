@@ -867,6 +867,8 @@ body {
 .api-card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .api-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
 .model-row { display: flex; gap: 6px; }
+.key-row { display: flex; gap: 6px; }
+.key-row input { flex: 1; }
 .model-row input { flex: 1; }
 .model-chips { display: flex; flex-wrap: wrap; gap: 4px; max-height: 90px; overflow: auto; }
 .model-chip {

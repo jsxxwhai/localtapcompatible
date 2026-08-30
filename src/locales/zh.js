@@ -117,6 +117,8 @@ export default {
   'settings.field.method': '方法',
   'settings.field.apiKey': 'API 密钥',
   'settings.field.apiKeyHint': '仅保存在本机',
+  'settings.showKey': '显示',
+  'settings.hideKey': '隐藏',
   'settings.field.model': '模型（可下拉选已拉取模型，或直接输入模型 ID）',
   'settings.field.modelHint': '拉取列表：GET {baseUrl}/models',
   'settings.newApi': '新 API',

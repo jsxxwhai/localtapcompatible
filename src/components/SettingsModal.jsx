@@ -26,6 +26,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
   const patchPoll = (p) => onPatch({ poll: { ...poll, ...p } })
   const strip = ({ id, name, models, ...rest }) => rest
   const [modelDraft, setModelDraft] = useState(api.model || '')
+  const [keyVisible, setKeyVisible] = useState(false)
   useEffect(() => setModelDraft(api.model || ''), [api.model])
   const commitModel = (m) => {
     const value = String(m ?? modelDraft).trim()
@@ -93,7 +94,12 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
           <input type="text" value={api.baseUrl || ''} onChange={(e) => onPatch({ baseUrl: e.target.value })} placeholder={t('settings.baseUrlPlaceholder')} />
         </PField>
         <PField label={t('settings.field.apiKey')} hint={t('settings.field.apiKeyHint')}>
-          <input type="password" value={api.apiKey || ''} onChange={(e) => onPatch({ apiKey: e.target.value })} placeholder="sk-..." />
+          <div className="key-row">
+            <input type={keyVisible ? 'text' : 'password'} value={api.apiKey || ''} onChange={(e) => onPatch({ apiKey: e.target.value })} placeholder="sk-..." />
+            <button type="button" className="btn btn-small" onClick={() => setKeyVisible((v) => !v)} title={keyVisible ? t('settings.hideKey') : t('settings.showKey')}>
+              {keyVisible ? t('settings.hideKey') : t('settings.showKey')}
+            </button>
+          </div>
         </PField>
       </div>
 

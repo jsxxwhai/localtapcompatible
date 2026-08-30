@@ -117,6 +117,8 @@ export default {
   'settings.field.method': '메서드',
   'settings.field.apiKey': 'API 키',
   'settings.field.apiKeyHint': '로컬에만 저장',
+  'settings.showKey': '표시',
+  'settings.hideKey': '숨기기',
   'settings.field.model': '모델（가져온 목록에서 선택 또는 ID 입력）',
   'settings.field.modelHint': '목록 가져오기：GET {baseUrl}/models',
   'settings.newApi': '새 API',

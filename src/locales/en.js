@@ -117,6 +117,8 @@ export default {
   'settings.field.method': 'Method',
   'settings.field.apiKey': 'API Key',
   'settings.field.apiKeyHint': 'Stored locally only',
+  'settings.showKey': 'Show',
+  'settings.hideKey': 'Hide',
   'settings.field.model': 'Model (pick fetched model or type model ID)',
   'settings.field.modelHint': 'Fetch list: GET {baseUrl}/models',
   'settings.newApi': 'New API',
