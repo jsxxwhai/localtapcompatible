@@ -208,10 +208,10 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
                   <input type="text" value={poll.statusPath || ''} onChange={(e) => patchPoll({ statusPath: e.target.value })} />
                 </PField>
                 <PField label={t('settings.poll.done')}>
-                  <input type="text" value={poll.doneValues || ''} onChange={(e) => patchPoll({ doneValues: e.target.value })} />
+                  <input type="text" value={Array.isArray(poll.doneValues) ? poll.doneValues.join(', ') : (poll.doneValues || '')} onChange={(e) => patchPoll({ doneValues: e.target.value.split(/[,\s]+/).map((v) => v.trim()).filter(Boolean) })} />
                 </PField>
                 <PField label={t('settings.poll.failed')}>
-                  <input type="text" value={poll.failedValues || ''} onChange={(e) => patchPoll({ failedValues: e.target.value })} />
+                  <input type="text" value={Array.isArray(poll.failedValues) ? poll.failedValues.join(', ') : (poll.failedValues || '')} onChange={(e) => patchPoll({ failedValues: e.target.value.split(/[,\s]+/).map((v) => v.trim()).filter(Boolean) })} />
                 </PField>
                 <PField label={t('settings.poll.result')}>
                   <input type="text" value={poll.resultExtract || ''} onChange={(e) => patchPoll({ resultExtract: e.target.value })} />
