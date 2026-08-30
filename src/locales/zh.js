@@ -253,6 +253,7 @@ export default {
   'toast.testFail': '测试失败：{msg}',
   'toast.cleared': '画布已重置',
   'toast.clearHint': '已清空并重置示例画布（备份在 tapnow-local-canvas-backup）',
+  'confirm.removeApi': '确定删除 API「{name}」吗？此操作无法撤销。',
   'confirm.clear': '确定清空当前画布？会自动备份到浏览器后再重置。',
   'api.none': '未配置 API',
   "settings.outputType": "输出类型",

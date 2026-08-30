@@ -253,6 +253,7 @@ export default {
   'toast.testFail': '테스트 실패：{msg}',
   'toast.cleared': '캔버스 초기화됨',
   'toast.clearHint': '비우고 데모 캔버스로 초기화（백업：tapnow-local-canvas-backup）',
+  'confirm.removeApi': 'API "{name}"을(를) 삭제할까요? 이 작업은 되돌릴 수 없습니다.',
   'confirm.clear': '현재 캔버스를 비울까요? 사전에 백업을 저장합니다.',
   'api.none': 'API 없음',
   "settings.outputType": "출력 유형",

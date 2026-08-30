@@ -253,6 +253,7 @@ export default {
   'toast.testFail': 'Test failed: {msg}',
   'toast.cleared': 'Canvas reset',
   'toast.clearHint': 'Cleared and reset demo canvas (backup in tapnow-local-canvas-backup)',
+  'confirm.removeApi': 'Remove API "{name}"? This cannot be undone.',
   'confirm.clear': 'Clear the current canvas? A backup is saved first.',
   'api.none': 'No API',
   "settings.outputType": "Output type",

@@ -266,6 +266,10 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
   }
 
   const removeApi = (apiId) => {
+    const api = catSet.apis.find((a) => a.id === apiId)
+    if (!api) return
+    const name = api.nameKey ? t(api.nameKey) : (api.name || t('settings.unnamed'))
+    if (!window.confirm(t('confirm.removeApi', { name }))) return
     const rest = catSet.apis.filter((a) => a.id !== apiId)
     if (!rest.length) return
     const cur = catSet.currentApiId === apiId ? rest[0].id : catSet.currentApiId
