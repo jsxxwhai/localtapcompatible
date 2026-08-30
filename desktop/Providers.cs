@@ -9,12 +9,14 @@ public static class Providers
         [
           {
             "id": "custom",
+            "cat": "all",
             "label": "自定义（完全手动）",
             "hint": "所有字段自己填，适合任意 HTTP 接口",
             "config": {}
           },
           {
             "id": "openai-image",
+            "cat": "image",
             "label": "OpenAI 文生图（gpt-image-1 / dall-e-3）",
             "hint": "官方 OpenAI Images API",
             "config": {
@@ -29,6 +31,7 @@ public static class Providers
           },
           {
             "id": "openai-compatible-image",
+            "cat": "image",
             "label": "OpenAI 兼容文生图（SiliconFlow / 国内中转等）",
             "hint": "接口格式与 OpenAI /images/generations 一致的服务",
             "config": {
@@ -44,6 +47,7 @@ public static class Providers
 
           {
             "id": "openai-agent",
+            "cat": "agent",
             "label": "OpenAI Agent（画布掌控）",
             "hint": "GPT-4o 等模型，返回 JSON 指令操控画布",
             "config": {
@@ -66,6 +70,7 @@ public static class Providers
           },
           {
             "id": "openai-compatible-agent",
+            "cat": "agent",
             "label": "OpenAI 兼容 Agent（Qwen 等）",
             "hint": "兼容 chat/completions 的模型（SiliconFlow 等）",
             "config": {
@@ -87,6 +92,7 @@ public static class Providers
             }
           },          {
             "id": "openai-vision",
+            "cat": "reverse",
             "label": "OpenAI 视觉（倒推提示词）",
             "hint": "GPT-4o 系列多模态模型，把图片描述成提示词",
             "config": {
@@ -108,6 +114,7 @@ public static class Providers
           },
           {
             "id": "openai-compatible-vision",
+            "cat": "reverse",
             "label": "OpenAI 兼容视觉（Qwen-VL / 国内中转等）",
             "hint": "兼容 chat/completions 的视觉模型（SiliconFlow 等）",
             "config": {
@@ -128,6 +135,7 @@ public static class Providers
             }
           },          {
             "id": "async-video",
+            "cat": "video",
             "label": "通用异步视频（提交任务 + 轮询）",
             "hint": "适用于“提交任务拿 job id，再轮询状态直到完成”的视频 API（可灵、Seedance、Runway 等）。提交/查询的路径、字段名需按服务文档修改。",
             "config": {
