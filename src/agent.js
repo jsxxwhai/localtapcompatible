@@ -1,14 +1,5 @@
 // Agent 全面掌控：画布快照 → 系统提示词 → 解析 AI 返回的 JSON 操作指令
 
-const TYPE_LABELS = {
-  text: '提示词',
-  image: '图片生成',
-  video: '视频生成',
-  reverse: '倒推提示词',
-  upload: '图片上传',
-  output: '预览输出',
-}
-
 export function buildSystemPrompt(snapshot) {
   return `你是 "TapNow Local" 无限画布（节点式 AI 工作流，类似 ComfyUI）的 AI 掌控 Agent。
 你的任务：根据用户的指令，直接规划对画布的操作，返回严格的 JSON。
@@ -67,66 +58,8 @@ export function normalizeAction(a) {
   return { ...a, importance: a.importance === 'high' ? 'high' : 'low' }
 }
 
-export function describeAction(a) {
-  switch (a.op) {
-    case 'addNode': return `添加「${TYPE_LABELS[a.type] || a.type}」节点${a.text ? '（文本：' + String(a.text).slice(0, 40) + '）' : ''}`
-    case 'connect': return `连线 ${a.from} → ${a.to}（${a.handle}）`
-    case 'setText': return `修改节点 ${a.nodeId} 的文本`
-    case 'setConfig': return `修改节点 ${a.nodeId} 的接口配置`
-    case 'run': return a.target === 'all' ? '运行全部节点' : `运行节点 ${a.target}`
-    case 'delete': return `删除节点 ${a.nodeId}`
-    case 'move': return `移动节点 ${a.nodeId}`
-    case 'clear': return '清空整个画布'
-    default: return a.op || '未知操作'
-  }
-}
-
-export const MODES = [
-  {
-    id: 1,
-    icon: '🔒',
-    title: '全确认模式',
-    desc: 'AI 的每个改动都要你点「确认」，不满意可直接修改或拒绝',
-  },
-  {
-    id: 2,
-    icon: '⚖️',
-    title: '智能确认',
-    desc: '低风险改动自动执行，重要改动（删除/改配置等）让你确认',
-  },
-  {
-    id: 3,
-    icon: '🤖',
-    title: '全自动模式',
-    desc: '所有操作由 AI 自动执行，无需确认',
-  },
-]
-
 export function needConfirm(action, mode) {
   if (mode === 3) return false
   if (mode === 1) return true
   return action.importance === 'high'
-}
-
-export function defaultAgentConfig() {
-  return {
-    presetId: 'openai-agent',
-    baseUrl: 'https://api.openai.com/v1',
-    path: '/chat/completions',
-    method: 'POST',
-    apiKey: '',
-    model: 'gpt-4o-mini',
-    bodyTemplate: {
-      model: '{{model}}',
-      messages: [
-        { role: 'system', content: '{{system}}' },
-        { role: 'user', content: '{{prompt}}' },
-      ],
-      temperature: 0.3,
-      response_format: { type: 'json_object' },
-    },
-    outputExtract: 'choices[0].message.content',
-    outputKind: 'text',
-    timeoutMs: 180000,
-  }
 }
