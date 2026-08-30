@@ -115,7 +115,7 @@ export function ApiSelect({ apiOptions, currentApiId, onSelect, onOpenSettings }
           <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
         ))}
       </select>
-      <button type="button" className="btn-icon" title={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>
+      <button type="button" className="btn-icon" title={t('inspector.openSettings')} aria-label={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>
     </div>
   )
 }

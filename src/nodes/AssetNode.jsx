@@ -74,7 +74,7 @@ function AssetNodeInner({ data }) {
         {images.map((v, i) => (
           <div key={i} className="asset-item">
             <img src={v} alt="" loading="lazy" decoding="async" />
-            <button type="button" className="asset-remove" title={t('asset.remove')} onClick={() => data.onRemoveImage?.(i)}>
+            <button type="button" className="asset-remove" title={t('asset.remove')} aria-label={t('asset.remove')} onClick={() => data.onRemoveImage?.(i)}>
               ×
             </button>
           </div>

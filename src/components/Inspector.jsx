@@ -36,7 +36,7 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
     <div className="inspector">
       <div className="panel-title">
         {title}
-        <button type="button" className="btn-icon" onClick={onClose} title={t('common.close')}>×</button>
+        <button type="button" className="btn-icon" onClick={onClose} title={t('common.close')} aria-label={t('common.close')}>×</button>
       </div>
 
       {!isGen ? (
