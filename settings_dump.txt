@@ -41,14 +41,14 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
       : cat === 'agent'
         ? { prompt: 'ping', vars: { system: 'You are a test assistant. Reply only OK.' } }
         : { prompt: 'ping' }
-    onPatch({ testMsg: undefined, testStatus: undefined })
+    onPatch({ testMsg: undefined })
     onPatch({ _busyTest: true })
     try {
       const data = await apiRun(cfg, inputs)
       const v = (data.output?.value || '').slice(0, 40)
-      onPatch({ testMsg: t('settings.testOk', { msg: v || 'OK' }), testStatus: 'ok' })
+      onPatch({ testMsg: t('settings.testOk', { msg: v || 'OK' }) })
     } catch (err) {
-      onPatch({ testMsg: t('settings.testFail', { msg: err.message || err }), testStatus: 'err' })
+      onPatch({ testMsg: t('settings.testFail', { msg: err.message || err }) })
     } finally {
       onPatch({ _busyTest: false })
     }
@@ -56,15 +56,15 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
 
   const fetchModels = async () => {
     if (!api.baseUrl) {
-      onPatch({ testMsg: t('settings.needBaseUrl'), testStatus: 'err' })
+      onPatch({ testMsg: t('settings.needBaseUrl') })
       return
     }
-    onPatch({ _busyFetch: true, testMsg: t('settings.fetching'), testStatus: undefined })
+    onPatch({ _busyFetch: true, testMsg: t('settings.fetching') })
     try {
       const data = await apiListModels({ baseUrl: api.baseUrl, apiKey: api.apiKey, path: '/models' })
-      onPatch({ models: data.models || [], testMsg: t('settings.fetchOk', { count: (data.models || []).length }), testStatus: 'ok' })
+      onPatch({ models: data.models || [], testMsg: t('settings.fetchOk', { count: (data.models || []).length }) })
     } catch (err) {
-      onPatch({ testMsg: t('settings.fetchFail', { msg: err.message || err }), testStatus: 'err' })
+      onPatch({ testMsg: t('settings.fetchFail', { msg: err.message || err }) })
     } finally {
       onPatch({ _busyFetch: false })
     }
@@ -132,7 +132,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
             ))}
           </div>
         )}
-        {api.testMsg && <div className={`api-test-msg ${api.testStatus === 'err' ? 'err' : 'ok'}`}>{api.testMsg}</div>}
+        {api.testMsg && <div className={`api-test-msg ${api.testMsg.startsWith('✅') ? 'ok' : 'err'}`}>{api.testMsg}</div>}
       </PField>
 
       {/* 高级字段 */}
@@ -384,3 +384,4 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
     </div>
   )
 }
+
