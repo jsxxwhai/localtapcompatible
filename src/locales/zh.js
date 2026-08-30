@@ -323,6 +323,7 @@ export default {
   "starter.prompt": "赛博朋克风格的霓虹城市夜景，电影感构图",
 
   'settings.testPrompt': '接口连通性测试',
+    'agent.langInstruction': '请用简体中文回复（包括 summary 和生成的提示词文本）。',
   'agent.noActions': 'Agent 没有返回任何操作',
     'agent.noJson': 'Agent 没有返回 JSON',
   'agent.badJson': 'Agent 返回的 JSON 无法解析',

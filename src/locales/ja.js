@@ -323,6 +323,7 @@ export default {
   "starter.prompt": "サイバーパンク風のネオン都市夜景、シネマティックな構図",
 
   'settings.testPrompt': 'API接続テスト',
+    'agent.langInstruction': '日本語で返答してください（summary と生成されるプロンプト文を含む）。',
   'agent.noActions': 'Agentが操作を返しませんでした',
     'agent.noJson': 'AgentがJSONを返しませんでした',
   'agent.badJson': 'Agentが返したJSONを解析できません',

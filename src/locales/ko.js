@@ -323,6 +323,7 @@ export default {
   "starter.prompt": "사이버펑크 네온 도시 야경, 시네마틱 구도",
 
   'settings.testPrompt': 'API 연결 테스트',
+    'agent.langInstruction': '한국어로 답변하세요（summary와 생성되는 프롬프트 텍스트 포함）.',
   'agent.noActions': 'Agent가 작업을 반환하지 않았습니다',
     'agent.noJson': 'Agent가 JSON을 반환하지 않았습니다',
   'agent.badJson': 'Agent가 반환한 JSON을 파싱할 수 없습니다',

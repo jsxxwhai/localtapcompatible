@@ -31,7 +31,8 @@ ${JSON.stringify(snapshot)}
    - clear:    { op }
 4. 引用已有节点必须使用状态中的 id；新建节点用临时 id（n1、n2...），后续操作可引用。
 5. importance 规则：删除、清空、修改已有配置/文本、运行全部等影响大的操作标 "high"；新建节点、连线、移动等低风险标 "low"。
-6. 为实现用户意图，请自主规划完整流程（如：添加提示词节点→添加图片生成节点→连线→运行）。不要问问题，直接给操作。`
+6. 为实现用户意图，请自主规划完整流程（如：添加提示词节点→添加图片生成节点→连线→运行）。不要问问题，直接给操作。
+7. ${translate(loadLocale(), 'agent.langInstruction')}`
 }
 
 export function parseAgentResponse(raw) {

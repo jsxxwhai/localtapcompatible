@@ -323,6 +323,7 @@ export default {
   "starter.prompt": "A cyberpunk neon city night scene, cinematic composition",
 
   'settings.testPrompt': 'API connectivity test',
+    'agent.langInstruction': 'Reply in English (including the summary and any generated prompt text).',
   'agent.noActions': 'Agent returned no actions',
     'agent.noJson': 'Agent returned no JSON',
   'agent.badJson': 'Could not parse the JSON returned by Agent',
