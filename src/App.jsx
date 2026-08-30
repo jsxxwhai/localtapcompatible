@@ -529,6 +529,23 @@ const updateNodeConfig = useCallback(
     [deleteNodes]
   )
 
+  // 复制节点：生成一个相同配置的副本（不复制连线，偏移位置放置）
+  const duplicateNode = useCallback(
+    (id) => {
+      const node = nodeMap.get(id)
+      if (!node) return
+      const copy = {
+        id: uid(node.type),
+        type: node.type,
+        position: { x: node.position.x + 40, y: node.position.y + 40 },
+        data: JSON.parse(JSON.stringify(node.data)),
+      }
+      setNodes((ns) => [...ns, copy])
+      setSelectedId(copy.id)
+    },
+    [nodeMap, setNodes]
+  )
+
   // 根据来源节点类型生成“下一步”选项
   const buildQuickItems = useCallback(
     (fromNodeId, position) => {
@@ -636,13 +653,14 @@ const updateNodeConfig = useCallback(
       if (isRunnable(node)) {
         items.push({ label: t('menu.runNode'), hint: '', action: () => runUpstream(node.id) })
       }
+      items.push({ label: t('menu.duplicateNode'), hint: t('menu.duplicateNodeHint'), action: () => duplicateNode(node.id) })
       const pos = { x: node.position.x + 100, y: node.position.y + 80 }
       items.push(...buildQuickItems(node.id, pos))
       items.push({ divider: true })
       items.push({ label: t('menu.deleteNode'), hint: t('menu.deleteNodeHint'), action: () => deleteNode(node.id) })
       openMenu(event.clientX, event.clientY, items)
     },
-    [buildQuickItems, deleteNode, deleteNodes, runUpstream, runAll, openMenu, t]
+    [buildQuickItems, deleteNode, deleteNodes, duplicateNode, runUpstream, runAll, openMenu, t]
   )
 
   // 左侧面板拖拽进画布

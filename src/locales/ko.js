@@ -216,6 +216,8 @@ export default {
   'common.close': '닫기',
   'common.apiRunFail': 'API 호출 실패',
   'common.listModelsFail': '모델 가져오기 실패',
+  'menu.duplicateNode': '📄 노드 복제',
+  'menu.duplicateNodeHint': '동일한 설정의 사본 생성',
   'menu.runNode': '▶ 이 노드 실행（상위 포함）',
   'menu.deleteNode': '🗑 노드 삭제',
   'menu.deleteNodeHint': 'Delete 키로도 가능',

@@ -216,6 +216,8 @@ export default {
   'common.close': 'Close',
   'common.apiRunFail': 'API call failed',
   'common.listModelsFail': 'Failed to fetch models',
+  'menu.duplicateNode': '📄 Duplicate node',
+  'menu.duplicateNodeHint': 'Create a copy with the same config',
   'menu.runNode': '▶ Run this node (with upstream)',
   'menu.deleteNode': '🗑 Delete node',
   'menu.deleteNodeHint': 'Or press Delete',

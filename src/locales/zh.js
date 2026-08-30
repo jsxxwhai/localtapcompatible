@@ -216,6 +216,8 @@ export default {
   'common.close': '关闭',
   'common.apiRunFail': '接口调用失败',
   'common.listModelsFail': '拉取模型失败',
+  'menu.duplicateNode': '📄 复制节点',
+  'menu.duplicateNodeHint': '生成一个相同配置的副本',
   'menu.runNode': '▶ 运行此节点（含上游）',
   'menu.deleteNode': '🗑 删除节点',
   'menu.deleteNodeHint': '也可按 Delete 键',

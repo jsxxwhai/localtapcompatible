@@ -216,6 +216,8 @@ export default {
   'common.close': '閉じる',
   'common.apiRunFail': 'API呼び出しに失敗しました',
   'common.listModelsFail': 'モデル取得に失敗しました',
+  'menu.duplicateNode': '📄 ノードを複製',
+  'menu.duplicateNodeHint': '同じ設定のコピーを作成',
   'menu.runNode': '▶ このノードを実行（上流含む）',
   'menu.deleteNode': '🗑 ノードを削除',
   'menu.deleteNodeHint': 'Delete キーでも可',
