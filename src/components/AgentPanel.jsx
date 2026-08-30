@@ -262,7 +262,7 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
         onChange={(e) => selectAgentApi(e.target.value)}
       >
         {(agentSettings?.apis || []).map((a) => (
-          <option key={a.id} value={a.id}>{a.name} · {a.model || t('settings.noModel')}</option>
+          <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
         ))}
       </select>
       <div className="agent-api-row">

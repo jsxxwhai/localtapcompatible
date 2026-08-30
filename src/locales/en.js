@@ -1,4 +1,12 @@
 export default {
+  "api.name.openaiImage": "OpenAI text-to-image",
+  "api.name.siliconflowImage": "SiliconFlow text-to-image",
+  "api.name.asyncVideo": "Generic async video (submit+poll)",
+  "api.name.openaiVision": "OpenAI vision (reverse prompt)",
+  "api.name.qwenVl": "Qwen-VL (reverse prompt)",
+  "api.name.openaiAgent": "OpenAI Agent",
+  "api.name.qwenAgent": "Qwen Agent",
+  "api.name.unnamed": "Unnamed API",
   "preset.custom": "Custom (fully manual)",
   "preset.openai-image": "AI Platform text-to-image (gpt-image-1 / dall-e-3)",
   "preset.openai-compatible-image": "AI Platform-compatible image (SiliconFlow / proxies)",

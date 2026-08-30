@@ -112,7 +112,7 @@ export function ApiSelect({ apiOptions, currentApiId, onSelect, onOpenSettings }
       >
         {!apiOptions?.length && <option value="">{t('api.none')}</option>}
         {apiOptions.map((a) => (
-          <option key={a.id} value={a.id}>{a.name} · {a.model || t('settings.noModel')}</option>
+          <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
         ))}
       </select>
       <button className="btn-icon" title={t('inspector.openSettings')} onClick={() => onOpenSettings?.()}>⚙️</button>

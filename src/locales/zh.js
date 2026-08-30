@@ -1,4 +1,12 @@
 export default {
+  "api.name.openaiImage": "OpenAI 文生图",
+  "api.name.siliconflowImage": "SiliconFlow 文生图",
+  "api.name.asyncVideo": "通用异步视频（提交+轮询）",
+  "api.name.openaiVision": "OpenAI 视觉（倒推提示词）",
+  "api.name.qwenVl": "Qwen-VL（倒推提示词）",
+  "api.name.openaiAgent": "OpenAI Agent",
+  "api.name.qwenAgent": "Qwen Agent",
+  "api.name.unnamed": "未命名 API",
   "preset.custom": "自定义（完全手动）",
   "preset.openai-image": "AI Platform 文生图（gpt-image-1 / dall-e-3）",
   "preset.openai-compatible-image": "AI Platform 兼容文生图（SiliconFlow / 国内中转等）",

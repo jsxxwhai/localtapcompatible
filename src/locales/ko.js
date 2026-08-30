@@ -1,4 +1,12 @@
 export default {
+  "api.name.openaiImage": "OpenAI 텍스트-이미지",
+  "api.name.siliconflowImage": "SiliconFlow 텍스트-이미지",
+  "api.name.asyncVideo": "범용 비동기 동영상（제출+폴링）",
+  "api.name.openaiVision": "OpenAI 비전（프롬프트 역추론）",
+  "api.name.qwenVl": "Qwen-VL（프롬프트 역추론）",
+  "api.name.openaiAgent": "OpenAI 에이전트",
+  "api.name.qwenAgent": "Qwen 에이전트",
+  "api.name.unnamed": "이름 없는 API",
   "preset.custom": "사용자 정의（완전 수동）",
   "preset.openai-image": "AI Platform 텍스트-이미지（gpt-image-1 / dall-e-3）",
   "preset.openai-compatible-image": "AI Platform 호환 이미지（SiliconFlow 등）",

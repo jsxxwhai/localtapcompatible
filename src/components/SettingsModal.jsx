@@ -75,7 +75,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
       <div className="api-card-head">
         <span className="api-card-name">
           {current && <span className="api-current-tag">{t('settings.currentTag')}</span>}
-          {api.name || t('settings.unnamed')}
+          {api.nameKey ? t(api.nameKey) : (api.name || t('settings.unnamed'))}
         </span>
         <span className="api-card-actions">
           {!current && <button className="btn btn-small" onClick={onSetCurrent}>{t('settings.setCurrent')}</button>}
@@ -87,7 +87,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
       {/* 常用字段：名称 / 接口地址 / 模型 / API Key */}
       <div className="api-card-grid">
         <PField label={t('settings.field.name')}>
-          <input type="text" value={api.name || ''} onChange={(e) => onPatch({ name: e.target.value })} placeholder={t('settings.namePlaceholder')} />
+          <input type="text" value={api.name || ''} onChange={(e) => onPatch({ name: e.target.value, nameKey: undefined })} placeholder={t('settings.namePlaceholder')} />
         </PField>
         <PField label={t('settings.field.baseUrl')}>
           <input type="text" value={api.baseUrl || ''} onChange={(e) => onPatch({ baseUrl: e.target.value })} placeholder={t('settings.baseUrlPlaceholder')} />
@@ -275,8 +275,8 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
   const duplicateApi = (apiId) => {
     const src = catSet.apis.find((a) => a.id === apiId)
     if (!src) return
-    const { id, models, ...rest } = src
-    addApi({ ...rest, name: src.name + t('settings.copySuffix') })
+    const { id, models, nameKey, ...rest } = src
+    addApi({ ...rest, name: (src.name || '') + t('settings.copySuffix') })
   }
 
   const setCurrent = (apiId) => {
@@ -349,7 +349,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
             <span>{t('settings.current')}</span>
             <select value={catSet.currentApiId || ''} onChange={(e) => setCurrent(e.target.value)}>
               {catSet.apis.map((a) => (
-                <option key={a.id} value={a.id}>{a.name} · {a.model || t('settings.noModel')}</option>
+                <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
               ))}
             </select>
             <span className="settings-current-model">{t('settings.currentModel', { model: catSet.model || t('settings.unset') })}</span>

@@ -1,4 +1,12 @@
 export default {
+  "api.name.openaiImage": "OpenAI 画像生成",
+  "api.name.siliconflowImage": "SiliconFlow 画像生成",
+  "api.name.asyncVideo": "汎用非同期動画（送信+ポーリング）",
+  "api.name.openaiVision": "OpenAI ビジョン（逆引きプロンプト）",
+  "api.name.qwenVl": "Qwen-VL（逆引きプロンプト）",
+  "api.name.openaiAgent": "OpenAI Agent",
+  "api.name.qwenAgent": "Qwen Agent",
+  "api.name.unnamed": "名称未設定 API",
   "preset.custom": "カスタム（完全手動）",
   "preset.openai-image": "AI Platform 画像生成（gpt-image-1 / dall-e-3）",
   "preset.openai-compatible-image": "AI Platform 互換画像生成（SiliconFlow など）",

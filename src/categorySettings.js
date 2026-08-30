@@ -44,14 +44,14 @@ function profile(id, name, cfg) {
 export function defaultApis(cat) {
   if (cat === 'image') {
     return [
-      profile('api-openai-image', 'OpenAI 文生图', {
+      profile('api-openai-image', 'OpenAI 文生图', { nameKey: 'api.name.openaiImage',
         baseUrl: 'https://api.openai.com/v1',
         path: '/images/generations',
         model: 'gpt-image-1',
         bodyTemplate: { model: '{{model}}', prompt: '{{prompt}}', n: 1, size: '1024x1024' },
         outputExtract: 'data[0].url',
       }),
-      profile('api-siliconflow-image', 'SiliconFlow 文生图', {
+      profile('api-siliconflow-image', 'SiliconFlow 文生图', { nameKey: 'api.name.siliconflowImage',
         baseUrl: 'https://api.siliconflow.cn/v1',
         path: '/images/generations',
         model: 'Kwai-Kolors/Kolors',
@@ -62,7 +62,7 @@ export function defaultApis(cat) {
   }
   if (cat === 'video') {
     return [
-      profile('api-async-video', '通用异步视频（提交+轮询）', {
+      profile('api-async-video', '通用异步视频（提交+轮询）', { nameKey: 'api.name.asyncVideo',
         baseUrl: 'https://your-api.example.com/v1',
         path: '/videos/generations',
         model: 'your-video-model',
@@ -85,7 +85,7 @@ export function defaultApis(cat) {
   }
   if (cat === 'reverse') {
     return [
-      profile('api-openai-vision', 'OpenAI 视觉（倒推提示词）', {
+      profile('api-openai-vision', 'OpenAI 视觉（倒推提示词）', { nameKey: 'api.name.openaiVision',
         baseUrl: 'https://api.openai.com/v1',
         path: '/chat/completions',
         model: 'gpt-4o-mini',
@@ -100,7 +100,7 @@ export function defaultApis(cat) {
         outputExtract: 'choices[0].message.content',
         outputKind: 'text',
       }),
-      profile('api-qwen-vl', 'Qwen-VL（倒推提示词）', {
+      profile('api-qwen-vl', 'Qwen-VL（倒推提示词）', { nameKey: 'api.name.qwenVl',
         baseUrl: 'https://api.siliconflow.cn/v1',
         path: '/chat/completions',
         model: 'Qwen/Qwen2.5-VL-72B-Instruct',
@@ -119,7 +119,7 @@ export function defaultApis(cat) {
   }
   // agent
   return [
-    profile('api-openai-agent', 'OpenAI Agent', {
+    profile('api-openai-agent', 'OpenAI Agent', { nameKey: 'api.name.openaiAgent',
       baseUrl: 'https://api.openai.com/v1',
       path: '/chat/completions',
       model: 'gpt-4o-mini',
@@ -135,7 +135,7 @@ export function defaultApis(cat) {
       outputExtract: 'choices[0].message.content',
       outputKind: 'text',
     }),
-    profile('api-qwen-agent', 'Qwen Agent', {
+    profile('api-qwen-agent', 'Qwen Agent', { nameKey: 'api.name.qwenAgent',
       baseUrl: 'https://api.siliconflow.cn/v1',
       path: '/chat/completions',
       model: 'Qwen/Qwen2.5-72B-Instruct',
