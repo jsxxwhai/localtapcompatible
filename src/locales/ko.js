@@ -1,4 +1,6 @@
 export default {
+  'app.metaDescription': "TapNow Local은 로컬에서 동작하는 무한 캔버스 노드형 AI 워크플로 도구입니다. 자신의 API로 이미지·영상 생성과 프롬프트 역추론이 가능합니다.",
+  'app.documentTitle': "TapNow Local — 로컬 AI 무한 캔버스",
   'app.brandSub': '로컬 AI 캔버스',
   'app.runAll': '▶ 모두 실행',
   'app.save': '💾 저장',

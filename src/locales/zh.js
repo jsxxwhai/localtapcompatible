@@ -1,4 +1,6 @@
 export default {
+  'app.metaDescription': "TapNow Local 是一个本地运行的无限画布节点式 AI 工作流工具，接入你自己的任意 API 进行文生图、文生视频与倒推提示词。",
+  'app.documentTitle': "TapNow Local — 本地 AI 无限画布",
   'app.brandSub': '本地 AI 画布',
   'app.runAll': '▶ 运行全部',
   'app.save': '💾 保存',

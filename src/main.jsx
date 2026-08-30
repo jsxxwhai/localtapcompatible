@@ -8,7 +8,15 @@ function Root() {
   const [locale, setLocale] = useState(() => loadLocale())
 
   useEffect(() => {
-    document.documentElement.lang = locale
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : locale === 'ja' ? 'ja' : locale === 'ko' ? 'ko' : 'en'
+    document.title = translate(locale, 'app.documentTitle')
+    let meta = document.querySelector('meta[name="description"]')
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'description'
+      document.head.appendChild(meta)
+    }
+    meta.content = translate(locale, 'app.metaDescription')
   }, [locale])
 
   const value = useMemo(() => ({

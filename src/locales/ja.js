@@ -1,4 +1,6 @@
 export default {
+  'app.metaDescription': "TapNow Local はローカルで動く無限キャンバス型ノードAIワークフローツール。自分のAPIで画像生成・動画生成・逆引きプロンプトが可能。",
+  'app.documentTitle': "TapNow Local — ローカル AI 無限キャンバス",
   'app.brandSub': 'ローカル AI キャンバス',
   'app.runAll': '▶ すべて実行',
   'app.save': '💾 保存',

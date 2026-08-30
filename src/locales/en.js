@@ -1,4 +1,6 @@
 export default {
+  'app.metaDescription': "TapNow Local is a local infinite-canvas node-based AI workflow tool. Bring your own API keys for text-to-image, text-to-video, and reverse prompt.",
+  'app.documentTitle': "TapNow Local — Local AI Infinite Canvas",
   'app.brandSub': 'Local AI Canvas',
   'app.runAll': '▶ Run All',
   'app.save': '💾 Save',
