@@ -82,11 +82,6 @@ export async function idbGetAllMedia() {
   }
 }
 
-// data URL 是否应转存 IndexedDB（超过阈值）
-export const DATA_URL_THRESHOLD = 100 * 1024
 export function isDataUrl(v) {
   return typeof v === 'string' && v.startsWith('data:')
-}
-export function shouldOffloadToIdb(v) {
-  return isDataUrl(v) && v.length > DATA_URL_THRESHOLD
 }
