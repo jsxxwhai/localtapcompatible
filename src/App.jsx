@@ -82,6 +82,7 @@ function CanvasApp() {
   const [testingId, setTestingId] = useState(null)
   const [toast, setToast] = useState(null)
   const [saveHint, setSaveHint] = useState('')
+  const saveHintRef = useRef(null)
   const [ctxMenu, setCtxMenu] = useState(null)
   const [rightTab, setRightTab] = useState('node')
   const [settings, setSettings] = useState(() => loadSettings())
@@ -155,6 +156,7 @@ function CanvasApp() {
 
   // 自动保存
   const saveTimer = useRef(null)
+  useEffect(() => () => { if (saveHintRef.current) clearTimeout(saveHintRef.current) }, [])
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current)
     const gen = ++saveGen.current
@@ -720,6 +722,7 @@ const updateNodeConfig = useCallback(
     setEdges(fresh.edges)
     setSelectedId(null)
     setSaveHint(t('toast.clearHint'))
+    saveHintRef.current = setTimeout(() => setSaveHint(''), 4000)
     showToast(t('toast.cleared'), 'success')
   }, [nodes, edges, setNodes, setEdges, showToast, t])
 
