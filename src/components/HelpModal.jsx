@@ -32,18 +32,7 @@ export default function HelpModal({ onClose, onTour }) {
           </ul>
 
           <h4>{t('help.exampleTitle')}</h4>
-          <pre>{`// AI Platform text-to-image
-preset: AI Platform text-to-image
-model: gpt-image-1
-body: { "model": "{{model}}", "prompt": "{{prompt}}", "n": 1, "size": "1024x1024" }
-extract: data[0].url
-
-// generic async video
-preset: generic async video (submit task + poll)
-submit: POST {baseUrl}/videos/generations
-query: GET {baseUrl}/videos/generations/{id}
-status field: status (succeeded = done)
-result field: output.video_url`}</pre>
+          <pre>{t('help.exampleBody')}</pre>
 
           <h4>{t('help.quickTitle')}</h4>
           <ul>

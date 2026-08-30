@@ -1,4 +1,5 @@
 export default {
+  'help.exampleBody': "// AI Platform text-to-image\npreset: AI Platform text-to-image\nmodel: gpt-image-1\nbody: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\nextract: data[0].url\n\n// generic async video\npreset: generic async video (submit task + poll)\nsubmit: POST {baseUrl}/videos/generations\nquery: GET {baseUrl}/videos/generations/{id}\nstatus field: status (succeeded = done)\nresult field: output.video_url",
   'app.metaDescription': "TapNow Local is a local infinite-canvas node-based AI workflow tool. Bring your own API keys for text-to-image, text-to-video, and reverse prompt.",
   'app.documentTitle': "TapNow Local — Local AI Infinite Canvas",
   'app.brandSub': 'Local AI Canvas',

@@ -1,4 +1,5 @@
 export default {
+  'help.exampleBody': "// AI Platform 텍스트-이미지\n프리셋: AI Platform text-to-image\n모델: gpt-image-1\n본문: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\n추출: data[0].url\n\n// 범용 비동기 동영상\n프리셋: 범용 비동기 동영상（작업 제출 + 폴링）\n제출: POST {baseUrl}/videos/generations\n조회: GET {baseUrl}/videos/generations/{id}\n상태 필드: status（succeeded = 완료）\n결과 필드: output.video_url",
   'app.metaDescription': "TapNow Local은 로컬에서 동작하는 무한 캔버스 노드형 AI 워크플로 도구입니다. 자신의 API로 이미지·영상 생성과 프롬프트 역추론이 가능합니다.",
   'app.documentTitle': "TapNow Local — 로컬 AI 무한 캔버스",
   'app.brandSub': '로컬 AI 캔버스',
