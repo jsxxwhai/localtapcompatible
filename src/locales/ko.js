@@ -324,6 +324,10 @@ export default {
 
   'settings.testPrompt': 'API 연결 테스트',
   'agent.noActions': 'Agent가 작업을 반환하지 않았습니다',
+    'agent.noJson': 'Agent가 JSON을 반환하지 않았습니다',
+  'agent.badJson': 'Agent가 반환한 JSON을 파싱할 수 없습니다',
+  'agent.badFormat': 'Agent가 잘못된 형식을 반환했습니다',
+  'agent.noActionsArr': 'Agent 응답에 actions 배열이 없습니다',
   'agent.failed': 'Agent 실행 실패: {msg}',
   'agent.pending': '대기 중',
   'agent.applied': '적용됨',

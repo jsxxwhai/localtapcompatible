@@ -324,6 +324,10 @@ export default {
 
   'settings.testPrompt': 'API接続テスト',
   'agent.noActions': 'Agentが操作を返しませんでした',
+    'agent.noJson': 'AgentがJSONを返しませんでした',
+  'agent.badJson': 'Agentが返したJSONを解析できません',
+  'agent.badFormat': 'Agentの戻り値の形式が不正です',
+  'agent.noActionsArr': 'Agentの応答にactions配列がありません',
   'agent.failed': 'Agentの実行に失敗しました：{msg}',
   'agent.pending': '保留中',
   'agent.applied': '適用済み',

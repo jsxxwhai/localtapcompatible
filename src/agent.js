@@ -1,3 +1,5 @@
+import { translate, loadLocale } from './i18n.js'
+
 // Agent 全面掌控：画布快照 → 系统提示词 → 解析 AI 返回的 JSON 操作指令
 
 export function buildSystemPrompt(snapshot) {
@@ -38,15 +40,15 @@ export function parseAgentResponse(raw) {
   if (fence) text = fence[1].trim()
   const start = text.indexOf('{')
   const end = text.lastIndexOf('}')
-  if (start < 0 || end <= start) throw new Error('Agent 没有返回 JSON')
+  if (start < 0 || end <= start) throw new Error(translate(loadLocale(), 'agent.noJson'))
   let plan
   try {
     plan = JSON.parse(text.slice(start, end + 1))
   } catch {
-    throw new Error('Agent 返回的 JSON 无法解析')
+    throw new Error(translate(loadLocale(), 'agent.badJson'))
   }
-  if (!plan || typeof plan !== 'object') throw new Error('Agent 返回格式错误')
-  if (!Array.isArray(plan.actions)) throw new Error('Agent 返回缺少 actions 数组')
+  if (!plan || typeof plan !== 'object') throw new Error(translate(loadLocale(), 'agent.badFormat'))
+  if (!Array.isArray(plan.actions)) throw new Error(translate(loadLocale(), 'agent.noActionsArr'))
   return { summary: String(plan.summary || ''), actions: plan.actions }
 }
 

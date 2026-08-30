@@ -324,6 +324,10 @@ export default {
 
   'settings.testPrompt': 'API connectivity test',
   'agent.noActions': 'Agent returned no actions',
+    'agent.noJson': 'Agent returned no JSON',
+  'agent.badJson': 'Could not parse the JSON returned by Agent',
+  'agent.badFormat': 'Agent returned an invalid format',
+  'agent.noActionsArr': 'Agent response is missing the actions array',
   'agent.failed': 'Agent execution failed: {msg}',
   'agent.pending': 'Pending',
   'agent.applied': 'Applied',

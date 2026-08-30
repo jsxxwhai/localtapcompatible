@@ -324,6 +324,10 @@ export default {
 
   'settings.testPrompt': '接口连通性测试',
   'agent.noActions': 'Agent 没有返回任何操作',
+    'agent.noJson': 'Agent 没有返回 JSON',
+  'agent.badJson': 'Agent 返回的 JSON 无法解析',
+  'agent.badFormat': 'Agent 返回格式错误',
+  'agent.noActionsArr': 'Agent 返回缺少 actions 数组',
   'agent.failed': 'Agent 执行失败：{msg}',
   'agent.pending': '待确认',
   'agent.applied': '已执行',
