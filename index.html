@@ -16,14 +16,27 @@
           el.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:99999;background:#7f1d1d;color:#fff;padding:10px 14px;border-radius:8px;font:12px monospace;white-space:pre-wrap;word-break:break-all;box-shadow:0 4px 20px rgba(0,0,0,.5);max-height:40vh;overflow:auto';
           document.body.appendChild(el);
         }
-        el.textContent = '页面错误：' + text;
+        el.textContent = fatalText('title', 'Page error: ') + text;
       } catch (_) {}
+    }
+    function fatalText(key, fallback) {
+      try {
+        var nav = (navigator.language || 'zh').toLowerCase();
+        var lang = nav.indexOf('zh') === 0 ? 'zh' : (nav.indexOf('ja') === 0 ? 'ja' : (nav.indexOf('ko') === 0 ? 'ko' : 'en'));
+        var dict = {
+          zh: { title: '页面错误：', unhandled: '未处理 Promise 异常' },
+          en: { title: 'Page error: ', unhandled: 'Unhandled promise rejection' },
+          ja: { title: 'ページエラー：', unhandled: '未処理の Promise 例外' },
+          ko: { title: '페이지 오류：', unhandled: '처리되지 않은 Promise 예외' }
+        };
+        return dict[lang][key] || fallback;
+      } catch (_) { return fallback; }
     }
     window.addEventListener('error', function (e) {
       showFatal((e.message || String(e.error)) + (e.filename ? '  ' + e.filename + (e.lineno ? ':' + e.lineno : '') : ''));
     });
     window.addEventListener('unhandledrejection', function (e) {
-      showFatal((e.reason && (e.reason.message || e.reason)) || '未处理 Promise 异常');
+      showFatal((e.reason && (e.reason.message || e.reason)) || fatalText('unhandled', 'Unhandled promise rejection'));
     });
   })();
 </script>
