@@ -357,7 +357,9 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
           <div className="settings-add-row">
             <select value={presetId} onChange={(e) => setPresetId(e.target.value)}>
               <option value="">{t('settings.presetPlaceholder')}</option>
-              {(presets || []).map((p) => <option key={p.id} value={p.id}>{t('preset.' + p.id) || p.label}</option>)}
+              {(presets || [])
+                .filter((p) => p.cat === 'all' || p.cat === cat)
+                .map((p) => <option key={p.id} value={p.id}>{t('preset.' + p.id) || p.label}</option>)}
             </select>
             <button className="btn btn-small" onClick={addFromPreset} disabled={!presetId}>{t('settings.addPreset')}</button>
             <button className="btn btn-small btn-primary" onClick={() => addApi({ name: t('settings.newApi') })}>{t('settings.addBlank')}</button>
