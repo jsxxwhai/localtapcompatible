@@ -11,7 +11,7 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
       <div className="inspector">
         <div className="panel-title">{t('inspector.title')}</div>
         <div className="inspector-empty">
-          {t('inspector.empty').split('\n').map((line, i) => (
+          {t('inspector.empty').split(/\n|\\n/).map((line, i) => (
             <span key={i}>
               {line}
               <br />
@@ -41,7 +41,7 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
 
       {!isGen ? (
         <div className="inspector-empty">
-          {t('inspector.noApi').split('\n').map((line, i) => (
+          {t('inspector.noApi').split(/\n|\\n/).map((line, i) => (
             <span key={i}>
               {line}
               <br />
