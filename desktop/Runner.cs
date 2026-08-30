@@ -146,23 +146,23 @@ public static partial class Runner
         return "unknown";
     }
 
-    private static RunOutput NormalizeOutput(JsonElement value, string? outputMediaType, string? outputKind = "media")
+    private static RunOutput NormalizeOutput(JsonElement value, string? outputMediaType, string? outputKind = "media", string locale = "zh")
     {
         if (outputKind == "text")
         {
             if (value.ValueKind == JsonValueKind.Undefined)
-                throw new InvalidOperationException("未从接口响应中提取到文本，请检查「输出提取路径」");
+                throw new InvalidOperationException(Loc.T(locale, "runner.outputNotText"));
             if (value.ValueKind != JsonValueKind.String)
             {
                 var found = FirstString(value);
-                if (found is null) throw new InvalidOperationException("接口输出不是文本，请检查「输出提取路径」");
+                if (found is null) throw new InvalidOperationException(Loc.T(locale, "runner.outputNotText"));
                 return new RunOutput(found, "text");
             }
             return new RunOutput(value.GetString()!.Trim(), "text");
         }
 
         if (value.ValueKind == JsonValueKind.Undefined)
-            throw new InvalidOperationException("未从接口响应中提取到输出，请检查「输出提取路径」");
+            throw new InvalidOperationException(Loc.T(locale, "runner.noOutput"));
 
         string v;
         if (value.ValueKind == JsonValueKind.String)
@@ -172,7 +172,7 @@ public static partial class Runner
         else
         {
             var found = FirstStringUrl(value)
-                ?? throw new InvalidOperationException("接口返回的不是 URL/图片，请检查「输出提取路径」");
+                ?? throw new InvalidOperationException(Loc.T(locale, "runner.notUrl"));
             v = found.Trim();
         }
 
@@ -187,7 +187,7 @@ public static partial class Runner
             }
             else
             {
-                throw new InvalidOperationException("提取到的输出不是 URL 也不是 base64 数据");
+                throw new InvalidOperationException(Loc.T(locale, "runner.notUrlNorBase64"));
             }
         }
         return new RunOutput(v, type);
@@ -237,13 +237,13 @@ public static partial class Runner
         return "[]";
     }
 
-    private static async Task<RunOutput> PollJob(HttpClient client, JsonElement config, Dictionary<string, string?> vars, JsonElement initialJson)
+    private static async Task<RunOutput> PollJob(HttpClient client, JsonElement config, Dictionary<string, string?> vars, JsonElement initialJson, string locale = "zh")
     {
         var poll = O(config, "poll");
         var id = GetByPath(initialJson, S(poll, "idPath") ?? "id");
         if (id is null || id.Value.ValueKind != JsonValueKind.String || string.IsNullOrEmpty(id.Value.GetString()))
             throw new InvalidOperationException(
-                "提交任务后未找到任务 ID（检查「任务ID路径」），接口返回：" + Truncate(initialJson.GetRawText(), 300));
+                Loc.T(locale, "poll.noTaskId", ("json", Truncate(initialJson.GetRawText(), 300))));
 
         var doneValues = SplitList(S(poll, "doneValues"), ["succeeded", "completed", "success"]);
         var failedValues = SplitList(S(poll, "failedValues"), ["failed", "error"]);
@@ -263,7 +263,7 @@ public static partial class Runner
             using var res = await client.SendAsync(req);
             var raw = await res.Content.ReadAsStringAsync();
             if (!res.IsSuccessStatusCode)
-                throw new InvalidOperationException($"查询任务状态失败 HTTP {(int)res.StatusCode}：{Truncate(raw, 300)}");
+                throw new InvalidOperationException(Loc.T(locale, "poll.statusHttp", ("status", ((int)res.StatusCode).ToString()), ("raw", Truncate(raw, 300))));
 
             using var doc = JsonDocument.Parse(raw);
             var root = doc.RootElement.Clone();
@@ -271,13 +271,13 @@ public static partial class Runner
             if (doneValues.Contains(status))
             {
                 var result = GetByPath(root, S(poll, "resultExtract"))
-                    ?? throw new InvalidOperationException($"任务已完成，但按「结果提取路径」({S(poll, "resultExtract")}) 未取到结果");
-                return NormalizeOutput(result, S(config, "outputMediaType"), S(config, "outputKind"));
+                    ?? throw new InvalidOperationException(Loc.T(locale, "poll.noResult", ("path", S(poll, "resultExtract") ?? "")));
+                return NormalizeOutput(result, S(config, "outputMediaType"), S(config, "outputKind"), locale);
             }
             if (failedValues.Contains(status))
-                throw new InvalidOperationException($"任务失败：status = {status}");
+                throw new InvalidOperationException(Loc.T(locale, "poll.failed", ("status", status)));
         }
-        throw new InvalidOperationException($"任务轮询超时（{maxAttempts} 次，每次间隔 {interval}ms）");
+        throw new InvalidOperationException(Loc.T(locale, "poll.timeout", ("n", maxAttempts.ToString()), ("ms", interval.ToString())));
     }
 
     private static List<string> SplitList(string? csv, string[] dflt)
@@ -296,7 +296,7 @@ public static partial class Runner
     private static string Truncate(string s, int n) => s.Length <= n ? s : s[..n];
 
     // 执行单个节点：config + inputs -> RunOutput
-    public static async Task<RunOutput> Run(JsonElement config, JsonElement inputs)
+    public static async Task<RunOutput> Run(JsonElement config, JsonElement inputs, string locale = "zh")
     {
         var vars = BuildVars(config, inputs);
         var url = JoinUrl(S(config, "baseUrl"), ResolvePlaceholders(S(config, "path") ?? "/", vars));
@@ -339,14 +339,14 @@ public static partial class Runner
             }
             catch (JsonException)
             {
-                throw new InvalidOperationException("请求体模板不是合法 JSON：" + Truncate(bodyJson, 200));
+                throw new InvalidOperationException(Loc.T(locale, "runner.badBodyJson", ("raw", Truncate(bodyJson, 200))));
             }
         }
 
         using var res = await http.SendAsync(req);
         var raw = await res.Content.ReadAsStringAsync();
         if (!res.IsSuccessStatusCode)
-            throw new InvalidOperationException($"接口返回 HTTP {(int)res.StatusCode}：{Truncate(raw, 500)}");
+            throw new InvalidOperationException(Loc.T(locale, "runner.httpError", ("status", ((int)res.StatusCode).ToString()), ("raw", Truncate(raw, 500))));
 
         JsonElement json;
         try
@@ -373,7 +373,7 @@ public static partial class Runner
             // 非 JSON 响应（纯文本）直接当文本输出
             text ??= raw.Trim();
             if (string.IsNullOrEmpty(text))
-                throw new InvalidOperationException("未从接口响应中提取到文本，请检查「输出提取路径」");
+                throw new InvalidOperationException(Loc.T(locale, "runner.outputNotText"));
             return new RunOutput(text, "text");
         }
 
@@ -390,14 +390,14 @@ public static partial class Runner
         if (B(O(config, "poll"), "enabled") && !looksMedia)
         {
             if (json.ValueKind == JsonValueKind.Undefined)
-                throw new InvalidOperationException("提交任务后接口返回的不是合法 JSON，无法轮询");
-            return await PollJob(http, config, vars, json);
+                throw new InvalidOperationException(Loc.T(locale, "runner.pollNotJson"));
+            return await PollJob(http, config, vars, json, locale);
         }
 
         var resultValue = extracted is null
             ? default
             : JsonDocument.Parse(JsonSerializer.Serialize(extracted)).RootElement.Clone();
-        return NormalizeOutput(resultValue, S(config, "outputMediaType"), S(config, "outputKind"));
+        return NormalizeOutput(resultValue, S(config, "outputMediaType"), S(config, "outputKind"), locale);
     }
 
     [GeneratedRegex(@"^(\w+)\[(\d+)\]$")]

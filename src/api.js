@@ -8,7 +8,7 @@ const hasBridge = () =>
   typeof window.tapnowApi !== 'undefined'
 
 export async function apiRun(config, inputs) {
-  if (hasBridge()) return window.tapnowApi.run(config, inputs)
+  if (hasBridge()) return window.tapnowApi.run(config, inputs, loadLocale())
   const res = await fetch('/api/run', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept-Language': loadLocale() },
@@ -45,7 +45,7 @@ function blobToDataUrl(blob) {
 
 // 拉取某接口的模型列表（OpenAI 兼容 /v1/models 等）
 export async function apiListModels({ baseUrl, apiKey, path = '/models' } = {}) {
-  if (hasBridge()) return window.tapnowApi.listModels({ baseUrl, apiKey, path })
+  if (hasBridge()) return window.tapnowApi.listModels({ baseUrl, apiKey, path, locale: loadLocale() })
   const res = await fetch('/api/models', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept-Language': loadLocale() },

@@ -23,7 +23,7 @@ public sealed class ApiBridge
               window.chrome.webview.postMessage({ id, method, payload });
             });
           },
-          run: (config, inputs) => window.tapnowApi.call('run', { config, inputs }),
+          run: (config, inputs, locale) => window.tapnowApi.call('run', { config, inputs, locale }),
           getPresets: () => window.tapnowApi.call('getPresets', {}),
           health: () => window.tapnowApi.call('health', {}),
           download: (url) => window.tapnowApi.call('download', { url }),
@@ -79,6 +79,7 @@ public sealed class ApiBridge
             id = root.GetProperty("id").GetInt64();
             var method = root.GetProperty("method").GetString() ?? "";
             var payload = root.TryGetProperty("payload", out var p) ? p.Clone() : default;
+            var locale = Loc.Normalize(payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("locale", out var l) ? l.GetString() : null);
 
             switch (method)
             {
@@ -94,7 +95,7 @@ public sealed class ApiBridge
                 {
                     var config = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("config", out var c) ? c.Clone() : default;
                     var inputs = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("inputs", out var i) ? i.Clone() : default;
-                    var result = await Runner.Run(config, inputs);
+                    var result = await Runner.Run(config, inputs, locale);
                     Reply(id, new { ok = true, output = new { value = result.Value, mediaType = result.MediaType } });
                     break;
                 }
@@ -104,7 +105,7 @@ public sealed class ApiBridge
                     var url = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("url", out var u)
                         ? u.GetString()
                         : null;
-                    if (string.IsNullOrEmpty(url)) throw new InvalidOperationException("缺少下载地址");
+                    if (string.IsNullOrEmpty(url)) throw new InvalidOperationException(Loc.T(locale, "api.missingDownloadUrl"));
                     Reply(id, await DownloadAsync(url));
                     break;
                 }
@@ -114,13 +115,13 @@ public sealed class ApiBridge
                     var baseUrl = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("baseUrl", out var b) ? b.GetString() : null;
                     var apiKey = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("apiKey", out var k) ? k.GetString() : null;
                     var path = payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("path", out var pt) ? pt.GetString() : "/models";
-                    if (string.IsNullOrWhiteSpace(baseUrl)) throw new InvalidOperationException("缺少接口地址");
-                    Reply(id, await ListModelsAsync(baseUrl, apiKey, path ?? "/models"));
+                    if (string.IsNullOrWhiteSpace(baseUrl)) throw new InvalidOperationException(Loc.T(locale, "api.missingBaseUrl"));
+                    Reply(id, await ListModelsAsync(baseUrl, apiKey, path ?? "/models", locale));
                     break;
                 }
 
                 default:
-                    ReplyError(id, "未知方法: " + method);
+                    ReplyError(id, Loc.T(locale, "api.unknownMethod", ("m", method)));
                     break;
             }
         }
@@ -154,7 +155,7 @@ public sealed class ApiBridge
     }
 
     // 拉取 OpenAI 兼容接口的模型列表（data[].id 或 models[].id）
-    private async Task<object> ListModelsAsync(string baseUrl, string? apiKey, string path)
+    private async Task<object> ListModelsAsync(string baseUrl, string? apiKey, string path, string locale)
     {
         var url = baseUrl.TrimEnd('/') + "/" + path.TrimStart('/');
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
@@ -180,7 +181,7 @@ public sealed class ApiBridge
                 else if (m.TryGetProperty("id", out var id) && id.ValueKind == JsonValueKind.String) list.Add(id.GetString()!);
             }
         }
-        if (list.Count == 0) throw new InvalidOperationException("返回中未找到模型列表（data[].id 或 models[].id）");
+        if (list.Count == 0) throw new InvalidOperationException(Loc.T(locale, "api.noModels"));
         return new { models = list };
     }
 
