@@ -221,6 +221,7 @@ body {
 .tn-node-image .tn-node-head { background: rgba(125, 211, 252, 0.12); }
 .tn-node-video .tn-node-head { background: rgba(240, 171, 252, 0.12); }
 .tn-node-upload .tn-node-head { background: rgba(252, 211, 77, 0.12); }
+.tn-node-asset .tn-node-head { background: rgba(163, 230, 53, 0.12); }
 .tn-node-output .tn-node-head { background: rgba(110, 231, 183, 0.12); }
 
 .tn-textarea {
