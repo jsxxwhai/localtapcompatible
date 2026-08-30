@@ -732,9 +732,6 @@ const updateNodeConfig = useCallback(
     if (!window.confirm(t('confirm.clear'))) return
     idbClearMedia()
     mediaCacheRef.current.clear()
-    try {
-      localStorage.setItem('tapnow-local-canvas-backup', JSON.stringify({ nodes, edges }))
-    } catch {}
     const fresh = starterCanvas(t)
     setNodes(fresh.nodes)
     setEdges(fresh.edges)
@@ -742,7 +739,7 @@ const updateNodeConfig = useCallback(
     setSaveHint(t('toast.clearHint'))
     saveHintRef.current = setTimeout(() => setSaveHint(''), 4000)
     showToast(t('toast.cleared'), 'success')
-  }, [nodes, edges, setNodes, setEdges, showToast, t])
+  }, [setNodes, setEdges, showToast, t])
 
   // 键盘快捷键：Ctrl+S 保存 / Ctrl+Enter 运行全部 / Ctrl+, 打开设置
   useEffect(() => {
