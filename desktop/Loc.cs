@@ -7,6 +7,8 @@ public static class Loc
     {
         ["zh"] = new()
         {
+            ["ui.windowTitle"] = "TapNow Local — 本地 AI 画布",
+            ["ui.startupFail"] = "启动失败：{msg}",
             ["api.missingConfig"] = "缺少节点配置（config）",
             ["api.missingBaseUrl"] = "缺少接口地址",
             ["api.missingDownloadUrl"] = "缺少下载地址",
@@ -27,6 +29,8 @@ public static class Loc
         },
         ["en"] = new()
         {
+            ["ui.windowTitle"] = "TapNow Local — Local AI Canvas",
+            ["ui.startupFail"] = "Startup failed: {msg}",
             ["api.missingConfig"] = "Missing node config (config)",
             ["api.missingBaseUrl"] = "Missing API base URL",
             ["api.missingDownloadUrl"] = "Missing download URL",
@@ -47,6 +51,8 @@ public static class Loc
         },
         ["ja"] = new()
         {
+            ["ui.windowTitle"] = "TapNow Local — ローカル AI キャンバス",
+            ["ui.startupFail"] = "起動に失敗しました：{msg}",
             ["api.missingConfig"] = "ノード設定（config）がありません",
             ["api.missingBaseUrl"] = "API ベースURL がありません",
             ["api.missingDownloadUrl"] = "ダウンロードURL がありません",
@@ -67,6 +73,8 @@ public static class Loc
         },
         ["ko"] = new()
         {
+            ["ui.windowTitle"] = "TapNow Local — 로컬 AI 캔버스",
+            ["ui.startupFail"] = "시작 실패: {msg}",
             ["api.missingConfig"] = "노드 설정(config)이 없습니다",
             ["api.missingBaseUrl"] = "API 기본 URL이 없습니다",
             ["api.missingDownloadUrl"] = "다운로드 URL이 없습니다",

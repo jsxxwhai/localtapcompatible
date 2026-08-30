@@ -8,10 +8,11 @@ public sealed class MainForm : Form
 {
     private readonly WebView2 _webView = new();
     private readonly ApiBridge _bridge = new();
+    private readonly string _locale = Loc.Normalize(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
 
     public MainForm()
     {
-        Text = "TapNow Local — 本地 AI 画布";
+        Text = Loc.T(_locale, "ui.windowTitle");
         StartPosition = FormStartPosition.CenterScreen;
         WindowState = FormWindowState.Maximized;
         BackColor = Color.FromArgb(11, 14, 23);
@@ -35,7 +36,7 @@ public sealed class MainForm : Form
             var options = new CoreWebView2EnvironmentOptions
             {
                 AdditionalBrowserArguments = "--disable-gpu --in-process-gpu --disable-extensions --disable-sync --disable-crash-reporter --noerrdialogs --disable-background-networking --disable-component-update --js-flags=--max-old-space-size=256 --remote-debugging-port=9222",
-                Language = "zh-CN",
+                Language = System.Globalization.CultureInfo.CurrentUICulture.Name,
             };
             var env = await CoreWebView2Environment.CreateAsync(null, userDataFolder, options);
             await _webView.EnsureCoreWebView2Async(env);
@@ -51,7 +52,7 @@ public sealed class MainForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show("启动失败：" + ex.Message, "TapNow Local", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(Loc.T(_locale, "ui.startupFail", ("msg", ex.Message)), "TapNow Local", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Close();
         }
     }
