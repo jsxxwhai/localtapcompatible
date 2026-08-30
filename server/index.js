@@ -39,8 +39,8 @@ app.post('/api/models', async (req, res) => {
     const url = baseUrl.replace(/\/+$/, '') + '/' + String(path).replace(/^\/+/, '')
     const headers = { 'Content-Type': 'application/json' }
     if (apiKey) headers.Authorization = `Bearer ${apiKey}`
-    const r = await fetch(url, { headers, timeout: 15000 })
-    if (!r.ok) throw new Error(`HTTP ${r.status}`)
+    const r = await fetch(url, { headers, signal: AbortSignal.timeout(15000) })
+    if (!r.ok) throw new Error(serverT(detectLocale(req), 'api.listHttp', { status: r.status }))
     const json = await r.json()
     const list = Array.isArray(json?.data) ? json.data.map((m) => m?.id).filter(Boolean)
       : Array.isArray(json?.models) ? json.models.map((m) => (typeof m === 'string' ? m : m?.id)).filter(Boolean)
