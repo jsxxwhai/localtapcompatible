@@ -203,6 +203,7 @@ export default {
   'help.kbd.1': 'Ctrl+S — 저장',
   'help.kbd.2': 'Ctrl+Enter — 모두 실행',
   'help.kbd.3': 'Ctrl+, — 설정 열기',
+  'help.kbd.4': 'Ctrl+D — 선택 노드 복제 (Esc로 닫기)',
   'help.dataTitle': '데이터',
   'help.data.1': '캔버스는 localStorage에 자동 저장. 내보내기/가져오기로 백업',
   'help.data.2': '비우기는 현재 캔버스를 삭제하고 초기화（사전 자동 백업）',

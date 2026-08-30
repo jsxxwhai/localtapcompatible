@@ -203,6 +203,7 @@ export default {
   'help.kbd.1': 'Ctrl+S — 保存',
   'help.kbd.2': 'Ctrl+Enter — すべて実行',
   'help.kbd.3': 'Ctrl+, — 設定を開く',
+  'help.kbd.4': 'Ctrl+D — 選択ノードを複製（Esc で閉じる）',
   'help.dataTitle': 'データ',
   'help.data.1': 'キャンバスは localStorage に自動保存。書き出し/読み込みでバックアップ',
   'help.data.2': 'クリアは現在のキャンバスを削除してリセット（事前に自動バックアップ）',

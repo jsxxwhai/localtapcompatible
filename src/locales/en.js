@@ -203,6 +203,7 @@ export default {
   'help.kbd.1': 'Ctrl+S — save canvas',
   'help.kbd.2': 'Ctrl+Enter — run all',
   'help.kbd.3': 'Ctrl+, — open settings',
+  'help.kbd.4': 'Ctrl+D — duplicate selected node (Esc closes overlays)',
   'help.dataTitle': 'Data',
   'help.data.1': 'Canvas auto-saves to localStorage; use Export/Import to back up',
   'help.data.2': 'Clear deletes the canvas and resets (auto-backs up first)',

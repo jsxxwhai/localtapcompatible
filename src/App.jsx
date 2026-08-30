@@ -751,8 +751,13 @@ const updateNodeConfig = useCallback(
       const tag = el && el.tagName ? el.tagName.toUpperCase() : ''
       const editable = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el && el.isContentEditable)
       const mod = e.ctrlKey || e.metaKey
-      if (!mod) return
       const key = e.key.toLowerCase()
+      if (key === 'd' && mod && !editable && selectedId) {
+        e.preventDefault()
+        duplicateNode(selectedId)
+        return
+      }
+      if (!mod) return
       if (key === 's' && !editable) {
         e.preventDefault()
         handleSave()
@@ -766,7 +771,20 @@ const updateNodeConfig = useCallback(
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [handleSave, runAll])
+  }, [handleSave, runAll, duplicateNode, selectedId])
+
+  // Escape 关闭顶层浮层（帮助 / 教程 / 设置 / 右键菜单）
+  useEffect(() => {
+    const onEsc = (e) => {
+      if (e.key !== 'Escape') return
+      if (ctxMenu) { setCtxMenu(null); return }
+      if (settingsOpen) setSettingsOpen(false)
+      else if (tourOpen) setTourOpen(false)
+      else if (helpOpen) setHelpOpen(false)
+    }
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [ctxMenu, settingsOpen, tourOpen, helpOpen])
 
   // 画布快照（给 Agent 看的精简状态）
   const canvasSnapshot = useMemo(

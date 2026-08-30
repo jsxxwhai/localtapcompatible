@@ -50,6 +50,7 @@ export default function HelpModal({ onClose, onTour }) {
             <li>{t('help.kbd.1')}</li>
             <li>{t('help.kbd.2')}</li>
             <li>{t('help.kbd.3')}</li>
+            <li>{t('help.kbd.4')}</li>
           </ul>
 
           <h4>{t('help.dataTitle')}</h4>

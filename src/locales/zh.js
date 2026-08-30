@@ -203,6 +203,7 @@ export default {
   'help.kbd.1': 'Ctrl+S — 保存画布',
   'help.kbd.2': 'Ctrl+Enter — 运行全部',
   'help.kbd.3': 'Ctrl+, — 打开设置',
+  'help.kbd.4': 'Ctrl+D — 复制选中节点（Esc 关闭浮层）',
   'help.dataTitle': '数据',
   'help.data.1': '画布自动保存在浏览器 localStorage，可用导出 / 导入备份',
   'help.data.2': '清空会删除当前画布并重置（会先自动备份一次）',
