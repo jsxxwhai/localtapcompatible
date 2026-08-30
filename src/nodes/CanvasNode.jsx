@@ -108,6 +108,7 @@ export function ApiSelect({ apiOptions, currentApiId, onSelect, onOpenSettings }
         className="node-api-select"
         value={currentApiId || ''}
         title={t('inspector.selectApi')}
+        aria-label={t('inspector.selectApi')}
         onChange={(e) => onSelect?.(e.target.value)}
       >
         {!apiOptions?.length && <option value="">{t('api.none')}</option>}

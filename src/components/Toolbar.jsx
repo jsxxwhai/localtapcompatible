@@ -63,6 +63,7 @@ export default function Toolbar({
           <button type="button"
             className="btn"
             onClick={() => setFileOpen((v) => !v)}
+            aria-label={t('app.file')}
             aria-haspopup="true"
             aria-expanded={fileOpen}
           >

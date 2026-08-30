@@ -259,6 +259,7 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
       <div className="agent-section-label">{t('agent.apiLabel')}</div>
       <select
         className="agent-api-select"
+        aria-label={t('agent.apiLabel')}
         value={agentSettings?.currentApiId || ''}
         onChange={(e) => selectAgentApi(e.target.value)}
       >

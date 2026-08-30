@@ -360,7 +360,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
         <div className="modal-body settings-body">
           <div className="settings-current">
             <span>{t('settings.current')}</span>
-            <select value={catSet.currentApiId || ''} onChange={(e) => setCurrent(e.target.value)}>
+            <select aria-label={t('settings.current')} value={catSet.currentApiId || ''} onChange={(e) => setCurrent(e.target.value)}>
               {catSet.apis.map((a) => (
                 <option key={a.id} value={a.id}>{a.nameKey ? t(a.nameKey) : a.name} · {a.model || t('settings.noModel')}</option>
               ))}
@@ -368,7 +368,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
             <span className="settings-current-model">{t('settings.currentModel', { model: catSet.model || t('settings.unset') })}</span>
           </div>
           <div className="settings-add-row">
-            <select value={presetId} onChange={(e) => setPresetId(e.target.value)}>
+            <select aria-label={t('settings.presetPlaceholder')} value={presetId} onChange={(e) => setPresetId(e.target.value)}>
               <option value="">{t('settings.presetPlaceholder')}</option>
               {(presets || [])
                 .filter((p) => p.cat === 'all' || p.cat === cat)
