@@ -1,3 +1,5 @@
+import { translate, loadLocale } from './i18n.js'
+
 // 桥接层：桌面端（C# WebView2）走 window.tapnowApi 直连宿主进程；
 // 浏览器开发模式（npm run dev）自动退回 fetch。
 const hasBridge = () =>
@@ -13,7 +15,7 @@ export async function apiRun(config, inputs) {
     body: JSON.stringify({ config, inputs }),
   })
   const data = await res.json()
-  if (!data.ok) throw new Error(data.error || '接口调用失败')
+  if (!data.ok) throw new Error(data.error || translate(loadLocale(), 'common.apiRunFail'))
   return data
 }
 
@@ -50,6 +52,6 @@ export async function apiListModels({ baseUrl, apiKey, path = '/models' } = {}) 
     body: JSON.stringify({ baseUrl, apiKey, path }),
   })
   const data = await res.json()
-  if (!data.ok) throw new Error(data.error || '拉取模型失败')
+  if (!data.ok) throw new Error(data.error || translate(loadLocale(), 'common.listModelsFail'))
   return data
 }

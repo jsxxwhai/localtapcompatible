@@ -204,6 +204,8 @@ export default {
   'common.cancel': '취소',
   'common.delete': '삭제',
   'common.close': '닫기',
+  'common.apiRunFail': 'API 호출 실패',
+  'common.listModelsFail': '모델 가져오기 실패',
   'menu.runNode': '▶ 이 노드 실행（상위 포함）',
   'menu.deleteNode': '🗑 노드 삭제',
   'menu.deleteNodeHint': 'Delete 키로도 가능',

@@ -204,6 +204,8 @@ export default {
   'common.cancel': 'Cancel',
   'common.delete': 'Delete',
   'common.close': 'Close',
+  'common.apiRunFail': 'API call failed',
+  'common.listModelsFail': 'Failed to fetch models',
   'menu.runNode': '▶ Run this node (with upstream)',
   'menu.deleteNode': '🗑 Delete node',
   'menu.deleteNodeHint': 'Or press Delete',

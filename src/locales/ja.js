@@ -204,6 +204,8 @@ export default {
   'common.cancel': 'キャンセル',
   'common.delete': '削除',
   'common.close': '閉じる',
+  'common.apiRunFail': 'API呼び出しに失敗しました',
+  'common.listModelsFail': 'モデル取得に失敗しました',
   'menu.runNode': '▶ このノードを実行（上流含む）',
   'menu.deleteNode': '🗑 ノードを削除',
   'menu.deleteNodeHint': 'Delete キーでも可',

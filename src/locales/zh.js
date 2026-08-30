@@ -204,6 +204,8 @@ export default {
   'common.cancel': '取消',
   'common.delete': '删除',
   'common.close': '关闭',
+  'common.apiRunFail': '接口调用失败',
+  'common.listModelsFail': '拉取模型失败',
   'menu.runNode': '▶ 运行此节点（含上游）',
   'menu.deleteNode': '🗑 删除节点',
   'menu.deleteNodeHint': '也可按 Delete 键',
