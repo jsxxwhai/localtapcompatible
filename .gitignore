@@ -25,3 +25,5 @@ Thumbs.db
 
 # vite
 .vite/
+
+desktop/wwwroot/
