@@ -1,4 +1,12 @@
 export default {
+  "preset.custom": "自定义（完全手动）",
+  "preset.openai-image": "AI Platform 文生图（gpt-image-1 / dall-e-3）",
+  "preset.openai-compatible-image": "AI Platform 兼容文生图（SiliconFlow / 国内中转等）",
+  "preset.openai-agent": "AI Platform Agent（画布掌控）",
+  "preset.openai-compatible-agent": "AI Platform 兼容 Agent（Qwen 等）",
+  "preset.openai-vision": "AI Platform 视觉（倒推提示词）",
+  "preset.openai-compatible-vision": "AI Platform 兼容视觉（Qwen-VL / 国内中转等）",
+  "preset.async-video": "通用异步视频（提交任务 + 轮询）",
   'help.exampleBody': "// AI Platform 文生图\n预设: AI Platform text-to-image\n模型: gpt-image-1\n请求体: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\n提取: data[0].url\n\n// 通用异步视频\n预设: 通用异步视频（提交任务 + 轮询）\n提交: POST {baseUrl}/videos/generations\n查询: GET {baseUrl}/videos/generations/{id}\n状态字段: status（succeeded = 完成）\n结果字段: output.video_url",
   'app.metaDescription': "TapNow Local 是一个本地运行的无限画布节点式 AI 工作流工具，接入你自己的任意 API 进行文生图、文生视频与倒推提示词。",
   'app.documentTitle': "TapNow Local — 本地 AI 无限画布",

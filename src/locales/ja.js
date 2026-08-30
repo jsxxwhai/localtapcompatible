@@ -1,4 +1,12 @@
 export default {
+  "preset.custom": "カスタム（完全手動）",
+  "preset.openai-image": "AI Platform 画像生成（gpt-image-1 / dall-e-3）",
+  "preset.openai-compatible-image": "AI Platform 互換画像生成（SiliconFlow など）",
+  "preset.openai-agent": "AI Platform Agent（キャンバス制御）",
+  "preset.openai-compatible-agent": "AI Platform 互換 Agent（Qwen など）",
+  "preset.openai-vision": "AI Platform ビジョン（逆引きプロンプト）",
+  "preset.openai-compatible-vision": "AI Platform 互換ビジョン（Qwen-VL など）",
+  "preset.async-video": "汎用非同期動画（送信 + ポーリング）",
   'help.exampleBody': "// AI Platform 画像生成\nプリセット: AI Platform text-to-image\nモデル: gpt-image-1\nボディ: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\n抽出: data[0].url\n\n// 汎用非同期動画\nプリセット: 汎用非同期動画（タスク送信 + ポーリング）\n送信: POST {baseUrl}/videos/generations\n照会: GET {baseUrl}/videos/generations/{id}\n状態フィールド: status（succeeded = 完了）\n結果フィールド: output.video_url",
   'app.metaDescription': "TapNow Local はローカルで動く無限キャンバス型ノードAIワークフローツール。自分のAPIで画像生成・動画生成・逆引きプロンプトが可能。",
   'app.documentTitle': "TapNow Local — ローカル AI 無限キャンバス",

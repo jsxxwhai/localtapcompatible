@@ -1,4 +1,12 @@
 export default {
+  "preset.custom": "Custom (fully manual)",
+  "preset.openai-image": "AI Platform text-to-image (gpt-image-1 / dall-e-3)",
+  "preset.openai-compatible-image": "AI Platform-compatible image (SiliconFlow / proxies)",
+  "preset.openai-agent": "AI Platform Agent (canvas control)",
+  "preset.openai-compatible-agent": "AI Platform-compatible Agent (Qwen etc.)",
+  "preset.openai-vision": "AI Platform vision (reverse prompt)",
+  "preset.openai-compatible-vision": "AI Platform-compatible vision (Qwen-VL / proxies)",
+  "preset.async-video": "Generic async video (submit + poll)",
   'help.exampleBody': "// AI Platform text-to-image\npreset: AI Platform text-to-image\nmodel: gpt-image-1\nbody: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\nextract: data[0].url\n\n// generic async video\npreset: generic async video (submit task + poll)\nsubmit: POST {baseUrl}/videos/generations\nquery: GET {baseUrl}/videos/generations/{id}\nstatus field: status (succeeded = done)\nresult field: output.video_url",
   'app.metaDescription': "TapNow Local is a local infinite-canvas node-based AI workflow tool. Bring your own API keys for text-to-image, text-to-video, and reverse prompt.",
   'app.documentTitle': "TapNow Local — Local AI Infinite Canvas",
