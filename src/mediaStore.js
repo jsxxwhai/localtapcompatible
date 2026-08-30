@@ -17,7 +17,7 @@ function openDb() {
       }
     }
     req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error || new Error('打开媒体库失败'))
+    req.onerror = () => reject(req.error || new Error('Failed to open media store'))
   })
   return dbPromise
 }
@@ -30,8 +30,8 @@ function tx(db, mode, fn) {
     const done = (v) => { result = v }
     const req = fn(store, done)
     t.oncomplete = () => resolve(result ?? (req && 'result' in req ? req.result : undefined))
-    t.onerror = () => reject(t.error || new Error('媒体库操作失败'))
-    t.onabort = () => reject(t.error || new Error('媒体库操作中止'))
+    t.onerror = () => reject(t.error || new Error('Media store transaction failed'))
+    t.onabort = () => reject(t.error || new Error('Media store transaction aborted'))
   })
 }
 
