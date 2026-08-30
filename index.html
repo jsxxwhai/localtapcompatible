@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="TapNow Local — local infinite-canvas node-based AI workflow tool" />
-    <title>TapNow Local — 本地 AI 画布</title>
+    <title>TapNow Local</title>
+  <script>
+  (function () {
+    try {
+      var nav = (navigator.language || 'en').toLowerCase();
+      var lang = nav.indexOf('zh') === 0 ? 'zh' : (nav.indexOf('ja') === 0 ? 'ja' : (nav.indexOf('ko') === 0 ? 'ko' : 'en'));
+      var title = { zh: 'TapNow Local — 本地 AI 无限画布', en: 'TapNow Local — Local AI Infinite Canvas', ja: 'TapNow Local — ローカル AI 無限キャンバス', ko: 'TapNow Local — 로컬 AI 무한 캔버스' }[lang];
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+      if (title) document.title = title;
+    } catch (_) {}
+  })();
+</script>
   <script>
   (function () {
     function showFatal(text) {
