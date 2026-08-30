@@ -166,7 +166,7 @@ export function emptyCategory(cat) {
 }
 
 export function normalizeApi(raw, cat) {
-  const base = profile(uidApi(), '未命名 API', {})
+  const base = profile(uidApi(), '', { nameKey: 'api.name.unnamed' })
   if (!raw || typeof raw !== 'object') return base
   const { _busyFetch, _busyTest, testMsg, testStatus, ...rest } = raw
   return {
