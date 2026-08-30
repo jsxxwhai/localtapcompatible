@@ -24,6 +24,7 @@ export default {
   'app.export': '📤 Export',
   'app.import': '📥 Import',
   'app.clear': '🗑 Clear',
+  'app.file': '📁 File',
   'app.help': '❓ Help',
   'app.tour': '🚀 Tutorial',
   'app.settings': '⚙️ Settings',

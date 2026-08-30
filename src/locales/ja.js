@@ -24,6 +24,7 @@ export default {
   'app.export': '📤 書き出し',
   'app.import': '📥 読み込み',
   'app.clear': '🗑 クリア',
+  'app.file': '📁 ファイル',
   'app.help': '❓ ヘルプ',
   'app.tour': '🚀 チュートリアル',
   'app.settings': '⚙️ 設定',

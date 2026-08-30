@@ -24,6 +24,7 @@ export default {
   'app.export': '📤 导出',
   'app.import': '📥 导入',
   'app.clear': '🗑 清空',
+  'app.file': '📁 文件',
   'app.help': '❓ 帮助',
   'app.tour': '🚀 新手教程',
   'app.settings': '⚙️ 设置',

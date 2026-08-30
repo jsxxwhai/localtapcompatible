@@ -72,6 +72,40 @@ body {
 .lang-select select option { background: var(--panel); color: var(--text); }
 .save-hint { color: var(--text-dim); font-size: 12px; }
 
+/* 工具栏「文件」下拉菜单 */
+.menu-wrap { position: relative; display: inline-flex; }
+.menu-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 176px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  padding: 5px;
+  z-index: 300;
+  animation: ctx-pop 0.12s ease-out;
+}
+.menu-item {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+.menu-item:hover { background: var(--panel); }
+.menu-item-danger { color: #fca5a5; }
+.menu-item-danger:hover { background: rgba(239, 68, 68, 0.12); }
+.menu-divider { height: 1px; background: var(--border); margin: 4px 8px; }
+
 /* ---------- 按钮 ---------- */
 .btn {
   background: var(--panel-2);

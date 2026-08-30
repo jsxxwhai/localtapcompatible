@@ -24,6 +24,7 @@ export default {
   'app.export': '📤 내보내기',
   'app.import': '📥 가져오기',
   'app.clear': '🗑 비우기',
+  'app.file': '📁 파일',
   'app.help': '❓ 도움말',
   'app.tour': '🚀 튜토리얼',
   'app.settings': '⚙️ 설정',

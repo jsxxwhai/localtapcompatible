@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react'
 import { useTranslation, LOCALES } from '../i18n.js'
 
 // 顶部工具栏
@@ -14,6 +15,14 @@ export default function Toolbar({
   saveHint,
 }) {
   const { t, localePref, setLocale } = useTranslation()
+  const [fileOpen, setFileOpen] = useState(false)
+  const fileRef = useRef(null)
+  useEffect(() => {
+    if (!fileOpen) return
+    const close = (e) => { if (fileRef.current && !fileRef.current.contains(e.target)) setFileOpen(false) }
+    document.addEventListener('mousedown', close)
+    return () => document.removeEventListener('mousedown', close)
+  }, [fileOpen])
   return (
     <div className="toolbar">
       <div className="brand">
@@ -25,10 +34,25 @@ export default function Toolbar({
         <button className="btn btn-primary" onClick={onRunAll} disabled={running}>
           {t('app.runAll')}
         </button>
-        <button className="btn" onClick={onSave}>{t('app.save')}</button>
-        <button className="btn" onClick={onExport}>{t('app.export')}</button>
-        <button className="btn" onClick={onImport}>{t('app.import')}</button>
-        <button className="btn btn-danger-ghost" onClick={onClear}>{t('app.clear')}</button>
+        <div className="menu-wrap" ref={fileRef}>
+          <button
+            className="btn"
+            onClick={() => setFileOpen((v) => !v)}
+            aria-haspopup="true"
+            aria-expanded={fileOpen}
+          >
+            {t('app.file')}
+          </button>
+          {fileOpen && (
+            <div className="menu-pop">
+              <button className="menu-item" onClick={() => { setFileOpen(false); onSave() }}>{t('app.save')}</button>
+              <button className="menu-item" onClick={() => { setFileOpen(false); onExport() }}>{t('app.export')}</button>
+              <button className="menu-item" onClick={() => { setFileOpen(false); onImport() }}>{t('app.import')}</button>
+              <div className="menu-divider" />
+              <button className="menu-item menu-item-danger" onClick={() => { setFileOpen(false); onClear() }}>{t('app.clear')}</button>
+            </div>
+          )}
+        </div>
         <button className="btn" onClick={onHelp}>{t('app.help')}</button>
         <button className="btn" onClick={onTour}>{t('app.tour')}</button>
         <label className="lang-select" title={t('settings.language')}>
