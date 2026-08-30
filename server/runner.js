@@ -1,6 +1,8 @@
 // 节点执行引擎：把节点配置 + 上游输入，翻译成一次真实的 HTTP 调用
 // 支持：模板占位符、Bearer Key、任意 JSON body、输出路径提取、异步任务轮询
 
+import { serverT } from './i18n.js'
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -102,23 +104,23 @@ function guessMediaType(value) {
   return 'unknown'
 }
 
-export function normalizeOutput(value, outputMediaType = 'auto', outputKind = 'media') {
+export function normalizeOutput(value, outputMediaType = 'auto', outputKind = 'media', locale = 'zh') {
   if (outputKind === 'text') {
     let v = value
     if (typeof v === 'object') v = firstString(v)
-    if (typeof v !== 'string') throw new Error('接口输出不是文本，请检查「输出提取路径」')
+    if (typeof v !== 'string') throw new Error(serverT(locale, 'runner.outputNotText'))
     return { value: v.trim(), mediaType: 'text' }
   }
   if (value == null) {
-    throw new Error('未从接口响应中提取到输出，请检查「输出提取路径」')
+    throw new Error(serverT(locale, 'runner.noOutput'))
   }
   let v = value
   if (typeof v === 'object') {
     v = firstStringUrl(v)
-    if (!v) throw new Error('接口返回的不是 URL/图片，请检查「输出提取路径」')
+    if (!v) throw new Error(serverT(locale, 'runner.notUrl'))
   }
   if (typeof v !== 'string') {
-    throw new Error('接口输出无法识别（既不是 URL 也不是文本）')
+    throw new Error(serverT(locale, 'runner.unrecognized'))
   }
   v = v.trim()
   let type = outputMediaType && outputMediaType !== 'auto' ? outputMediaType : guessMediaType(v)
@@ -129,7 +131,7 @@ export function normalizeOutput(value, outputMediaType = 'auto', outputKind = 'm
       const prefix = type === 'video' ? 'data:video/mp4;base64,' : 'data:image/png;base64,'
       v = prefix + v
     } else {
-      throw new Error('提取到的输出不是 URL 也不是 base64 数据')
+      throw new Error(serverT(locale, 'runner.notUrlNorBase64'))
     }
   }
   return { value: v, mediaType: type }
@@ -147,21 +149,21 @@ function buildHeaders(config, vars) {
   return headers
 }
 
-function resolveBody(config, vars) {
+function resolveBody(config, vars, locale = 'zh') {
   if (!config.method || config.method.toUpperCase() === 'GET') return undefined
   const raw = resolvePlaceholders(config.bodyTemplate ?? {}, vars, true)
   try {
     return JSON.parse(raw)
   } catch (err) {
-    throw new Error(`请求体模板不是合法 JSON：${raw.slice(0, 200)}`)
+    throw new Error(serverT(locale, 'runner.badBodyJson', { raw: raw.slice(0, 200) }))
   }
 }
 
-async function pollJob({ config, vars, initialJson }) {
+async function pollJob({ config, vars, initialJson, locale = 'zh' }) {
   const poll = config.poll ?? {}
   const id = getByPath(initialJson, poll.idPath || 'id')
   if (!id) {
-    throw new Error(`提交任务后未找到任务 ID（检查「任务ID路径」），接口返回：${JSON.stringify(initialJson).slice(0, 300)}`)
+    throw new Error(serverT(locale, 'poll.noTaskId', { json: JSON.stringify(initialJson).slice(0, 300) }))
   }
   // 轮询路径支持 {id}（也兼容 {{id}}）
   let pollPath = resolvePlaceholders(poll.path || '/tasks/{id}', { ...vars, id })
@@ -183,33 +185,33 @@ async function pollJob({ config, vars, initialJson }) {
     })
     const raw = await res.text()
     if (!res.ok) {
-      throw new Error(`查询任务状态失败 HTTP ${res.status}：${raw.slice(0, 300)}`)
+      throw new Error(serverT(locale, 'poll.statusHttp', { status: res.status, raw: raw.slice(0, 300) }))
     }
     let json
     try {
       json = JSON.parse(raw)
     } catch {
-      throw new Error(`任务状态响应不是合法 JSON：${raw.slice(0, 200)}`)
+      throw new Error(serverT(locale, 'poll.statusBadJson', { raw: raw.slice(0, 200) }))
     }
     const status = getByPath(json, poll.statusPath || 'status')
     if (doneValues.includes(status)) {
       const value = getByPath(json, poll.resultExtract)
       if (value == null) {
-        throw new Error(`任务已完成，但按「结果提取路径」(${poll.resultExtract}) 未取到结果：${JSON.stringify(json).slice(0, 300)}`)
+        throw new Error(serverT(locale, 'poll.noResult', { path: poll.resultExtract, json: JSON.stringify(json).slice(0, 300) }))
       }
       return { value, raw: json }
     }
     if (failedValues.includes(status)) {
-      throw new Error(`任务失败：status = ${status}`)
+      throw new Error(serverT(locale, 'poll.failed', { status }))
     }
   }
-  throw new Error(`任务轮询超时（${maxAttempts} 次，每次间隔 ${interval}ms）`)
+  throw new Error(serverT(locale, 'poll.timeout', { n: maxAttempts, ms: interval }))
 }
 
 // 执行单个节点
 // config: 节点配置（baseUrl / apiKey / model / path / bodyTemplate / outputExtract / poll ...）
 // inputs: { prompt?: string, image?: string }
-export async function runNode({ config, inputs = {} }) {
+export async function runNode({ config, inputs = {}, locale = 'zh' }) {
   const images = Array.isArray(inputs.images)
     ? inputs.images.filter((v) => typeof v === 'string' && v)
     : []
@@ -228,7 +230,7 @@ export async function runNode({ config, inputs = {} }) {
 
   const url = joinUrl(config.baseUrl, resolvePlaceholders(config.path || '/', vars))
   const headers = buildHeaders(config, vars)
-  const body = resolveBody(config, vars)
+  const body = resolveBody(config, vars, locale)
 
   const timeoutMs = Math.max(5000, Number(config.timeoutMs) || 120000)
   const res = await fetch(url, {
@@ -239,7 +241,7 @@ export async function runNode({ config, inputs = {} }) {
   })
   const raw = await res.text()
   if (!res.ok) {
-    throw new Error(`接口返回 HTTP ${res.status}：${raw.slice(0, 500)}`)
+    throw new Error(serverT(locale, 'runner.httpError', { status: res.status, raw: raw.slice(0, 500) }))
   }
   let json
   try {
@@ -254,7 +256,7 @@ export async function runNode({ config, inputs = {} }) {
     if (value == null && json != null) value = firstString(json)
     // 非 JSON 响应（纯文本）直接当文本输出
     if (value == null) value = String(raw || '').trim()
-    const normalized = normalizeOutput(value, config.outputMediaType, 'text')
+    const normalized = normalizeOutput(value, config.outputMediaType, 'text', locale)
     return { ok: true, output: normalized, raw: json ?? raw }
   }
 
@@ -266,11 +268,11 @@ export async function runNode({ config, inputs = {} }) {
   const looksMedia =
     typeof extracted === 'string' && (extracted.trim().startsWith('http') || extracted.trim().startsWith('data:'))
   if (config.poll?.enabled && !looksMedia) {
-    const { value, raw: pollRaw } = await pollJob({ config, vars, initialJson: json })
-    const normalized = normalizeOutput(value, config.outputMediaType)
+    const { value, raw: pollRaw } = await pollJob({ config, vars, initialJson: json, locale })
+    const normalized = normalizeOutput(value, config.outputMediaType, undefined, locale)
     return { ok: true, output: normalized, raw: pollRaw ?? json }
   }
 
-  const normalized = normalizeOutput(extracted, config.outputMediaType, config.outputKind)
+  const normalized = normalizeOutput(extracted, config.outputMediaType, config.outputKind, locale)
   return { ok: true, output: normalized, raw: json ?? raw }
 }
