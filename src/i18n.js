@@ -17,7 +17,7 @@ const dict = { zh, en, ja, ko }
 const STORAGE_KEY = 'tapnow-locale'
 export const SYSTEM_LOCALE = 'system'
 
-// 跟随系统语言，识别不了回退中文
+// 跟随系统语言，识别不了回退英文
 export function detectSystemLocale() {
   try {
     const nav = (typeof navigator !== 'undefined' && navigator.language) || ''
@@ -27,7 +27,7 @@ export function detectSystemLocale() {
     if (lang.startsWith('ko')) return 'ko'
     if (lang.startsWith('en')) return 'en'
   } catch {}
-  return 'zh'
+  return 'en'
 }
 
 // 返回用户保存的偏好（可能是 'system' 或具体语言），供 UI 显示选中态

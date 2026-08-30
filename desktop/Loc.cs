@@ -111,6 +111,6 @@ public static class Loc
     public static string Normalize(string? locale)
     {
         if (locale != null && Dict.ContainsKey(locale)) return locale;
-        return "zh";
+        return "en";
     }
 }

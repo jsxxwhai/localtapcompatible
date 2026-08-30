@@ -111,5 +111,5 @@ export function detectLocale(req) {
   if (al.startsWith('ja')) return 'ja'
   if (al.startsWith('ko')) return 'ko'
   if (al.startsWith('en')) return 'en'
-  return 'zh'
+  return 'en'
 }
