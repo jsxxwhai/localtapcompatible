@@ -168,7 +168,7 @@ export function emptyCategory(cat) {
 export function normalizeApi(raw, cat) {
   const base = profile(uidApi(), '未命名 API', {})
   if (!raw || typeof raw !== 'object') return base
-  const { _busyFetch, _busyTest, testMsg, ...rest } = raw
+  const { _busyFetch, _busyTest, testMsg, testStatus, ...rest } = raw
   return {
     ...base,
     ...rest,
@@ -214,7 +214,7 @@ export function saveSettings(s) {
         apis: (Array.isArray(src.apis) ? src.apis : [])
           .filter((a) => a && typeof a === 'object')
           .map((a) => {
-            const { _busyFetch, _busyTest, testMsg, ...api } = a
+            const { _busyFetch, _busyTest, testMsg, testStatus, ...api } = a
             return api
           }),
       }

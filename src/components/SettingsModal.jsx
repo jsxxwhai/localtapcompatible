@@ -275,7 +275,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
   const duplicateApi = (apiId) => {
     const src = catSet.apis.find((a) => a.id === apiId)
     if (!src) return
-    const { id, models, nameKey, ...rest } = src
+    const { id, models, nameKey, _busyFetch, _busyTest, testMsg, testStatus, ...rest } = src
     addApi({ ...rest, name: (src.name || '') + t('settings.copySuffix') })
   }
 
