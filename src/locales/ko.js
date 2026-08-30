@@ -262,6 +262,7 @@ export default {
   "settings.modelPlaceholder": "gpt-image-1",
   "settings.language": "언어 / Language",
   "settings.languageHint": "전환 즉시 적용되며 기본값은 시스템 언어",
+  "lang.system": "시스템 따르기",
   "settings.fetchingShort": "가져오는 중…",
   "agent.ex1": "이미지→비디오 흐름을 만들고 실행",
   "agent.ex2": "이미지를 프롬프트로 역추출",

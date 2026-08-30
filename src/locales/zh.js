@@ -262,6 +262,7 @@ export default {
   "settings.modelPlaceholder": "gpt-image-1",
   "settings.language": "语言 / Language",
   "settings.languageHint": "切换后立即生效，默认跟随系统语言",
+  "lang.system": "跟随系统",
   "settings.fetchingShort": "拉取中…",
   "agent.ex1": "搭一个图生视频流程并运行",
   "agent.ex2": "把图片倒推成提示词",

@@ -6,7 +6,7 @@ import ja from './locales/ja.js'
 import ko from './locales/ko.js'
 
 export const LOCALES = [
-  { code: 'system', label: '跟随系统', flag: '🌐' },
+  { code: 'system', label: '跟随系统', labelKey: 'lang.system', flag: '🌐' },
   { code: 'zh', label: '简体中文', flag: '🇨🇳' },
   { code: 'en', label: 'English', flag: '🇺🇸' },
   { code: 'ja', label: '日本語', flag: '🇯🇵' },

@@ -59,7 +59,7 @@ export default function Toolbar({
           <span className="lang-select-icon">🌐</span>
           <select value={localePref} onChange={(e) => setLocale(e.target.value)}>
             {LOCALES.map((l) => (
-              <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
+              <option key={l.code} value={l.code}>{l.flag} {l.labelKey ? t(l.labelKey) : l.label}</option>
             ))}
           </select>
         </label>

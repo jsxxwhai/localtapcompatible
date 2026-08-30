@@ -310,10 +310,10 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
                 key={l.code}
                 className={`lang-chip ${localePref === l.code ? 'active' : ''}`}
                 onClick={() => setLocale(l.code)}
-                title={l.label}
+                title={l.labelKey ? t(l.labelKey) : l.label}
               >
                 <span className="lang-flag">{l.flag}</span>
-                <span>{l.label}</span>
+                <span>{l.labelKey ? t(l.labelKey) : l.label}</span>
               </button>
             ))}
           </div>

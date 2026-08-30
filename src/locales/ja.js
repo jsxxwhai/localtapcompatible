@@ -262,6 +262,7 @@ export default {
   "settings.modelPlaceholder": "gpt-image-1",
   "settings.language": "言語 / Language",
   "settings.languageHint": "切り替えるとすぐ反映、既定はシステム言語",
+  "lang.system": "システムに従う",
   "settings.fetchingShort": "取得中…",
   "agent.ex1": "画像→動画のフローを組んで実行",
   "agent.ex2": "画像をプロンプトに逆変換",

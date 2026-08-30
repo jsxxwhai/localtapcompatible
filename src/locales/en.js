@@ -262,6 +262,7 @@ export default {
   "settings.modelPlaceholder": "gpt-image-1",
   "settings.language": "Language",
   "settings.languageHint": "Takes effect instantly; defaults to system language",
+  "lang.system": "Follow system",
   "settings.fetchingShort": "Fetching…",
   "agent.ex1": "Build and run an image-to-video flow",
   "agent.ex2": "Reverse an image into a prompt",
