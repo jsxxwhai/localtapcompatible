@@ -13,7 +13,7 @@ export default function Toolbar({
   running,
   saveHint,
 }) {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, localePref, setLocale } = useTranslation()
   return (
     <div className="toolbar">
       <div className="brand">
@@ -33,7 +33,7 @@ export default function Toolbar({
         <button className="btn" onClick={onTour}>{t('app.tour')}</button>
         <label className="lang-select" title={t('settings.language')}>
           <span className="lang-select-icon">🌐</span>
-          <select value={locale} onChange={(e) => setLocale(e.target.value)}>
+          <select value={localePref} onChange={(e) => setLocale(e.target.value)}>
             {LOCALES.map((l) => (
               <option key={l.code} value={l.code}>{l.flag} {l.label}</option>
             ))}

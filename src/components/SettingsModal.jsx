@@ -21,7 +21,7 @@ function pollOf(api) {
 }
 
 function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, onSetCurrent, onSelectModel }) {
-  const { t } = useTranslation()
+  const { t, localePref } = useTranslation()
   const poll = pollOf(api)
   const patchPoll = (p) => onPatch({ poll: { ...poll, ...p } })
   const strip = ({ id, name, models, ...rest }) => rest
@@ -226,7 +226,7 @@ function ApiCard({ cat, api, current, advanced, onPatch, onRemove, onDuplicate, 
 }
 
 export default function SettingsModal({ onClose, settings, update, presets }) {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, localePref, setLocale } = useTranslation()
   const [cat, setCat] = useState('image')
   const [presetId, setPresetId] = useState('')
   const [advanced, setAdvanced] = useState(false)
@@ -308,7 +308,7 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
             {LOCALES.map((l) => (
               <button
                 key={l.code}
-                className={`lang-chip ${locale === l.code ? 'active' : ''}`}
+                className={`lang-chip ${localePref === l.code ? 'active' : ''}`}
                 onClick={() => setLocale(l.code)}
                 title={l.label}
               >

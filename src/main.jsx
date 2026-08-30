@@ -2,9 +2,16 @@ import React, { useMemo, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './styles.css'
-import { I18nContext, loadLocale, persistLocale, translate } from './i18n.js'
+import { I18nContext, loadLocale, persistLocale, translate, detectSystemLocale, SYSTEM_LOCALE } from './i18n.js'
 
 function Root() {
+  const [localePref, setLocalePref] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tapnow-locale')
+      if (saved) return saved
+    } catch {}
+    return SYSTEM_LOCALE
+  })
   const [locale, setLocale] = useState(() => loadLocale())
 
   useEffect(() => {
@@ -21,12 +28,15 @@ function Root() {
 
   const value = useMemo(() => ({
     locale,
+    localePref,
     t: (k, v) => translate(locale, k, v),
     setLocale: (code) => {
-      persistLocale(code)
-      setLocale(code)
+      const pref = code === SYSTEM_LOCALE ? SYSTEM_LOCALE : code
+      persistLocale(pref)
+      setLocalePref(pref)
+      setLocale(pref === SYSTEM_LOCALE ? detectSystemLocale() : pref)
     },
-  }), [locale])
+  }), [locale, localePref])
 
   return (
     <I18nContext.Provider value={value}>

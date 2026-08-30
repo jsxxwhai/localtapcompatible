@@ -6,6 +6,7 @@ import ja from './locales/ja.js'
 import ko from './locales/ko.js'
 
 export const LOCALES = [
+  { code: 'system', label: '跟随系统', flag: '🌐' },
   { code: 'zh', label: '简体中文', flag: '🇨🇳' },
   { code: 'en', label: 'English', flag: '🇺🇸' },
   { code: 'ja', label: '日本語', flag: '🇯🇵' },
@@ -14,6 +15,7 @@ export const LOCALES = [
 
 const dict = { zh, en, ja, ko }
 const STORAGE_KEY = 'tapnow-locale'
+export const SYSTEM_LOCALE = 'system'
 
 // 跟随系统语言，识别不了回退中文
 export function detectSystemLocale() {
@@ -28,12 +30,19 @@ export function detectSystemLocale() {
   return 'zh'
 }
 
-export function loadLocale() {
+// 返回用户保存的偏好（可能是 'system' 或具体语言），供 UI 显示选中态
+function loadLocalePref() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved === SYSTEM_LOCALE) return SYSTEM_LOCALE
     if (saved && dict[saved]) return saved
   } catch {}
-  return detectSystemLocale()
+  return SYSTEM_LOCALE
+}
+
+export function loadLocale() {
+  const pref = loadLocalePref()
+  return pref === SYSTEM_LOCALE ? detectSystemLocale() : pref
 }
 
 export function persistLocale(code) {
@@ -63,7 +72,7 @@ export function translate(locale, key, vars) {
   return val
 }
 
-export const I18nContext = createContext({ locale: 'zh', t: (k, v) => translate('zh', k, v), setLocale: () => {} })
+export const I18nContext = createContext({ locale: 'zh', localePref: 'system', t: (k, v) => translate('zh', k, v), setLocale: () => {} })
 
 // 在组件里取 t 函数与当前语言
 export function useTranslation() {
