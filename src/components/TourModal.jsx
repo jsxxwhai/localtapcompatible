@@ -77,8 +77,8 @@ export default function TourModal({ onClose, onDone }) {
   const next = () => (isLast ? onDone?.() : setI((v) => v + 1))
 
   return (
-    <div className="tour-overlay">
-      <div className="tour-card">
+    <div className="tour-overlay" role="presentation">
+      <div className="tour-card" role="dialog" aria-modal="true" aria-label={t('tour.title')}>
         <div className="tour-head">
           <span className="tour-title">{t('tour.title')}</span>
           <span className="tour-step">{i + 1} / {slides.length}</span>

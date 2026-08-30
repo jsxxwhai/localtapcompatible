@@ -4,8 +4,8 @@ import { useTranslation } from '../i18n.js'
 export default function HelpModal({ onClose, onTour }) {
   const { t } = useTranslation()
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" role="presentation" onClick={onClose}>
+      <div className="modal" role="dialog" aria-modal="true" aria-label={t('help.title')} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <span>{t('help.title')}</span>
           {onTour && (

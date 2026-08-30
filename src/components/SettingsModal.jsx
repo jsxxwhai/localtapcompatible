@@ -305,8 +305,8 @@ export default function SettingsModal({ onClose, settings, update, presets }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal settings-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" role="presentation" onClick={onClose}>
+      <div className="modal settings-modal" role="dialog" aria-modal="true" aria-label={t('settings.title')} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <span>{t('settings.title')}</span>
           <button type="button" className="btn-icon" onClick={onClose} aria-label={t('settings.close')}>×</button>
