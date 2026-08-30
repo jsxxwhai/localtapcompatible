@@ -53,8 +53,8 @@ export default function Toolbar({
             </div>
           )}
         </div>
-        <button className="btn" onClick={onHelp}>{t('app.help')}</button>
-        <button className="btn" onClick={onTour}>{t('app.tour')}</button>
+        <button className="btn" onClick={onHelp} aria-label={t('app.help')}>{t('app.help')}</button>
+        <button className="btn" onClick={onTour} aria-label={t('app.tour')}>{t('app.tour')}</button>
         <label className="lang-select" title={t('settings.language')}>
           <span className="lang-select-icon">🌐</span>
           <select value={localePref} onChange={(e) => setLocale(e.target.value)}>
@@ -63,7 +63,7 @@ export default function Toolbar({
             ))}
           </select>
         </label>
-        <button className="btn" onClick={onSettings} title={t('app.kbdSettings')}>{t('app.settings')}</button>
+        <button className="btn" onClick={onSettings} title={t('app.kbdSettings')} aria-label={t('app.settings')}>{t('app.settings')}</button>
       </div>
       {saveHint && <span className="save-hint">{saveHint}</span>}
     </div>

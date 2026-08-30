@@ -11,6 +11,8 @@ export default function Palette({ onAdd }) {
         <button
           key={item.type}
           className="palette-item"
+          title={t(item.descKey)}
+          aria-label={t(item.labelKey)}
           draggable
           onClick={() => onAdd(item.type)}
           onDragStart={(e) => {
