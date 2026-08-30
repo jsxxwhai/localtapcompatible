@@ -35,7 +35,7 @@ function buildSlides(t) {
       ],
     },
     {
-      img: '/tour/04-canvas.png',
+      img: '/tour/05-node-config.png',
       title: t('tour.slide5.title'),
       text: t('tour.slide5.text'),
       list: [
@@ -47,7 +47,7 @@ function buildSlides(t) {
       ],
     },
     {
-      img: '/tour/05-node-config.png',
+      img: '/tour/06-agent.png',
       title: t('tour.slide6.title'),
       text: t('tour.slide6.text'),
       list: [
