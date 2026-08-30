@@ -200,7 +200,7 @@ body {
 .palette-info { display: flex; flex-direction: column; gap: 2px; }
 .palette-label { font-weight: 600; }
 .palette-desc { font-size: 11px; color: var(--text-dim); }
-.palette-tip { font-size: 11px; color: var(--text-dim); line-height: 1.6; margin-top: 6px; }
+.palette-tip { font-size: 11px; color: var(--text-dim); line-height: 1.6; margin-top: 6px; white-space: pre-line; }
 
 /* ---------- 节点 ---------- */
 .tn-node {
