@@ -1,4 +1,4 @@
-# TapNow Local — Local-first AI Infinite Canvas
+# local‑tap‑compatible — Local-first AI Infinite Canvas
 
 > An infinite canvas + node-based AI workflow. Plug in **your own API keys** for image generation, video generation, reverse prompting, and more.
 
@@ -12,7 +12,7 @@
 
 ![Demo](./docs/demo.gif)
 
-## ✨ Why TapNow Local?
+## ✨ Why local‑tap‑compatible？
 
 A **fully local**, ComfyUI / TapNow-like infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph, using your own keys — nothing is uploaded to any cloud.
 
