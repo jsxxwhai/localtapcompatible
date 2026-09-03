@@ -1047,18 +1047,20 @@ body {
   color: var(--text);
   font-size: 12px;
   font-weight: 700;
-  padding: 3px 2px;
+  letter-spacing: 0.2px;
+  padding: 6px 6px;
+  margin: 0 -6px;
   cursor: pointer;
   font-family: inherit;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: color 0.15s, background 0.15s;
 }
 .palette-group-head:hover { background: var(--panel-2); color: var(--accent); }
 .palette-group-title { display: inline-flex; align-items: center; gap: 6px; }
-.palette-group-icon { font-size: 12px; opacity: 0.9; }
-.palette-chevron { color: var(--text-dim); font-size: 11px; }
-.palette-items { display: flex; flex-direction: column; gap: 6px; }
-.palette-group + .palette-group { margin-top: 2px; }
+.palette-group-icon { font-size: 14px; opacity: 0.95; }
+.palette-chevron { color: var(--text-dim); font-size: 11px; transition: transform 0.18s ease; }
+.palette-items { display: flex; flex-direction: column; gap: 6px; padding: 2px 0 4px; }
+.palette-group + .palette-group { margin-top: 6px; }
 .palette-tip { border-top: 1px dashed var(--border); padding-top: 8px; }
 .inspector-empty { color: var(--text-dim); line-height: 1.7; }
 .inspector-quick-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
