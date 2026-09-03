@@ -5,6 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
 [![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
+[![Release](https://img.shields.io/github/v/release/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2&label=Download%20EXE)](https://github.com/jsxxwhai/localtapcompatible/releases/latest)
 
 > 中文说明见 [README.md](./README.md)
 
