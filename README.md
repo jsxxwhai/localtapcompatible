@@ -5,6 +5,15 @@
 
 > 无限画布 + 节点式 AI 工作流，接入你自己的任意 API。图片、视频、倒推提示词，一条连线跑通。
 
+受够了把 Key 锁死在一家厂商、还要联网上报的 AI 画布？这是一个开源、本地优先的节点画布。每个生成节点本质上就是一个由你配置的 HTTP 调用：自带 Base URL、模型、路径和 Key。
+
+* 图片生成、视频生成（异步轮询）、倒推提示词、多参考图编辑
+* 无限画布——缩放、平移、框选、拖拽连线
+* 零云端中转——你的 Key 从不离开本机
+* Windows 桌面版——下载、双击、即用，无需账号
+
+如果你想要一个免费、便携、厂商无关的 AI 工作流画布，请给我们一个 Star。
+
 [![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
 [![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)

@@ -2,6 +2,15 @@
 
 > An infinite canvas + node-based AI workflow. Plug in **your own API keys** for image generation, video generation, reverse prompting, and more.
 
+Tired of AI canvas tools that lock your keys to one vendor or phone home? This is an open, local-first node canvas. Every generation node is just an HTTP call you configure: bring your own Base URL, model, path and key.
+
+* Image gen, video gen (async polling), reverse prompting, multi-reference edits
+* One infinite canvas - zoom, pan, box-select, drag-to-connect
+* Zero cloud relay - your keys never leave this machine
+* Windows desktop app - download, double-click, run. No account needed
+
+Star it if you want a free, portable, provider-agnostic AI workflow canvas.
+
 [![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
 [![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
