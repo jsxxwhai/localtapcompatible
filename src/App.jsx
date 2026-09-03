@@ -143,14 +143,18 @@ function CanvasApp() {
   const statusCounts = useMemo(() => {
     let running = 0
     let queued = 0
+    let ok = 0
+    let err = 0
     for (const n of nodes) {
       if (n.data.status === 'running') running += 1
       else if (n.data.status === 'queued') queued += 1
+      else if (n.data.status === 'success') ok += 1
+      else if (n.data.status === 'error') err += 1
     }
-    return { running, queued }
+    return { running, queued, ok, err }
   }, [nodes])
   const runActiveCount = statusCounts.running + statusCounts.queued
-  const runDoneCount = nodes.filter((n) => n.data.status === 'success' || n.data.status === 'error').length
+  const runDoneCount = statusCounts.ok + statusCounts.err
   const runTotal = runActiveCount + runDoneCount
   const runProgress = runTotal ? Math.min(100, Math.round((runDoneCount / runTotal) * 100)) : 0
 
@@ -1212,7 +1216,7 @@ const updateNodeConfig = useCallback(
           >
             <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#252b3d" />
             <Controls showInteractive={false} />
-            <MiniMap pannable zoomable nodeColor={(n) => nodeColor(n.type)} maskColor="rgba(10,12,20,0.75)" />
+            <MiniMap pannable zoomable nodeColor={(n) => miniMapColor(n)} nodeStrokeColor={(n) => miniMapColor(n)} nodeClassName={(n) => 'mm-' + (n.data?.status || 'idle')} maskColor="rgba(10,12,20,0.75)" />
           </ReactFlow>
           {nodes.length === 0 && (
             <CanvasEmpty
@@ -1228,6 +1232,20 @@ const updateNodeConfig = useCallback(
                 {anyRunning
                   ? t('hud.running', { active: runActiveCount, done: runDoneCount })
                   : t('hud.done', { count: runDoneCount })}
+              </span>
+              <span className="run-hud-stats">
+                {statusCounts.queued > 0 && (
+                  <span className="hud-chip chip-queued" title={t('status.queued')}><span className="dot" />{statusCounts.queued}</span>
+                )}
+                {statusCounts.running > 0 && (
+                  <span className="hud-chip chip-running" title={t('status.running')}><span className="dot" />{statusCounts.running}</span>
+                )}
+                {statusCounts.ok > 0 && (
+                  <span className="hud-chip chip-ok" title={t('status.success')}><span className="dot" />{statusCounts.ok}</span>
+                )}
+                {statusCounts.err > 0 && (
+                  <span className="hud-chip chip-err" title={t('status.error')}><span className="dot" />{statusCounts.err}</span>
+                )}
               </span>
               <span className="run-hud-track">
                 <span
@@ -1341,6 +1359,16 @@ function nodeColor(type) {
       output: '#2dd4bf',
     }[type] || '#7a8499'
   )
+}
+
+// 迷你地图配色：运行态优先使用状态色（青=运行/排队，绿=成功，红=出错），空闲退回类型色
+function miniMapColor(node) {
+  const st = node.data?.status
+  if (st === 'running') return '#38bdf8'
+  if (st === 'queued') return '#7dd3fc'
+  if (st === 'success') return '#34d399'
+  if (st === 'error') return '#ff6b6b'
+  return nodeColor(node.type)
 }
 
 
