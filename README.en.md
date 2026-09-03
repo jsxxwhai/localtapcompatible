@@ -19,6 +19,7 @@ A **fully local**, node-based infinite canvas. Chain "prompt → image/video gen
 | Feature | Description |
 | --- | --- |
 | 🧩 Node workflow | Prompt, image gen, video gen, reverse prompt, upload, asset, preview output |
+| 📥 Built-in examples | Text-to-image, image-to-video, reverse prompt, multi-reference — one click from the File menu |
 | 🔌 Any API | Compatible with OpenAI / SiliconFlow / Kling / Seedance / Runway and any HTTP endpoint |
 | 🖥️ Infinite canvas | Zoom, pan, box-select, drag-to-connect node graph |
 | 🌐 Multilingual | 简体中文 / English / 日本語 / 한국어, follows system locale, switchable anytime |

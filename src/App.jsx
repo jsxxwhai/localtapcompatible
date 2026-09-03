@@ -23,6 +23,7 @@ import HelpModal from './components/HelpModal.jsx'
 import TourModal from './components/TourModal.jsx'
 import SettingsModal from './components/SettingsModal.jsx'
 import ContextMenu from './components/ContextMenu.jsx'
+import { EXAMPLES } from './examples.js'
 import { TextNode } from './nodes/TextNode.jsx'
 import { ImageNode } from './nodes/ImageNode.jsx'
 import { VideoNode } from './nodes/VideoNode.jsx'
@@ -741,6 +742,24 @@ const updateNodeConfig = useCallback(
     showToast(t('toast.cleared'), 'success')
   }, [setNodes, setEdges, showToast, t])
 
+  // 载入内置示例工作流（复用导入的解析/归一化逻辑）
+  const loadExample = useCallback(
+    (ex) => {
+      if (!ex || !Array.isArray(ex.canvas?.nodes) || !Array.isArray(ex.canvas?.edges)) return
+      idbClearMedia()
+      mediaCacheRef.current.clear()
+      const nodes = ex.canvas.nodes.map(normalizeNode).filter(Boolean)
+      if (!nodes.length) return
+      setNodes(nodes)
+      setEdges(normalizeEdges(ex.canvas.edges, nodes.map((n) => n.id)))
+      setSelectedId(null)
+      setSaveHint(t('toast.exampleLoaded'))
+      saveHintRef.current = setTimeout(() => setSaveHint(''), 4000)
+      showToast(t('toast.exampleLoaded'), 'success')
+    },
+    [setNodes, setEdges, showToast, t]
+  )
+
   // 键盘快捷键：Ctrl+S 保存 / Ctrl+Enter 运行全部 / Ctrl+, 打开设置
   useEffect(() => {
     const onKey = (e) => {
@@ -935,6 +954,8 @@ const updateNodeConfig = useCallback(
         onExport={handleExport}
         onImport={handleImport}
         onClear={handleClear}
+        examples={EXAMPLES}
+        onLoadExample={loadExample}
         onHelp={() => setHelpOpen(true)}
         onTour={() => setTourOpen(true)}
         onSettings={() => setSettingsOpen(true)}

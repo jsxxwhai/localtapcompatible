@@ -133,6 +133,15 @@ body {
 .menu-item-danger { color: #fca5a5; }
 .menu-item-danger:hover { background: rgba(239, 68, 68, 0.12); }
 .menu-divider { height: 1px; background: var(--border); margin: 4px 8px; }
+.menu-label {
+  padding: 7px 10px 3px;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.4px;
+  user-select: none;
+}
+.menu-item-icon { margin-right: 8px; font-size: 13px; }
+.menu-item-label { white-space: nowrap; }
 
 /* ---------- 按钮 ---------- */
 .btn {

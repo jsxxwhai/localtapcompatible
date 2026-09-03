@@ -8,6 +8,8 @@ export default function Toolbar({
   onExport,
   onImport,
   onClear,
+  examples,
+  onLoadExample,
   onHelp,
   onTour,
   onSettings,
@@ -74,6 +76,21 @@ export default function Toolbar({
               <button type="button" className="menu-item" role="menuitem" onClick={() => { setFileOpen(false); onSave() }}>{t('app.save')}</button>
               <button type="button" className="menu-item" role="menuitem" onClick={() => { setFileOpen(false); onExport() }}>{t('app.export')}</button>
               <button type="button" className="menu-item" role="menuitem" onClick={() => { setFileOpen(false); onImport() }}>{t('app.import')}</button>
+              <div className="menu-divider" />
+              <div className="menu-label">{t('app.examples')}</div>
+              {(examples || []).map((ex) => (
+                <button
+                  key={ex.id}
+                  type="button"
+                  className="menu-item"
+                  role="menuitem"
+                  title={t(ex.descKey)}
+                  onClick={() => { setFileOpen(false); onLoadExample(ex) }}
+                >
+                  <span className="menu-item-icon">{ex.icon}</span>
+                  <span className="menu-item-label">{t(ex.key)}</span>
+                </button>
+              ))}
               <div className="menu-divider" />
               <button type="button" className="menu-item menu-item-danger" role="menuitem" onClick={() => { setFileOpen(false); onClear() }}>{t('app.clear')}</button>
             </div>
