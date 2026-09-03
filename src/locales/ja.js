@@ -64,6 +64,7 @@ export default {
   'run.button': '▶ 実行',
   'hud.running': '実行中 {active}・完了 {done}',
   'hud.done': '完了 {count} ノード',
+  'hud.elapsed': 'バッチ経過時間',
   'handle.text': 'テキスト',
   'handle.image': '画像',
   'handle.media': 'メディア',

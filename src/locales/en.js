@@ -64,6 +64,7 @@ export default {
   'run.button': '▶ Run',
   'hud.running': 'Running {active} · done {done}',
   'hud.done': 'Finished {count} nodes',
+  'hud.elapsed': 'Batch elapsed',
   'handle.text': 'Text',
   'handle.image': 'Image',
   'handle.media': 'Media',

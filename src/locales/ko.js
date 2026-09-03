@@ -64,6 +64,7 @@ export default {
   'run.button': '▶ 실행',
   'hud.running': '실행 중 {active} · 완료 {done}',
   'hud.done': '완료 {count}개 노드',
+  'hud.elapsed': '배치 소요 시간',
   'handle.text': '텍스트',
   'handle.image': '이미지',
   'handle.media': '미디어',

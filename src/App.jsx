@@ -88,6 +88,8 @@ function CanvasApp() {
   const [runVisible, setRunVisible] = useState(false)
   const [runFade, setRunFade] = useState(false)
   const [saveHint, setSaveHint] = useState('')
+  const [runStartedAt, setRunStartedAt] = useState(null)
+  const [runNow, setRunNow] = useState(() => Date.now())
   const saveHintRef = useRef(null)
   const runHideTimerRef = useRef(null)
   const [ctxMenu, setCtxMenu] = useState(null)
@@ -134,6 +136,31 @@ function CanvasApp() {
   const runTotal = runActiveCount + runDoneCount
   const runProgress = runTotal ? Math.min(100, Math.round((runDoneCount / runTotal) * 100)) : 0
 
+  // 批量运行已耗时：从本批首个节点进入排队/运行的时刻起算，运行期间每秒刷新
+  useEffect(() => {
+    if (anyRunning && runStartedAt == null) {
+      setRunStartedAt(Date.now())
+      setRunNow(Date.now())
+      return undefined
+    }
+    if (runStartedAt == null) return undefined
+    if (!anyRunning) {
+      // 全部结束：HUD 停留在“已完成”期间继续走秒，显示最终耗时
+      setRunNow(Date.now())
+      return undefined
+    }
+    const iv = setInterval(() => setRunNow(Date.now()), 1000)
+    return () => clearInterval(iv)
+  }, [anyRunning, runStartedAt])
+  const fmtRunElapsed = () => {
+    if (runStartedAt == null) return ''
+    const s = Math.max(0, Math.round((runNow - runStartedAt) / 1000))
+    if (s < 60) return s + 's'
+    const m = Math.floor(s / 60)
+    const rs = s % 60
+    return m + 'm' + String(rs).padStart(2, '0') + 's'
+  }
+
   // HUD 显示逻辑：有活跃任务时出现；全部结束后停留 900ms 淡出，再移出 DOM
   useEffect(() => {
     if (runHideTimerRef.current) {
@@ -153,6 +180,8 @@ function CanvasApp() {
         runHideTimerRef.current = null
         setRunVisible(false)
         setRunFade(false)
+        setRunStartedAt(null)
+        setRunNow(Date.now())
       }, 520)
     }, 900)
     return undefined
@@ -1166,6 +1195,7 @@ const updateNodeConfig = useCallback(
                   style={{ width: `${runProgress}%` }}
                 />
               </span>
+              {runStartedAt != null ? <span className="run-hud-time" aria-label={t('hud.elapsed')}>{fmtRunElapsed()}</span> : null}
             </div>
           )}
         </div>

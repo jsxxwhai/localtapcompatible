@@ -64,6 +64,7 @@ export default {
   'run.button': '▶ 运行',
   'hud.running': '运行中 {active} · 已完成 {done}',
   'hud.done': '已完成 {count} 个节点',
+  'hud.elapsed': '本批耗时',
   'handle.text': '文本',
   'handle.image': '图片',
   'handle.media': '媒体',
