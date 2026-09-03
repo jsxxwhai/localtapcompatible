@@ -5,13 +5,13 @@ import { useTranslation } from '../i18n.js'
 // 倒推提示词节点：图片 → 视觉模型 → 提示词文本
 function ReverseNodeInner({ data }) {
   const { t } = useTranslation()
-  const running = data.status === 'running'
+  const busy = data.status === 'running' || data.status === 'queued'
   return (
     <NodeShell
       title={t('node.reverse')}
       color="reverse"
       status={data.status}
-      actions={<RunButton onRun={() => data.onRun?.()} running={running} />}
+      actions={<RunButton onRun={() => data.onRun?.()} running={busy} />}
     >
       <NodeHandleTarget id="image" top={50} label={t('handle.image')} />
       <NodeHandleSource id="output" top={50} label={t('handle.text')} />

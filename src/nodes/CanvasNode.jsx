@@ -5,10 +5,11 @@ import { useTranslation } from '../i18n.js'
 // 节点通用外壳 + 共享小组件
 export function statusMeta(t) {
   return {
-    idle: { label: t('status.idle'), color: '#64748b' },
-    running: { label: t('status.running'), color: '#f59e0b' },
+    idle: { label: t('status.idle'), color: '#5b6478' },
+    queued: { label: t('status.queued'), color: '#8b93a7' },
+    running: { label: t('status.running'), color: '#38bdf8' },
     success: { label: t('status.success'), color: '#22c55e' },
-    error: { label: t('status.error'), color: '#ef4444' },
+    error: { label: t('status.error'), color: '#ff6b6b' },
   }
 }
 
@@ -40,7 +41,7 @@ export function MediaView({ media, maxHeight }) {
 // NodeShell：节点外壳
 export function NodeShell({ title, color, status, actions, children }) {
   return (
-    <div className={`tn-node tn-node-${color}`}>
+    <div className={`tn-node tn-node-${color}`} data-status={status}>
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">

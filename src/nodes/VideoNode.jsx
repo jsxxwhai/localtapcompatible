@@ -13,13 +13,13 @@ import { useTranslation } from '../i18n.js'
 // 视频生成节点：可接收 prompt + 起始图，支持异步任务轮询
 function VideoNodeInner({ data }) {
   const { t } = useTranslation()
-  const running = data.status === 'running'
+  const busy = data.status === 'running' || data.status === 'queued'
   return (
     <NodeShell
       title={t('node.video')}
       color="video"
       status={data.status}
-      actions={<RunButton onRun={() => data.onRun?.()} running={running} />}
+      actions={<RunButton onRun={() => data.onRun?.()} running={busy} />}
     >
       <NodeHandleTarget id="prompt" top={26} label={t('handle.prompt')} />
       <NodeHandleTarget id="image" top={72} label={t('handle.startImage')} />

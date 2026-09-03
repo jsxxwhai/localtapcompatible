@@ -83,8 +83,11 @@ function CanvasApp() {
   const [helpOpen, setHelpOpen] = useState(false)
   const [testingId, setTestingId] = useState(null)
   const [toast, setToast] = useState(null)
+  const [runVisible, setRunVisible] = useState(false)
+  const [runFade, setRunFade] = useState(false)
   const [saveHint, setSaveHint] = useState('')
   const saveHintRef = useRef(null)
+  const runHideTimerRef = useRef(null)
   const [ctxMenu, setCtxMenu] = useState(null)
   const [rightTab, setRightTab] = useState('node')
   const [rightOpen, setRightOpen] = useState(true)
@@ -114,7 +117,44 @@ function CanvasApp() {
 
   const nodeMap = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes])
   const selectedNode = selectedId ? nodeMap.get(selectedId) || null : null
-  const anyRunning = nodes.some((n) => n.data.status === 'running')
+  const anyRunning = nodes.some((n) => n.data.status === 'running' || n.data.status === 'queued')
+  const statusCounts = useMemo(() => {
+    let running = 0
+    let queued = 0
+    for (const n of nodes) {
+      if (n.data.status === 'running') running += 1
+      else if (n.data.status === 'queued') queued += 1
+    }
+    return { running, queued }
+  }, [nodes])
+  const runActiveCount = statusCounts.running + statusCounts.queued
+  const runDoneCount = nodes.filter((n) => n.data.status === 'success' || n.data.status === 'error').length
+  const runTotal = runActiveCount + runDoneCount
+  const runProgress = runTotal ? Math.min(100, Math.round((runDoneCount / runTotal) * 100)) : 0
+
+  // HUD 显示逻辑：有活跃任务时出现；全部结束后停留 900ms 淡出，再移出 DOM
+  useEffect(() => {
+    if (runHideTimerRef.current) {
+      clearTimeout(runHideTimerRef.current)
+      runHideTimerRef.current = null
+    }
+    if (anyRunning) {
+      setRunFade(false)
+      setRunVisible(true)
+      return undefined
+    }
+    if (!runVisible) return undefined
+    runHideTimerRef.current = setTimeout(() => {
+      runHideTimerRef.current = null
+      setRunFade(true)
+      runHideTimerRef.current = setTimeout(() => {
+        runHideTimerRef.current = null
+        setRunVisible(false)
+        setRunFade(false)
+      }, 520)
+    }, 900)
+    return undefined
+  }, [anyRunning, runVisible])
 
   // 加载预设
   useEffect(() => {
@@ -271,6 +311,25 @@ function CanvasApp() {
   const setNodeStatus = useCallback(
     (id, status, extra = {}) => {
       setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, status, ...extra } } : n)))
+      if (status === 'success' || status === 'error') {
+        mediaCacheRef.current.delete(id)
+      }
+    },
+    [setNodes]
+  )
+
+  // 排队态：给一组节点标 queued（只在节点空闲时标），并清理它们上一次的运行时错误
+  const markQueued = useCallback(
+    (ids) => {
+      if (!ids || !ids.length) return
+      const pending = new Set(ids)
+      setNodes((ns) =>
+        ns.map((n) =>
+          pending.has(n.id) && n.data.status !== 'running'
+            ? { ...n, data: { ...n.data, status: 'queued', error: '' } }
+            : n
+        )
+      )
     },
     [setNodes]
   )
@@ -318,10 +377,25 @@ function CanvasApp() {
     []
   )
 
+  const runSequence = useCallback(
+    async (ids) => {
+      // 本批次结束：把意外残留的排队态重置为空闲，避免中断后卡住
+      const alive = new Set(ids)
+      setNodes((ns) =>
+        ns.map((n) =>
+          alive.has(n.id) && n.data.status === 'queued' ? { ...n, data: { ...n.data, status: 'idle' } } : n
+        )
+      )
+    },
+    [setNodes]
+  )
+
   const executeNode = useCallback(
-    (id) => {
+    (id, opts) => {
       const node = canvasRef.current.nodes.find((n) => n.id === id)
-      if (!node || !isRunnable(node)) return
+      if (!node || !isRunnable(node)) return Promise.resolve()
+      const enqueueOnly = opts?.enqueueOnly
+      if (!enqueueOnly && node.data.status !== 'queued') setNodeStatus(id, 'queued')
       // 并发运行排队串行执行，而不是静默丢弃
       const task = runChainRef.current.then(async () => {
         const cur = canvasRef.current.nodes.find((n) => n.id === id)
@@ -361,12 +435,18 @@ function CanvasApp() {
       showToast(t('toast.noRunnable'), 'info')
       return
     }
-    for (const id of targets) {
-      await executeNode(id)
-      const fresh = canvasRef.current.nodes.find((n) => n.id === id)
-      if (fresh?.data.status === 'error') break
+    if (anyRunning) return
+    markQueued(targets)
+    try {
+      for (const id of targets) {
+        await executeNode(id, { enqueueOnly: true })
+        const fresh = canvasRef.current.nodes.find((n) => n.id === id)
+        if (fresh?.data.status === 'error') break
+      }
+    } finally {
+      runSequence(targets)
     }
-  }, [executeNode, showToast])
+  }, [anyRunning, executeNode, markQueued, runSequence, showToast])
 
   // 运行某节点：先把它的上游依赖链全部跑完（拓扑顺序），再返回结果
   const runUpstream = useCallback(
@@ -396,13 +476,19 @@ function CanvasApp() {
         showToast(t('toast.noUpstream'), 'info')
         return
       }
-      for (const nid of targets) {
-        await executeNode(nid)
-        const fresh = canvasRef.current.nodes.find((n) => n.id === nid)
-        if (fresh?.data.status === 'error') break
+      if (anyRunning) return
+      markQueued(targets)
+      try {
+        for (const nid of targets) {
+          await executeNode(nid, { enqueueOnly: true })
+          const fresh = canvasRef.current.nodes.find((n) => n.id === nid)
+          if (fresh?.data.status === 'error') break
+        }
+      } finally {
+        runSequence(targets)
       }
     },
-    [executeNode, showToast]
+    [anyRunning, executeNode, markQueued, runSequence, showToast]
   )
 
   const runSingle = useCallback(async (id) => runUpstream(id), [runUpstream])
@@ -881,10 +967,30 @@ const updateNodeConfig = useCallback(
     [addNodeAt, notifyNode, setNodes, setEdges, runUpstream, runAll, deleteNode, handleClear, showToast, t]
   )
 
-  // 给节点注入交互回调
+  // Live nodes (running/queued): makes their outgoing edges flow with light
+  const activeNodeIds = useMemo(() => {
+    const s = new Set()
+    for (const n of nodes) {
+      if (n.data.status === 'running' || n.data.status === 'queued') s.add(n.id)
+    }
+    return s
+  }, [nodes])
+
+  // Mark edges that are really "flowing" as animated (drives the pulse visuals)
+  const displayEdges = useMemo(() => {
+    let changed = false
+    const next = edges.map((e) => {
+      const lit = activeNodeIds.has(e.source)
+      if (e.animated === lit) return e
+      changed = true
+      return lit ? { ...e, animated: true } : { ...e, animated: false }
+    })
+    return changed ? next : edges
+  }, [edges, activeNodeIds])
+
+  // Inject interactive callbacks into node objects
   const displayNodes = useMemo(
     () => {
-      // 节点对象引用没变就复用上次注入的回调对象：拖拽/缩放时只有变化的节点重渲染
       const cache = displayCacheRef.current
       if (displaySettingsRef.current !== settings) {
         cache.clear()
@@ -974,7 +1080,7 @@ const updateNodeConfig = useCallback(
         <div className="canvas-wrap">
           <ReactFlow
             nodes={displayNodes}
-            edges={edges}
+            edges={displayEdges}
             nodeTypes={nodeTypes}
             connectionMode={ConnectionMode.Loose}
             onNodesChange={onNodesChange}
@@ -1006,7 +1112,7 @@ const updateNodeConfig = useCallback(
             maxZoom={2.5}
             proOptions={{ hideAttribution: true }}
           >
-            <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#3a4460" />
+            <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#252b3d" />
             <Controls showInteractive={false} />
             <MiniMap pannable zoomable nodeColor={(n) => nodeColor(n.type)} maskColor="rgba(10,12,20,0.75)" />
           </ReactFlow>
@@ -1016,6 +1122,22 @@ const updateNodeConfig = useCallback(
               onOpenExamples={() => loadExample(EXAMPLES[0])}
               onTour={() => setTourOpen(true)}
             />
+          )}
+          {(runVisible || anyRunning) && (
+            <div className={`run-hud${runFade ? ' fading' : ''}`} role="status" aria-live="polite">
+              <span className="run-hud-dot" />
+              <span className="run-hud-label">
+                {anyRunning
+                  ? t('hud.running', { active: runActiveCount, done: runDoneCount })
+                  : t('hud.done', { count: runDoneCount })}
+              </span>
+              <span className="run-hud-track">
+                <span
+                  className="run-hud-bar"
+                  style={{ width: `${runProgress}%` }}
+                />
+              </span>
+            </div>
           )}
         </div>
         {rightOpen ? (
@@ -1112,12 +1234,12 @@ function nodeColor(type) {
   return (
     {
       text: '#8b9cf7',
-      image: '#7dd3fc',
-      video: '#f0abfc',
-      reverse: '#c4b5fd',
-      upload: '#fcd34d',
-      asset: '#a3e635',
-      output: '#6ee7b7',
-    }[type] || '#94a3b8'
+      image: '#4dc2eb',
+      video: '#7cc7ff',
+      reverse: '#38bdf8',
+      upload: '#fbbf24',
+      asset: '#4ade80',
+      output: '#2dd4bf',
+    }[type] || '#7a8499'
   )
 }

@@ -13,13 +13,13 @@ import { useTranslation } from '../i18n.js'
 // 图片生成节点：接收 prompt（可选 image 参考图），调用自定义 API
 function ImageNodeInner({ data }) {
   const { t } = useTranslation()
-  const running = data.status === 'running'
+  const busy = data.status === 'running' || data.status === 'queued'
   return (
     <NodeShell
       title={t('node.image')}
       color="image"
       status={data.status}
-      actions={<RunButton onRun={() => data.onRun?.()} running={running} />}
+      actions={<RunButton onRun={() => data.onRun?.()} running={busy} />}
     >
       <NodeHandleTarget id="prompt" top={26} label={t('handle.prompt')} />
       <NodeHandleTarget id="image" top={72} label={t('handle.refImage')} />
