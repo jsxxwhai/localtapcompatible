@@ -23,6 +23,29 @@ function describeActionLocal(a, t) {
   }
 }
 
+const NODE_META = {
+  text: { icon: '✏️', key: 'node.text' },
+  image: { icon: '🖼️', key: 'node.image' },
+  video: { icon: '🎬', key: 'node.video' },
+  reverse: { icon: '🔍', key: 'node.reverse' },
+  upload: { icon: '📁', key: 'node.upload' },
+  asset: { icon: '📂', key: 'node.asset' },
+  output: { icon: '🖥️', key: 'node.output' },
+}
+
+function nodeLabel(n, t) {
+  const m = NODE_META[n.type]
+  const base = m ? t(m.key) : n.type
+  if (n.label && n.label !== n.type) return `${base} · ${String(n.label).slice(0, 18)}`
+  return base
+}
+
+function nodePreview(n) {
+  if (n.text) return String(n.text).slice(0, 42)
+  if (n.hasOutput) return '[out]'
+  return ''
+}
+
 export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentUpdate, onOpenSettings }) {
   const { t } = useTranslation()
   const [userInput, setUserInput] = useState('')
@@ -32,7 +55,10 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
   const [queue, setQueue] = useState([])
   const [editingIdx, setEditingIdx] = useState(null)
   const [editText, setEditText] = useState('')
+  const [mentionOpen, setMentionOpen] = useState(false)
+  const [picked, setPicked] = useState([]) // [{id,type,label}]
 
+  const nodeList = useMemo(() => snapshot?.nodes || [], [snapshot])
   const tempMap = useRef({})
   const queueRef = useRef(queue)
   queueRef.current = queue
@@ -120,7 +146,8 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
   }, [])
 
   const runAgent = useCallback(async () => {
-    if (!userInput.trim()) {
+    const inputText = userInput.trim()
+    if (!inputText) {
       agentApi.toast(t('agent.needInput'), 'error')
       return
     }
@@ -135,9 +162,14 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
     setEditingIdx(null)
     tempMap.current = {}
     try {
+      const refs = picked.map((p) => {
+        const n = nodeList.find((x) => x.id === p.id)
+        return { id: p.id, type: p.type, preview: n ? nodePreview(n) : '' }
+      })
+      const prompt = inputText + (refs.length ? '\n引用节点: ' + refs.map((r) => `${r.type}:${r.id}`).join(', ') : '')
       const data = await apiRun(runConfig, {
-        vars: { system: buildSystemPrompt(snapshot) },
-        prompt: userInput,
+        vars: { system: buildSystemPrompt(snapshot, refs) },
+        prompt,
       })
       const plan = parseAgentResponse(data.output?.value)
       setSummary(plan.summary)
@@ -163,7 +195,7 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
     } finally {
       setRunning(false)
     }
-  }, [userInput, agentSettings, mode, snapshot, agentApi, applyAction, setItemStatus, t])
+  }, [userInput, agentSettings, mode, snapshot, agentApi, applyAction, setItemStatus, t, picked, nodeList])
 
   const confirmItem = useCallback(
     async (index) => {
@@ -233,6 +265,14 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
 
   const examples = [t('agent.ex1'), t('agent.ex2'), t('agent.ex3')]
 
+  const togglePick = (n) => {
+    setPicked((prev) => {
+      if (prev.some((p) => p.id === n.id)) return prev.filter((p) => p.id !== n.id)
+      return [...prev, { id: n.id, type: n.type, label: nodeLabel(n, t) }]
+    })
+    setMentionOpen(false)
+  }
+
   return (
     <div className="agent-panel">
       <div className="agent-head">
@@ -280,6 +320,53 @@ export default function AgentPanel({ snapshot, agentApi, agentSettings, onAgentU
         value={userInput}
         onChange={(e) => setUserInput(e.target.value)}
       />
+
+      <div className="agent-mention-row">
+        <button
+          type="button"
+          className="btn btn-small agent-mention-btn"
+          onClick={() => setMentionOpen((v) => !v)}
+          aria-haspopup="listbox"
+          aria-expanded={mentionOpen}
+        >
+          @ {t('agent.mention')}
+        </button>
+        {mentionOpen && (
+          <div className="agent-mention-list" role="listbox">
+            {nodeList.length === 0 && <div className="agent-mention-empty">{t('agent.mentionEmpty')}</div>}
+            {nodeList.map((n) => {
+              const m = NODE_META[n.type] || { icon: '⬡', key: '' }
+              const active = picked.some((p) => p.id === n.id)
+              return (
+                <button
+                  type="button"
+                  key={n.id}
+                  role="option"
+                  aria-selected={active}
+                  className="agent-mention-item"
+                  onClick={() => togglePick(n)}
+                >
+                  <span className="agent-mention-icon">{m.icon}</span>
+                  <span className="agent-mention-label">{nodeLabel(n, t)}</span>
+                  <span className="agent-mention-hint">{nodePreview(n) || '#' + String(n.id).slice(-5)}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      {picked.length > 0 && (
+        <div className="agent-picked">
+          {picked.map((p) => (
+            <span key={p.id} className="agent-picked-chip">
+              {p.label}
+              <button type="button" className="agent-picked-x" onClick={() => setPicked((prev) => prev.filter((x) => x.id !== p.id))} aria-label={t('common.close')}>×</button>
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="agent-examples">
         {examples.map((ex) => (
           <button type="button" key={ex} className="agent-example" onClick={() => setUserInput(ex)}>

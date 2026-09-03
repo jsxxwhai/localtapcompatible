@@ -160,6 +160,8 @@ export default {
   'agent.apiOpenSettings': '⚙️ 板块设置',
   'agent.inputLabel': '指令',
   'agent.inputPlaceholder': '例如：帮我搭一个「猫咪照片→图生视频」的流程并运行',
+  'agent.mention': '引用画布节点',
+  'agent.mentionEmpty': '画布还没有节点，先在画布上添加一些节点吧',
   'agent.run': '🚀 交给 Agent 执行',
   'agent.running': '🤖 思考执行中…',
   'agent.plan': 'Agent 计划',
@@ -362,6 +364,7 @@ export default {
 
   'settings.testPrompt': '接口连通性测试',
     'agent.langInstruction': '请用简体中文回复（包括 summary 和生成的提示词文本）。',
+  'agent.refBlock': '用户特别引用了以下画布节点（type:id，冒号后为节点内容预览）：\n{refs}\n\n请把引用节点当作操作对象：需要改动它们时使用对应 id；需要参考其内容时直接读取上述预览。',
   'agent.noActions': 'Agent 没有返回任何操作',
     'agent.noJson': 'Agent 没有返回 JSON',
   'agent.badJson': 'Agent 返回的 JSON 无法解析',

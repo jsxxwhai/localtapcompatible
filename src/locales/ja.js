@@ -160,6 +160,8 @@ export default {
   'agent.apiOpenSettings': '⚙️ 設定',
   'agent.inputLabel': '指示',
   'agent.inputPlaceholder': '例：「猫の写真→image-to-video」のフローを組んで実行',
+  'agent.mention': 'キャンバスのノードを参照',
+  'agent.mentionEmpty': 'キャンバスにノードがありません。先に追加してください',
   'agent.run': '🚀 エージェントに実行させる',
   'agent.running': '🤖 思考中…',
   'agent.plan': 'エージェントの計画',
@@ -362,6 +364,7 @@ export default {
 
   'settings.testPrompt': 'API接続テスト',
     'agent.langInstruction': '日本語で返答してください（summary と生成されるプロンプト文を含む）。',
+  'agent.refBlock': 'ユーザーは以下のキャンバスノードを明示的に参照しています（type:id、= の後は内容プレビュー）：\n{refs}\n\nこれらを操作対象として扱い、変更時は id を使用し、内容が必要な場合はプレビューを参照してください。',
   'agent.noActions': 'Agentが操作を返しませんでした',
     'agent.noJson': 'AgentがJSONを返しませんでした',
   'agent.badJson': 'Agentが返したJSONを解析できません',

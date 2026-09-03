@@ -1,15 +1,19 @@
 import { translate, loadLocale } from './i18n.js'
 
 // Agent 全面掌控：画布快照 → 系统提示词 → 解析 AI 返回的 JSON 操作指令
-
-export function buildSystemPrompt(snapshot) {
+export function buildSystemPrompt(snapshot, refs = []) {
   const locale = loadLocale()
-  return translate(locale, 'agent.systemPrompt', { snapshot: JSON.stringify(snapshot) }) +
-    '\n7. ' + translate(locale, 'agent.langInstruction')
+  let base = translate(locale, 'agent.systemPrompt', { snapshot: JSON.stringify(snapshot) })
+  if (Array.isArray(refs) && refs.length) {
+    base += '\n\n' + translate(locale, 'agent.refBlock', {
+      refs: refs.map((r) => `${r.type}:${r.id}${r.preview ? '=' + String(r.preview).slice(0, 60) : ''}`).join(' | '),
+    })
+  }
+  return base + '\n7. ' + translate(locale, 'agent.langInstruction')
 }
 
 export function parseAgentResponse(raw) {
-  let text = String(raw ?? '').trim()
+  let text = String(raw ?? '')
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i)
   if (fence) text = fence[1].trim()
   const start = text.indexOf('{')

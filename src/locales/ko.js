@@ -160,6 +160,8 @@ export default {
   'agent.apiOpenSettings': '⚙️ 설정',
   'agent.inputLabel': '명령',
   'agent.inputPlaceholder': '예：「고양이 사진→image-to-video」흐름을 만들어 실행',
+  'agent.mention': '캔버스 노드 참조',
+  'agent.mentionEmpty': '캔버스에 노드가 없습니다. 먼저 추가해 주세요',
   'agent.run': '🚀 에이전트에게 실행',
   'agent.running': '🤖 생각 중…',
   'agent.plan': '에이전트 계획',
@@ -362,6 +364,7 @@ export default {
 
   'settings.testPrompt': 'API 연결 테스트',
     'agent.langInstruction': '한국어로 답변하세요（summary와 생성되는 프롬프트 텍스트 포함）.',
+  'agent.refBlock': '사용자가 다음 캔버스 노드를 명시적으로 참조했습니다（type:id, = 뒤는 내용 미리보기）：\n{refs}\n\n이 노드들을 대상으로 취급하고, 수정 시 해당 id를 사용하며 내용이 필요하면 미리보기를 읽으세요.',
   'agent.noActions': 'Agent가 작업을 반환하지 않았습니다',
     'agent.noJson': 'Agent가 JSON을 반환하지 않았습니다',
   'agent.badJson': 'Agent가 반환한 JSON을 파싱할 수 없습니다',

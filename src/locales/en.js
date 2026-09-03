@@ -160,6 +160,8 @@ export default {
   'agent.apiOpenSettings': '⚙️ Settings',
   'agent.inputLabel': 'Instruction',
   'agent.inputPlaceholder': 'e.g. Build a "cat photo → image-to-video" flow and run it',
+  'agent.mention': 'Reference canvas nodes',
+  'agent.mentionEmpty': 'No nodes on canvas yet - add some first',
   'agent.run': '🚀 Let Agent execute',
   'agent.running': '🤖 Thinking…',
   'agent.plan': 'Agent plan',
@@ -362,6 +364,7 @@ export default {
 
   'settings.testPrompt': 'API connectivity test',
     'agent.langInstruction': 'Reply in English (including the summary and any generated prompt text).',
+  'agent.refBlock': 'The user explicitly references these canvas nodes (type:id; preview after =):\n{refs}\n\nTreat them as the targets: use their ids when modifying, and read the previews when you need their content.',
   'agent.noActions': 'Agent returned no actions',
     'agent.noJson': 'Agent returned no JSON',
   'agent.badJson': 'Could not parse the JSON returned by Agent',
