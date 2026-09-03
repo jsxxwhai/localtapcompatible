@@ -1,7 +1,7 @@
 {
   "name": "local-tap-compatible",
   "version": "0.1.0",
-  "description": "本地运行的类 ComfyUI 无限画布：节点式 AI 工作流，图片/视频等节点均可自定义 API",
+  "description": "本地运行的无限画布式节点 AI 工作流：图片/视频生成、倒推提示词等节点均可自定义任意 API",
   "type": "module",
   "license": "MIT",
   "author": "jsxxwhai",

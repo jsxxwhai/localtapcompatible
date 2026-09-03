@@ -14,13 +14,13 @@
 
 ## ✨ Why local-tap-compatible?
 
-A **fully local**, ComfyUI-style infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph, using your own keys — nothing is uploaded to any cloud.
+A **fully local**, node-based infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph, using your own keys — nothing is uploaded to any cloud.
 
 | Feature | Description |
 | --- | --- |
 | 🧩 Node workflow | Prompt, image gen, video gen, reverse prompt, upload, asset, preview output |
 | 🔌 Any API | Compatible with OpenAI / SiliconFlow / Kling / Seedance / Runway and any HTTP endpoint |
-| 🖥️ Infinite canvas | Zoom, pan, box-select, drag-connect — ComfyUI-like UX |
+| 🖥️ Infinite canvas | Zoom, pan, box-select, drag-to-connect node graph |
 | 🌐 Multilingual | 简体中文 / English / 日本語 / 한국어, follows system locale, switchable anytime |
 | 🛡️ Privacy-first | API keys stored locally only, zero cloud relay |
 | 💻 Desktop app | Native Windows (WinForms + WebView2), single process, exits completely on close |
