@@ -44,6 +44,7 @@ export default function HelpModal({ onClose, onTour }) {
             <li>{t('help.quick.6')}</li>
             <li>{t('help.quick.7')}</li>
             <li>{t('help.quick.8')}</li>
+            <li>{t('help.quick.9')}</li>
           </ul>
           <h4>{t('help.kbdTitle')}</h4>
           <ul>
@@ -51,6 +52,7 @@ export default function HelpModal({ onClose, onTour }) {
             <li>{t('help.kbd.2')}</li>
             <li>{t('help.kbd.3')}</li>
             <li>{t('help.kbd.4')}</li>
+            <li>{t('help.kbd.5')}</li>
           </ul>
 
           <h4>{t('help.dataTitle')}</h4>

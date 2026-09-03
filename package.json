@@ -19,7 +19,7 @@
     "node-based",
     "image-generation",
     "video-generation",
-    "comfyui",
+    "prompt-to-image",
     "local"
   ],
   "scripts": {

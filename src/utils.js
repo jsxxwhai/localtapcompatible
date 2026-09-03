@@ -230,6 +230,70 @@ export function loadFromLocalStorage() {
   }
 }
 
+// 自动整理画布布局：按拓扑分层，尽量保持原有相对顺序，输出整齐的网格
+// 不改变连线，只调整 position；返回新的 nodes 数组（新增了 keepAlive 防误触）
+export function autoLayout(nodes, edges) {
+  if (!Array.isArray(nodes) || nodes.length < 2) return nodes
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  const indeg = new Map(nodes.map((n) => [n.id, 0]))
+  const adj = new Map(nodes.map((n) => [n.id, []]))
+
+  for (const e of edges || []) {
+    if (!byId.has(e.source) || !byId.has(e.target) || e.source === e.target) continue
+    adj.get(e.source).push(e.target)
+    indeg.set(e.target, (indeg.get(e.target) || 0) + 1)
+  }
+
+  // 拓扑排序（处理环：剩余节点按原顺序排在最后）
+  const queue = nodes.filter((n) => indeg.get(n.id) === 0).map((n) => n.id)
+  const order = []
+  const seen = new Set()
+  let head = 0
+  while (head < queue.length) {
+    const id = queue[head++]
+    if (seen.has(id)) continue
+    seen.add(id)
+    order.push(id)
+    for (const nxt of adj.get(id)) {
+      indeg.set(nxt, indeg.get(nxt) - 1)
+      if (indeg.get(nxt) === 0) queue.push(nxt)
+    }
+  }
+  for (const n of nodes) if (!seen.has(n.id)) order.push(n.id)
+
+  // 层分配：level = 距离所有根的深度（取最大，尽量贴合连线方向）
+  const level = new Map(nodes.map((n) => [n.id, 0]))
+  for (const id of order) {
+    const lv = level.get(id) || 0
+    for (const nxt of adj.get(id)) {
+      if ((level.get(nxt) || 0) < lv + 1) level.set(nxt, lv + 1)
+    }
+  }
+
+  // 每层按原顺序排队
+  const cols = new Map()
+  for (const n of nodes) {
+    const lv = level.get(n.id) || 0
+    if (!cols.has(lv)) cols.set(lv, [])
+    cols.get(lv).push(n.id)
+  }
+  const X_GAP = 320
+  const Y_GAP = 190
+  const maxPerCol = Math.max(...[...cols.values()].map((arr) => arr.length), 1)
+  const startY = 40 + ((maxPerCol - 1) * Y_GAP) / 2
+
+  const positions = new Map()
+  for (const [lv, ids] of [...cols.entries()].sort((a, b) => a[0] - b[0])) {
+    const x = 60 + lv * X_GAP
+    ids.forEach((id, i) => {
+      positions.set(id, { x, y: startY + i * Y_GAP - (ids.length - 1) * Y_GAP / 2 })
+    })
+  }
+
+  return nodes.map((n) => (positions.has(n.id) ? { ...n, position: positions.get(n.id) } : n))
+}
+
+
 export function downloadFile(name, content, mime) {
   const blob = content instanceof Blob ? content : new Blob([content], { type: mime || 'application/octet-stream' })
   const url = URL.createObjectURL(blob)

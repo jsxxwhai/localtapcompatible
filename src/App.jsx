@@ -42,6 +42,7 @@ import {
   saveToLocalStorage,
   loadFromLocalStorage,
   downloadFile,
+  autoLayout,
   uid,
   NODE_TYPES,
 } from './utils.js'
@@ -707,6 +708,21 @@ const updateNodeConfig = useCallback(
     [nodeMap, screenToFlowPosition, buildQuickItems, openMenu]
   )
 
+  // 一键整理布局：按连线重新排成整齐列（不改变连线）
+  const handleAutoLayout = useCallback(() => {
+    const ns = canvasRef.current.nodes
+    const es = canvasRef.current.edges
+    if (!ns.length) return
+    if (ns.length < 2) {
+      showToast(t('toast.layoutMin'), 'info')
+      return
+    }
+    const laid = autoLayout(ns, es)
+    setNodes(laid)
+    setSelectedId(null)
+    showToast(t('toast.layoutOk'), 'success')
+  }, [setNodes, showToast, t])
+
   // 画布空白处右键
   const onPaneContextMenu = useCallback(
     (event) => {
@@ -718,10 +734,12 @@ const updateNodeConfig = useCallback(
         action: () => addNodeAt(it.type, pos),
       }))
       items.push({ divider: true })
+      items.push({ label: t('menu.layout'), hint: t('menu.layoutHint'), action: handleAutoLayout })
+      items.push({ divider: true })
       items.push({ label: t('menu.runAll'), hint: t('menu.runAllHint'), action: runAll })
       openMenu(event.clientX, event.clientY, items)
     },
-    [screenToFlowPosition, addNodeAt, runAll, openMenu, t]
+    [screenToFlowPosition, addNodeAt, handleAutoLayout, runAll, openMenu, t]
   )
 
   // 节点右键
@@ -853,7 +871,7 @@ const updateNodeConfig = useCallback(
     [setNodes, setEdges, showToast, t]
   )
 
-  // 键盘快捷键：Ctrl+S 保存 / Ctrl+Enter 运行全部 / Ctrl+, 打开设置
+  // 键盘快捷键：Ctrl+S 保存 / Ctrl+Enter 运行全部 / Ctrl+, 设置 / Ctrl+L 整理布局 / Ctrl+D 复制
   useEffect(() => {
     const onKey = (e) => {
       const el = e.target
@@ -876,11 +894,14 @@ const updateNodeConfig = useCallback(
       } else if (key === ',') {
         e.preventDefault()
         setSettingsOpen(true)
+      } else if (key === 'l' && !editable) {
+        e.preventDefault()
+        handleAutoLayout()
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [handleSave, runAll, duplicateNode, selectedId])
+  }, [handleSave, runAll, duplicateNode, handleAutoLayout, selectedId])
 
   // Escape 关闭顶层浮层（帮助 / 教程 / 设置 / 右键菜单）
   useEffect(() => {

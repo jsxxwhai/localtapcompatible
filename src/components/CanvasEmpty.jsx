@@ -1,7 +1,7 @@
 import { NODE_TYPES } from '../utils.js'
 import { useTranslation } from '../i18n.js'
 
-// 画布空态：节点全部删除/清空时显示的 QuickStart，对齐 TapNow 的 canvas-first 引导
+// 画布空态：节点全部删除/清空时显示的 QuickStart，canvas-first 引导
 export default function CanvasEmpty({ onAdd, onOpenExamples, onTour }) {
   const { t } = useTranslation()
   return (
