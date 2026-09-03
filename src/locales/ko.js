@@ -16,8 +16,8 @@ export default {
   "preset.openai-compatible-vision": "AI Platform 호환 비전（Qwen-VL 등）",
   "preset.async-video": "범용 비동기 동영상（제출 + 폴링）",
   'help.exampleBody': "// AI Platform 텍스트-이미지\n프리셋: AI Platform text-to-image\n모델: gpt-image-1\n본문: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\n추출: data[0].url\n\n// 범용 비동기 동영상\n프리셋: 범용 비동기 동영상（작업 제출 + 폴링）\n제출: POST {baseUrl}/videos/generations\n조회: GET {baseUrl}/videos/generations/{id}\n상태 필드: status（succeeded = 완료）\n결과 필드: output.video_url",
-  'app.metaDescription': "TapNow Local은 로컬에서 동작하는 무한 캔버스 노드형 AI 워크플로 도구입니다. 자신의 API로 이미지·영상 생성과 프롬프트 역추론이 가능합니다.",
-  'app.documentTitle': "TapNow Local — 로컬 AI 무한 캔버스",
+  'app.metaDescription': "local-tap-compatible은 로컬에서 동작하는 무한 캔버스 노드형 AI 워크플로 도구입니다. 자신의 API로 이미지·영상 생성과 프롬프트 역추론이 가능합니다.",
+  'app.documentTitle': "local-tap-compatible — 로컬 AI 무한 캔버스",
   'app.brandSub': '로컬 AI 캔버스',
   'app.runAll': '▶ 모두 실행',
   'app.save': '💾 저장',
@@ -292,7 +292,7 @@ export default {
   "agent.action.move": "노드 {id} 이동",
   "agent.action.clear": "캔버스 전체 지우기",
   "agent.action.unknown": "알 수 없는 작업",
-  "tour.slide1.title": "TapNow Local에 오신 것을 환영합니다",
+  "tour.slide1.title": "local-tap-compatible에 오신 것을 환영합니다",
   "tour.slide1.text": "로컬에서 실행되는 무한 캔버스로, 프롬프트·이미지 생성·비디오 생성·프롬프트 역추출 블록을 블록처럼 연결하고 각 노드에 나만의 AI API를 연결할 수 있습니다.",
   "tour.slide1.l1": "노드 기반 AI 워크플로 (ComfyUI와 유사)",
   "tour.slide1.l2": "이미지 / 비디오 / 프롬프트 노드에 임의 API 연결 가능",
@@ -361,5 +361,5 @@ export default {
   'settings.modeAdvanced': '고급',
   'settings.modeHint': '간단 모드는 자주 쓰는 항목만, 고급 모드는 모든 설정 표시',
 
-  'agent.systemPrompt': "당신은 \"TapNow Local\" 무한 캔버스(ComfyUI와 유사한 노드형 AI 워크플로)의 캔버스 제어 Agent입니다.\n작업: 사용자 지시에 따라 캔버스 작업을 계획하고 엄격한 JSON을 반환하세요.\n\n사용 가능한 노드 유형:\n- text 프롬프트(텍스트 출력, 출구 handle=output)\n- image 이미지 생성(입력 handle: prompt=프롬프트, image=참조 이미지; 출구 output)\n- video 비디오 생성(입력 handle: prompt, image; 출구 output)\n- reverse 역방향 프롬프트(입력 handle: image; 텍스트 출력, 출구 output)\n- upload 이미지 업로드(출구 output)\n- output 미리보기 출력(입력 handle: media)\n\n현재 캔버스 상태(JSON):\n{snapshot}\n\n요구사항:\n1. JSON 객체 하나만 반환하세요. Markdown 코드 블록이나 추가 텍스트 금지.\n2. 형식: {\"summary\":\"변경 사항 한 줄 설명\",\"actions\":[{...}]}\n3. 사용 가능한 작업 op(각 작업에 importance:\"high\" 또는 \"low\" 지정 가능):\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"임시 ID(예: n1)\", text?:\"프롬프트 텍스트\", position?:{x,y}, config?:{임의 노드 설정 필드} }\n   - connect:  { op, from:\"기존/임시 ID\", to:\"대상 ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"노드 ID\" 또는 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 기존 노드는 상태의 id를 참조; 새 노드는 임시 id(n1, n2...)를 사용하고 이후 작업에서 참조.\n5. importance 규칙: 삭제·초기화·기존 설정/텍스트 변경·전체 실행 등 영향이 큰 작업은 \"high\"; 새로 만들기·연결·이동 등 저위험은 \"low\".\n6. 사용자 의도를 실현하기 위해 전체 흐름을 계획하세요. 질문하지 말고 바로 작업을 출력하세요.",
+  'agent.systemPrompt': "당신은 \"local-tap-compatible\" 무한 캔버스(ComfyUI와 유사한 노드형 AI 워크플로)의 캔버스 제어 Agent입니다.\n작업: 사용자 지시에 따라 캔버스 작업을 계획하고 엄격한 JSON을 반환하세요.\n\n사용 가능한 노드 유형:\n- text 프롬프트(텍스트 출력, 출구 handle=output)\n- image 이미지 생성(입력 handle: prompt=프롬프트, image=참조 이미지; 출구 output)\n- video 비디오 생성(입력 handle: prompt, image; 출구 output)\n- reverse 역방향 프롬프트(입력 handle: image; 텍스트 출력, 출구 output)\n- upload 이미지 업로드(출구 output)\n- output 미리보기 출력(입력 handle: media)\n\n현재 캔버스 상태(JSON):\n{snapshot}\n\n요구사항:\n1. JSON 객체 하나만 반환하세요. Markdown 코드 블록이나 추가 텍스트 금지.\n2. 형식: {\"summary\":\"변경 사항 한 줄 설명\",\"actions\":[{...}]}\n3. 사용 가능한 작업 op(각 작업에 importance:\"high\" 또는 \"low\" 지정 가능):\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"임시 ID(예: n1)\", text?:\"프롬프트 텍스트\", position?:{x,y}, config?:{임의 노드 설정 필드} }\n   - connect:  { op, from:\"기존/임시 ID\", to:\"대상 ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"노드 ID\" 또는 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 기존 노드는 상태의 id를 참조; 새 노드는 임시 id(n1, n2...)를 사용하고 이후 작업에서 참조.\n5. importance 규칙: 삭제·초기화·기존 설정/텍스트 변경·전체 실행 등 영향이 큰 작업은 \"high\"; 새로 만들기·연결·이동 등 저위험은 \"low\".\n6. 사용자 의도를 실현하기 위해 전체 흐름을 계획하세요. 질문하지 말고 바로 작업을 출력하세요.",
 }

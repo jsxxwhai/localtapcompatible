@@ -1,8 +1,8 @@
-# 我做了一个本地 AI 无限画布：TapNow Local，接入你自己的 API Key
+# 我做了一个本地 AI 无限画布：local-tap-compatible，接入你自己的 API Key
 
 ## 一句话介绍
 
-一个**完全本地**的类 ComfyUI / TapNow 无限画布，把「提示词 → 图片/视频生成 → 倒推提示词 → 预览输出」串成节点式工作流，所有接口都用你自己的 Key，不上传任何云端。
+一个**完全本地**的类 ComfyUI 无限画布，把「提示词 → 图片/视频生成 → 倒推提示词 → 预览输出」串成节点式工作流，所有接口都用你自己的 Key，不上传任何云端。
 
 ## 为什么做这个
 
@@ -30,6 +30,6 @@ React + Vite + React Flow + Express（后端可选），桌面版 C# WinForms + 
 
 ## 仓库
 
-https://github.com/jsxxwhai/tapnow-local
+https://github.com/jsxxwhai/localtapcompatible
 
 欢迎 star / issue / PR！也欢迎告诉我你最想加的节点类型或 API 预设。

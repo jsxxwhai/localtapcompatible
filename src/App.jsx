@@ -89,7 +89,7 @@ function CanvasApp() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [tourOpen, setTourOpen] = useState(() => {
     try {
-      return !localStorage.getItem('tapnow-tour-seen')
+      return !localStorage.getItem('lct-tour-seen')
     } catch {
       return true
     }
@@ -208,7 +208,7 @@ function CanvasApp() {
 
   const finishTour = useCallback(() => {
     try {
-      localStorage.setItem('tapnow-tour-seen', '1')
+      localStorage.setItem('lct-tour-seen', '1')
     } catch {}
     setTourOpen(false)
   }, [])
@@ -263,7 +263,7 @@ function CanvasApp() {
       })
       return changed ? next : prev
     })
-  }, [setNodes])
+  }, [nodes, edges, setNodes])
 
   const setNodeStatus = useCallback(
     (id, status, extra = {}) => {
@@ -696,12 +696,12 @@ const updateNodeConfig = useCallback(
 
   const handleExport = useCallback(() => {
     const payload = {
-      app: 'tapnow-local',
+      app: 'local-tap-compatible',
       version: 1,
       nodes: serializeForExport(nodes),
       edges,
     }
-    downloadFile(`tapnow-canvas-${Date.now()}.json`, JSON.stringify(payload, null, 2), 'application/json')
+    downloadFile(`lct-canvas-${Date.now()}.json`, JSON.stringify(payload, null, 2), 'application/json')
     showToast(t('toast.exported'), 'success')
   }, [nodes, edges, showToast])
 

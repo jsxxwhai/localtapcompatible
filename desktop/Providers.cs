@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TapNowLocal;
+namespace LocalTapCompatible;
 
 // 提供方预设（与前端 server/providers.js 保持一致）
 public static class Providers

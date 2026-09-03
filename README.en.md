@@ -1,10 +1,10 @@
-# TapNow Local — Local-first AI Infinite Canvas
+# local-tap-compatible — Local-first AI Infinite Canvas
 
 > An infinite canvas + node-based AI workflow. Plug in **your own API keys** for image generation, video generation, reverse prompting, and more.
 
-[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/tapnow-local?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/tapnow-local/stargazers)
-[![License](https://img.shields.io/github/license/jsxxwhai/tapnow-local?style=for-the-badge)](./LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/tapnow-local/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/tapnow-local/actions)
+[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
+[![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
 
 > 中文说明见 [README.md](./README.md)
 
@@ -12,9 +12,9 @@
 
 ![Demo](./docs/demo.gif)
 
-## ✨ Why TapNow Local?
+## ✨ Why local-tap-compatible?
 
-A **fully local**, ComfyUI / TapNow-like infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph, using your own keys — nothing is uploaded to any cloud.
+A **fully local**, ComfyUI-style infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph, using your own keys — nothing is uploaded to any cloud.
 
 | Feature | Description |
 | --- | --- |
@@ -42,7 +42,7 @@ npm run dev   # frontend http://localhost:5173, backend http://localhost:3001
 ## 🖥️ Desktop Build
 
 ```bash
-npm run desktop:build   # outputs release/TapNowLocal.exe
+npm run desktop:build   # outputs release/LocalTapCompatible.exe
 ```
 
 **Zero background residency**: closing the window fully exits the app. ~390MB memory (including system WebView2 runtime), ~5MB on disk — lighter than Electron.

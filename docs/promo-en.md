@@ -1,8 +1,8 @@
-# Show HN: TapNow Local — a local-first infinite canvas for AI workflows
+# Show HN: local-tap-compatible — a local-first infinite canvas for AI workflows
 
 ## What it is
 
-A fully local, ComfyUI/TapNow-like infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph — using **your own API keys**. Nothing is uploaded to any cloud.
+A fully local, ComfyUI-like infinite canvas. Chain "prompt → image/video generation → reverse prompt → output preview" into a visual node graph — using **your own API keys**. Nothing is uploaded to any cloud.
 
 ## Why
 
@@ -30,6 +30,6 @@ React + Vite + React Flow + Express (optional backend); desktop is C# WinForms +
 
 ## Repo
 
-https://github.com/jsxxwhai/tapnow-local
+https://github.com/jsxxwhai/localtapcompatible
 
 Stars, issues, and PRs welcome. Let me know which node types or API presets you want next.

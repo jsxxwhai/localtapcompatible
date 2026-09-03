@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你考虑为 TapNow Local 贡献代码！
+感谢你考虑为 local-tap-compatible 贡献代码！
 
 ## 环境准备
 

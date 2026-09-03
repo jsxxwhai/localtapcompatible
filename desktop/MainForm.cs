@@ -1,7 +1,7 @@
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
-namespace TapNowLocal;
+namespace LocalTapCompatible;
 
 // 主窗口：WebView2 全屏加载本地虚拟主机上的前端资源
 public sealed class MainForm : Form
@@ -31,7 +31,7 @@ public sealed class MainForm : Form
         {
             var userDataFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "TapNowLocal", "WebView2");
+                "LocalTapCompatible", "WebView2");
             // 精简参数：关闭 GPU 合成 / 扩展 / 同步，限制 JS 堆，尽量降低内存占用
             var options = new CoreWebView2EnvironmentOptions
             {
@@ -44,15 +44,15 @@ public sealed class MainForm : Form
             var core = _webView.CoreWebView2!;
             var wwwroot = Path.Combine(AppContext.BaseDirectory, "wwwroot");
             core.SetVirtualHostNameToFolderMapping(
-                "tapnow.local", wwwroot, CoreWebView2HostResourceAccessKind.DenyCors);
+                "localtapcompatible.local", wwwroot, CoreWebView2HostResourceAccessKind.DenyCors);
 
             await core.AddScriptToExecuteOnDocumentCreatedAsync(_bridge.InjectScript);
             _bridge.Attach(core);
-            core.Navigate("https://tapnow.local/index.html");
+            core.Navigate("https://localtapcompatible.local/index.html");
         }
         catch (Exception ex)
         {
-            MessageBox.Show(Loc.T(_locale, "ui.startupFail", ("msg", ex.Message)), "TapNow Local", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(Loc.T(_locale, "ui.startupFail", ("msg", ex.Message)), "local-tap-compatible", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Close();
         }
     }

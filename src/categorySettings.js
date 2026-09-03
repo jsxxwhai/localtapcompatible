@@ -13,7 +13,7 @@ export const CATEGORY_MAP = Object.fromEntries(CATEGORY_DEFS.map((c) => [c.id, c
 export const GEN_CATS = new Set(['image', 'video', 'reverse'])
 
 // v2：移除模拟测试后升级，丢弃旧版残留的 mock 配置（如 127.0.0.1:4100 / mock-* 模型）
-export const SETTINGS_KEY = 'tapnow-local-category-settings-v2'
+export const SETTINGS_KEY = 'lct-category-settings-v2'
 
 export function uidApi(prefix = 'api') {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`

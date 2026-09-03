@@ -14,7 +14,7 @@ export const LOCALES = [
 ]
 
 const dict = { zh, en, ja, ko }
-const STORAGE_KEY = 'tapnow-locale'
+const STORAGE_KEY = 'lct-locale'
 export const SYSTEM_LOCALE = 'system'
 
 // 跟随系统语言，识别不了回退英文

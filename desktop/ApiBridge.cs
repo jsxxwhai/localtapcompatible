@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Web.WebView2.Core;
 
-namespace TapNowLocal;
+namespace LocalTapCompatible;
 
 // 前端桥接层：通过 postMessage 与页面通信，替代 HTTP 服务，零额外进程
 public sealed class ApiBridge
@@ -11,9 +11,9 @@ public sealed class ApiBridge
     private readonly HttpClient _http = new() { Timeout = TimeSpan.FromMinutes(6) };
     private CoreWebView2? _webView;
 
-    // 注入到页面的脚本：提供 window.tapnowApi.* 接口
+    // 注入到页面的脚本：提供 window.lctApi.* 接口
     public string InjectScript => """
-        window.tapnowApi = {
+        window.lctApi = {
           _pending: new Map(),
           _seq: 0,
           call(method, payload) {
@@ -23,18 +23,18 @@ public sealed class ApiBridge
               window.chrome.webview.postMessage({ id, method, payload });
             });
           },
-          run: (config, inputs, locale) => window.tapnowApi.call('run', { config, inputs, locale }),
-          getPresets: () => window.tapnowApi.call('getPresets', {}),
-          health: () => window.tapnowApi.call('health', {}),
-          download: (url) => window.tapnowApi.call('download', { url }),
-          listModels: (cfg) => window.tapnowApi.call('listModels', cfg)
+          run: (config, inputs, locale) => window.lctApi.call('run', { config, inputs, locale }),
+          getPresets: () => window.lctApi.call('getPresets', {}),
+          health: () => window.lctApi.call('health', {}),
+          download: (url) => window.lctApi.call('download', { url }),
+          listModels: (cfg) => window.lctApi.call('listModels', cfg)
         };
         window.chrome.webview.addEventListener('message', (e) => {
           const msg = e.data;
           if (!msg || msg.id === undefined) return;
-          const p = window.tapnowApi._pending.get(msg.id);
+          const p = window.lctApi._pending.get(msg.id);
           if (!p) return;
-          window.tapnowApi._pending.delete(msg.id);
+          window.lctApi._pending.delete(msg.id);
           msg.ok ? p.resolve(msg.result) : p.reject(new Error(msg.error));
         });
         true;
@@ -62,7 +62,7 @@ public sealed class ApiBridge
         try
         {
             if (msg.Length > 300) msg = msg[..300] + "...(truncated)";
-            System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "tapnow-bridge-debug.log"), msg + Environment.NewLine);
+            System.IO.File.AppendAllText(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "localtapcompatible-bridge-debug.log"), msg + Environment.NewLine);
         }
         catch { }
     }
@@ -84,7 +84,7 @@ public sealed class ApiBridge
             switch (method)
             {
                 case "health":
-                    Reply(id, new { ok = true, name = "tapnow-local" });
+                    Reply(id, new { ok = true, name = "local-tap-compatible" });
                     break;
 
                 case "getPresets":

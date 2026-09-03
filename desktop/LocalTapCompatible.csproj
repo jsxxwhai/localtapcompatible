@@ -5,8 +5,8 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>TapNowLocal</AssemblyName>
-    <RootNamespace>TapNowLocal</RootNamespace>
+    <AssemblyName>LocalTapCompatible</AssemblyName>
+    <RootNamespace>LocalTapCompatible</RootNamespace>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>false</SelfContained>

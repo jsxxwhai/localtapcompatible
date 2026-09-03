@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace TapNowLocal;
+namespace LocalTapCompatible;
 
 public sealed record RunOutput(string Value, string MediaType);
 

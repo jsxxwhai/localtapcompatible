@@ -1,6 +1,6 @@
 // IndexedDB 媒体存储：解决 localStorage 放不下大图（data URL）的问题
 // 自动保存时把 data URL 媒体写入这里，localStorage 只存占位标记；加载时再取回
-const DB_NAME = 'tapnow-local-media'
+const DB_NAME = 'lct-local-media'
 const DB_VERSION = 1
 const STORE = 'media'
 

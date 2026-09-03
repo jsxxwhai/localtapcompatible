@@ -1,21 +1,21 @@
-# TapNow Local — 本地 AI 无限画布
+# local-tap-compatible — 本地 AI 无限画布
 
 > [English](./README.en.md) | 简体中文
 
 
 > 无限画布 + 节点式 AI 工作流，接入你自己的任意 API。图片、视频、倒推提示词，一条连线跑通。
 
-[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/tapnow-local?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/tapnow-local/stargazers)
-[![License](https://img.shields.io/github/license/jsxxwhai/tapnow-local?style=for-the-badge)](./LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/tapnow-local/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/tapnow-local/actions)
+[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
+[![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
 
 ![主界面](./docs/screenshot-main.png)
 
 ![演示动画](./docs/demo.gif)
 
-## ✨ 为什么是 TapNow Local？
+## ✨ 为什么是 local-tap-compatible？
 
-一个**完全本地**的类 ComfyUI / TapNow 无限画布：把「提示词 → 图片/视频生成 → 倒推提示词 → 预览输出」串成一条可视化的节点链路，所有 API 都用**你自己的 Key**，不上传任何云端。
+一个**完全本地**的类 ComfyUI 无限画布：把「提示词 → 图片/视频生成 → 倒推提示词 → 预览输出」串成一条可视化的节点链路，所有 API 都用**你自己的 Key**，不上传任何云端。
 
 | 能力 | 说明 |
 | --- | --- |
@@ -43,7 +43,7 @@ npm run dev   # 前端 http://localhost:5173，后端 http://localhost:3001
 ## 🖥️ 桌面版
 
 ```bash
-npm run desktop:build   # 输出 release/TapNowLocal.exe
+npm run desktop:build   # 输出 release/LocalTapCompatible.exe
 ```
 
 **零后台驻留**：关闭窗口即完全退出。约 390MB 内存（含系统 WebView2 内核），磁盘仅约 5MB，比 Electron 方案更轻。

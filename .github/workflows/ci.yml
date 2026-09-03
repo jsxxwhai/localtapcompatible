@@ -52,4 +52,4 @@ jobs:
         run: node scripts/copy-dist.mjs
 
       - name: Build desktop
-        run: dotnet build desktop/TapNowLocal.csproj -c Release --nologo
+        run: dotnet build desktop/LocalTapCompatible.csproj -c Release --nologo

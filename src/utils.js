@@ -187,14 +187,14 @@ export function serializeForExport(nodes) {
 export async function saveToLocalStorage(nodes, edges) {
   try {
     localStorage.setItem(
-      'tapnow-local-canvas',
+      'lct-canvas',
       JSON.stringify({ nodes: sanitizeForSave(nodes), edges })
     )
     return true
   } catch {
     try {
       localStorage.setItem(
-        'tapnow-local-canvas',
+        'lct-canvas',
         JSON.stringify({
           nodes: nodes.map((n) => {
             const copy = { ...n.data }
@@ -218,7 +218,7 @@ export async function saveToLocalStorage(nodes, edges) {
 
 export function loadFromLocalStorage() {
   try {
-    const raw = localStorage.getItem('tapnow-local-canvas')
+    const raw = localStorage.getItem('lct-canvas')
     if (!raw) return null
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed.nodes)) return null

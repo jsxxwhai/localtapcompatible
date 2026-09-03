@@ -7,7 +7,7 @@ import { I18nContext, loadLocale, persistLocale, translate, detectSystemLocale, 
 function Root() {
   const [localePref, setLocalePref] = useState(() => {
     try {
-      const saved = localStorage.getItem('tapnow-locale')
+      const saved = localStorage.getItem('lct-locale')
       if (saved) return saved
     } catch {}
     return SYSTEM_LOCALE

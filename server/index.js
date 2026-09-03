@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json({ limit: '64mb' }))
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, name: 'tapnow-local' })
+  res.json({ ok: true, name: 'local-tap-compatible' })
 })
 
 app.get('/api/presets', (_req, res) => {
@@ -67,5 +67,5 @@ if (fs.existsSync(distDir)) {
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`[api] TapNow Local 后端已启动: http://localhost:${PORT}`)
+  console.log(`[api] local-tap-compatible 后端已启动: http://localhost:${PORT}`)
 })

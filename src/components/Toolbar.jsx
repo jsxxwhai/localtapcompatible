@@ -52,7 +52,7 @@ export default function Toolbar({
     <div className="toolbar">
       <div className="brand">
         <span className="brand-logo">◧</span>
-        <span className="brand-name">TapNow Local</span>
+        <span className="brand-name">local-tap-compatible</span>
         <span className="brand-sub">{t('app.brandSub')}</span>
       </div>
       <div className="toolbar-actions">

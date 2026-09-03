@@ -16,8 +16,8 @@ export default {
   "preset.openai-compatible-vision": "AI Platform 兼容视觉（Qwen-VL / 国内中转等）",
   "preset.async-video": "通用异步视频（提交任务 + 轮询）",
   'help.exampleBody': "// AI Platform 文生图\n预设: AI Platform text-to-image\n模型: gpt-image-1\n请求体: { \"model\": \"{{model}}\", \"prompt\": \"{{prompt}}\", \"n\": 1, \"size\": \"1024x1024\" }\n提取: data[0].url\n\n// 通用异步视频\n预设: 通用异步视频（提交任务 + 轮询）\n提交: POST {baseUrl}/videos/generations\n查询: GET {baseUrl}/videos/generations/{id}\n状态字段: status（succeeded = 完成）\n结果字段: output.video_url",
-  'app.metaDescription': "TapNow Local 是一个本地运行的无限画布节点式 AI 工作流工具，接入你自己的任意 API 进行文生图、文生视频与倒推提示词。",
-  'app.documentTitle': "TapNow Local — 本地 AI 无限画布",
+  'app.metaDescription': "local-tap-compatible 是一个本地运行的无限画布节点式 AI 工作流工具，接入你自己的任意 API 进行文生图、文生视频与倒推提示词。",
+  'app.documentTitle': "local-tap-compatible — 本地 AI 无限画布",
   'app.brandSub': '本地 AI 画布',
   'app.runAll': '▶ 运行全部',
   'app.save': '💾 保存',
@@ -292,7 +292,7 @@ export default {
   "agent.action.move": "移动节点 {id}",
   "agent.action.clear": "清空整个画布",
   "agent.action.unknown": "未知操作",
-  "tour.slide1.title": "欢迎使用 TapNow Local",
+  "tour.slide1.title": "欢迎使用 local-tap-compatible",
   "tour.slide1.text": "一个本地运行的无限画布：把「提示词、图片生成、视频生成、倒推提示词」等板块像搭积木一样连起来，每个节点都能接入你自己的任意 AI API。",
   "tour.slide1.l1": "节点式 AI 工作流（类似 ComfyUI）",
   "tour.slide1.l2": "图片 / 视频 / 提示词等节点可自定义任意 API",
@@ -361,5 +361,5 @@ export default {
   'settings.modeAdvanced': '高级',
   'settings.modeHint': '精简模式只显示常用字段，高级模式可配置全部参数',
 
-  'agent.systemPrompt': "你是 \"TapNow Local\" 无限画布（节点式 AI 工作流，类似 ComfyUI）的 AI 掌控 Agent。你的任务：根据用户的指令，直接规划对画布的操作，返回严格的 JSON。\n\n可用节点类型：\n- text 提示词（输出文本，出口 handle=output）\n- image 图片生成（输入口 handle：prompt=提示词, image=参考图；出口 output）\n- video 视频生成（输入口 handle：prompt, image；出口 output）\n- reverse 倒推提示词（输入口 handle：image；输出文本，出口 output）\n- upload 图片上传（出口 output）\n- output 预览输出（输入口 handle：media）\n\n画布当前状态（JSON）：\n{snapshot}\n\n要求：\n1. 只返回一个 JSON 对象，禁止 Markdown 代码块，禁止多余文字。\n2. 格式：{\"summary\":\"一句话说明本次改动\",\"actions\":[{...}]}\n3. 可用操作 op（每个操作都可带 importance:\"high\" 或 \"low\"）：\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"新节点临时ID(如 n1)\", text?:\"提示词文本\", position?:{x,y}, config?:{任意节点配置字段} }\n   - connect:  { op, from:\"已有节点id或临时ID\", to:\"目标节点id或临时ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"节点id\" 或 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 引用已有节点必须使用状态中的 id；新建节点用临时 id（n1、n2...），后续操作可引用。\n5. importance 规则：删除、清空、修改已有配置/文本、运行全部等影响大的操作标 \"high\"；新建节点、连线、移动等低风险标 \"low\"。\n6. 为实现用户意图，请自主规划完整流程。不要问问题，直接给操作。",
+  'agent.systemPrompt': "你是 \"local-tap-compatible\" 无限画布（节点式 AI 工作流，类似 ComfyUI）的 AI 掌控 Agent。你的任务：根据用户的指令，直接规划对画布的操作，返回严格的 JSON。\n\n可用节点类型：\n- text 提示词（输出文本，出口 handle=output）\n- image 图片生成（输入口 handle：prompt=提示词, image=参考图；出口 output）\n- video 视频生成（输入口 handle：prompt, image；出口 output）\n- reverse 倒推提示词（输入口 handle：image；输出文本，出口 output）\n- upload 图片上传（出口 output）\n- output 预览输出（输入口 handle：media）\n\n画布当前状态（JSON）：\n{snapshot}\n\n要求：\n1. 只返回一个 JSON 对象，禁止 Markdown 代码块，禁止多余文字。\n2. 格式：{\"summary\":\"一句话说明本次改动\",\"actions\":[{...}]}\n3. 可用操作 op（每个操作都可带 importance:\"high\" 或 \"low\"）：\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"新节点临时ID(如 n1)\", text?:\"提示词文本\", position?:{x,y}, config?:{任意节点配置字段} }\n   - connect:  { op, from:\"已有节点id或临时ID\", to:\"目标节点id或临时ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"节点id\" 或 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 引用已有节点必须使用状态中的 id；新建节点用临时 id（n1、n2...），后续操作可引用。\n5. importance 规则：删除、清空、修改已有配置/文本、运行全部等影响大的操作标 \"high\"；新建节点、连线、移动等低风险标 \"low\"。\n6. 为实现用户意图，请自主规划完整流程。不要问问题，直接给操作。",
 }
