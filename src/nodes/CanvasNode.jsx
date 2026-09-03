@@ -1,25 +1,55 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import { useTranslation } from '../i18n.js'
 
 // 节点通用外壳 + 共享小组件
+// 状态色：与 styles.css 顶部主题变量保持一致（青 = 运行/等待，绿 = 成功，红 = 出错）
 export function statusMeta(t) {
   return {
-    idle: { label: t('status.idle'), color: '#5b6478' },
-    queued: { label: t('status.queued'), color: '#8b93a7' },
-    running: { label: t('status.running'), color: '#38bdf8' },
-    success: { label: t('status.success'), color: '#22c55e' },
-    error: { label: t('status.error'), color: '#ff6b6b' },
+    idle: { label: t('status.idle'), color: 'var(--status-idle)' },
+    queued: { label: t('status.queued'), color: 'var(--status-queued)' },
+    running: { label: t('status.running'), color: 'var(--status-running)' },
+    success: { label: t('status.success'), color: 'var(--status-ok)' },
+    error: { label: t('status.error'), color: 'var(--status-error)' },
   }
 }
 
-export function StatusBadge({ status }) {
+function fmtElapsed(ms) {
+  if (ms == null || !Number.isFinite(ms)) return ''
+  const s = Math.max(0, Math.round(ms / 1000))
+  if (s < 60) return s + 's'
+  const m = Math.floor(s / 60)
+  const rs = s % 60
+  return m + 'm' + String(rs).padStart(2, '0') + 's'
+}
+
+// 运行中/排队中：显示实时累计耗时（节点自身 1s 心跳，不触发全局重渲）；结束后：显示本次耗时
+export function StatusBadge({ status, runStartedAt, finishedAt }) {
   const { t } = useTranslation()
+  const [now, setNow] = useState(() => Date.now())
+  const live = status === 'running' || status === 'queued'
+  useEffect(() => {
+    if (!live) return undefined
+    const iv = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(iv)
+  }, [live])
   const meta = statusMeta(t)[status] || statusMeta(t).idle
+  let elapsed = null
+  if (live && Number.isFinite(runStartedAt)) {
+    elapsed = Math.max(0, now - runStartedAt)
+  } else if (
+    (status === 'success' || status === 'error') &&
+    Number.isFinite(runStartedAt) &&
+    Number.isFinite(finishedAt) &&
+    finishedAt >= runStartedAt
+  ) {
+    elapsed = finishedAt - runStartedAt
+  }
   return (
     <span className="status-badge" style={{ color: meta.color }}>
       <span className="dot" style={{ background: meta.color }} />
       {meta.label}
+      {elapsed != null ? <span className="status-time">· {fmtElapsed(elapsed)}</span> : null}
     </span>
   )
 }
@@ -39,14 +69,14 @@ export function MediaView({ media, maxHeight }) {
 }
 
 // NodeShell：节点外壳
-export function NodeShell({ title, color, status, actions, children }) {
+export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children }) {
   return (
-    <div className={`tn-node tn-node-${color}`} data-status={status}>
+    <div className={'tn-node tn-node-' + color} data-status={status}>
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">
           {actions}
-          <StatusBadge status={status} />
+          <StatusBadge status={status} runStartedAt={runStartedAt} finishedAt={finishedAt} />
         </div>
       </div>
       <div className="tn-node-body">{children}</div>

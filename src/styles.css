@@ -17,6 +17,13 @@
   --run-2: #7dd3fc;
   --danger: #ff6b6b;
   --ok: #22c55e;
+  /* 节点状态色（与 CanvasNode.statusMeta 引用一致） */
+  --status-idle: #6b7385;
+  --status-queued: #8fa3b8;
+  --status-running: #38bdf8;
+  --status-ok: #34d399;
+  --status-error: #ff6b6b;
+  --status-time: rgba(233, 236, 243, 0.72);
   --warn: #fbbf24;
   --radius: 14px;
   --radius-sm: 10px;
@@ -369,8 +376,18 @@ body {
 .handle-label-left { left: 16px; }
 .handle-label-right { right: 16px; }
 
-.status-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; }
-.status-badge .dot { width: 7px; height: 7px; border-radius: 50%; }
+/* 节点状态徽标：圆点 + 状态名 + 实时/最近耗时 */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 0;
+}
+.status-badge .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.status-badge .status-time { color: var(--status-time); font-weight: 600; }
 
 /* ---------- 配置面板 ---------- */
 .inspector {
@@ -1264,25 +1281,54 @@ body {
 
 /* Queued node: soft cyan resting ring, gently breathing */
 .tn-node[data-status="queued"] {
-  border-color: rgba(139, 147, 167, 0.75);
+  border-color: rgba(143, 163, 184, 0.65);
   box-shadow:
-    0 0 0 1px rgba(56, 189, 248, 0.4),
-    0 0 12px rgba(41, 182, 242, 0.18),
+    0 0 0 1px rgba(56, 189, 248, 0.45),
+    0 0 14px rgba(41, 182, 242, 0.22),
     0 6px 22px rgba(0, 0, 0, 0.35);
   animation: tn-queue-breathe 2.2s ease-in-out infinite;
 }
-
-/* Success: subtle teal tint */
-.tn-node[data-status="success"] {
-  border-color: rgba(34, 197, 94, 0.55);
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18), 0 6px 22px rgba(0, 0, 0, 0.35);
+.tn-node[data-status="queued"] .tn-node-body,
+.tn-node[data-status="queued"] .tn-node-head {
+  opacity: 0.82;
+  transition: opacity 0.3s ease;
 }
 
-/* Error: short shake + red border */
+/* Success: emerald edge + 顶部柔光扫过（完成后一次短暂“点亮”反馈） */
+.tn-node[data-status="success"] {
+  border-color: rgba(52, 211, 153, 0.7);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.28),
+    0 0 18px rgba(52, 211, 153, 0.16),
+    0 6px 22px rgba(0, 0, 0, 0.35);
+}
+.tn-node[data-status="success"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(52, 211, 153, 0.16) 45%, transparent 60%);
+  background-size: 250% 100%;
+  animation: tn-success-sheen 1s ease-out 1;
+}
+
+/* Error: red border + 短暂 shake（只摇一次），之后保留柔和红边 */
 .tn-node[data-status="error"] {
-  border-color: rgba(255, 107, 107, 0.8);
-  box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.35), 0 6px 22px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 107, 107, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(255, 107, 107, 0.4),
+    0 0 16px rgba(255, 107, 107, 0.18),
+    0 6px 22px rgba(0, 0, 0, 0.35);
   animation: tn-shake 0.4s ease;
+}
+.tn-node[data-status="error"] .status-badge .dot {
+  box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.55);
+  animation: tn-err-dot 1.4s ease-out infinite;
+}
+@keyframes tn-err-dot {
+  0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.45); }
+  100% { box-shadow: 0 0 0 6px rgba(255, 107, 107, 0); }
 }
 
 /* Live edges: glowing flow while a source node is active */
@@ -1346,6 +1392,16 @@ body {
   transition: width 0.35s ease;
 }
 
+/* 运行中：状态点脉冲 + 节点四周极淡的“呼吸”辉光 */
+.tn-node[data-status="running"] .status-badge .dot {
+  box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6);
+  animation: tn-badge-dot 1.6s ease-out infinite;
+}
+@keyframes tn-badge-dot {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.55); }
+  100% { box-shadow: 0 0 0 7px rgba(56, 189, 248, 0); }
+}
+
 @keyframes tn-run-breathe {
   0%, 100% { box-shadow: 0 0 0 1px var(--run), 0 0 12px rgba(41, 182, 242, 0.35), 0 8px 30px rgba(0, 0, 0, 0.5); }
   50% { box-shadow: 0 0 0 1px var(--run), 0 0 26px rgba(41, 182, 242, 0.65), 0 8px 34px rgba(0, 0, 0, 0.55); }
@@ -1361,6 +1417,10 @@ body {
 @keyframes tn-scan {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+@keyframes tn-success-sheen {
+  0% { background-position: 130% 0; }
+  100% { background-position: -130% 0; }
 }
 @keyframes tn-shake {
   0%, 100% { transform: translateX(0); }

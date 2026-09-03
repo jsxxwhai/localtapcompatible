@@ -33,6 +33,7 @@ import { UploadNode } from './nodes/UploadNode.jsx'
 import { AssetNode } from './nodes/AssetNode.jsx'
 import { OutputNode } from './nodes/OutputNode.jsx'
 import {
+  applyNodeStatus,
   createNode,
   normalizeNode,
   normalizeEdges,
@@ -278,7 +279,11 @@ function CanvasApp() {
 
   const notifyNode = useCallback(
     (id, patch) => {
-      setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, ...patch } } : n)))
+      setNodes((ns) => ns.map((n) => {
+        if (n.id !== id) return n
+        const status = patch.status || n.data.status
+        return { ...n, data: applyNodeStatus(n.data, status, patch) }
+      }))
     },
     [setNodes]
   )
@@ -303,7 +308,7 @@ function CanvasApp() {
             : src.data.media ?? null
         if (media?.value === n.data.media?.value) return n
         changed = true
-        return { ...n, data: { ...n.data, media, status: media ? 'success' : 'idle', error: '' } }
+        return { ...n, data: applyNodeStatus(n.data, media ? 'success' : 'idle', { media, error: '' }) }
       })
       return changed ? next : prev
     })
@@ -311,7 +316,9 @@ function CanvasApp() {
 
   const setNodeStatus = useCallback(
     (id, status, extra = {}) => {
-      setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, data: { ...n.data, status, ...extra } } : n)))
+      setNodes((ns) =>
+        ns.map((n) => (n.id === id ? { ...n, data: applyNodeStatus(n.data, status, extra) } : n))
+      )
       if (status === 'success' || status === 'error') {
         mediaCacheRef.current.delete(id)
       }
@@ -327,7 +334,7 @@ function CanvasApp() {
       setNodes((ns) =>
         ns.map((n) =>
           pending.has(n.id) && n.data.status !== 'running'
-            ? { ...n, data: { ...n.data, status: 'queued', error: '' } }
+            ? { ...n, data: applyNodeStatus(n.data, 'queued', { error: '' }) }
             : n
         )
       )
@@ -383,9 +390,10 @@ function CanvasApp() {
       // 本批次结束：把意外残留的排队态重置为空闲，避免中断后卡住
       const alive = new Set(ids)
       setNodes((ns) =>
-        ns.map((n) =>
-          alive.has(n.id) && n.data.status === 'queued' ? { ...n, data: { ...n.data, status: 'idle' } } : n
-        )
+        ns.map((n) => {
+          if (!alive.has(n.id) || n.data.status !== 'queued') return n
+          return { ...n, data: applyNodeStatus(n.data, 'idle') }
+        })
       )
     },
     [setNodes]

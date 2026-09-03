@@ -74,6 +74,8 @@ export function createNode(type) {
     label: '', // 兼容旧数据；展示优先用 labelKey 翻译
     status: 'idle',
     error: '',
+    runStartedAt: null, // 本次运行开始时间戳（仅运行期内存态，不持久化）
+    finishedAt: null, // 本次运行结束时间戳（仅运行期内存态，不持久化）
     text: '',
     media: null, // { value, mediaType }
     config: defaultNodeConfig(type),
@@ -100,6 +102,9 @@ export function normalizeNode(raw) {
   // 运行时状态不持久化
   data.status = 'idle'
   data.error = ''
+  data.runStartedAt = null
+  data.finishedAt = null
+
   if (typeof data.text !== 'string') data.text = ''
   if (!data.media || typeof data.media !== 'object') data.media = null
   return {
@@ -112,6 +117,33 @@ export function normalizeNode(raw) {
     data,
   }
 }
+// 节点状态迁移（含运行耗时字段维护）：由 setNodeStatus / notifyNode / 排队 / 自动传播共用
+// 规则：进入 running/queued 记录开始时间（同批排队与运行共用开始时间）；
+// 进入 success/error 且确有一次运行时记录结束时间；回到 idle 清空计时。
+export function applyNodeStatus(prevData, status, extra = {}) {
+  const d = { ...prevData, ...extra, status }
+  const prev = prevData.status
+  const now = Date.now()
+  if (status === 'running' || status === 'queued') {
+    if (prev !== 'running' && prev !== 'queued') {
+      d.runStartedAt = now
+      d.finishedAt = null
+    }
+  } else if (status === 'success' || status === 'error') {
+    if (d.runStartedAt == null) {
+      // 未经过实际运行（如上传/手动完成）：不显示耗时
+      d.runStartedAt = null
+      d.finishedAt = null
+    } else if (d.finishedAt == null) {
+      d.finishedAt = now
+    }
+  } else if (status === 'idle') {
+    d.runStartedAt = null
+    d.finishedAt = null
+  }
+  return d
+}
+
 
 // 归一化连线：去掉两端不存在或自连的边
 export function normalizeEdges(edges, nodeIds) {
@@ -169,6 +201,8 @@ export function sanitizeForSave(nodes, keepLargeMedia = false) {
     const copy = { ...n.data }
     delete copy.status
     delete copy.error
+    delete copy.runStartedAt
+    delete copy.finishedAt
     if (!keepLargeMedia && copy.media && typeof copy.media.value === 'string' && copy.media.value.startsWith('data:')) {
       copy.media = { ...copy.media, value: '', __idb: true }
     }
@@ -200,6 +234,8 @@ export async function saveToLocalStorage(nodes, edges) {
             const copy = { ...n.data }
             delete copy.status
             delete copy.error
+            delete copy.runStartedAt
+            delete copy.finishedAt
             copy.media = copy.media?.value?.startsWith('data:') ? offloadMedia(copy.media) : copy.media
             if (Array.isArray(copy.images) && copy.images.some((v) => typeof v === 'string' && v.startsWith('data:'))) {
               copy.images = []

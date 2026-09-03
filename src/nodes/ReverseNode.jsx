@@ -11,6 +11,8 @@ function ReverseNodeInner({ data }) {
       title={t('node.reverse')}
       color="reverse"
       status={data.status}
+      runStartedAt={data.runStartedAt}
+      finishedAt={data.finishedAt}
       actions={<RunButton onRun={() => data.onRun?.()} running={busy} />}
     >
       <NodeHandleTarget id="image" top={50} label={t('handle.image')} />

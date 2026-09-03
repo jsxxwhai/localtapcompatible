@@ -22,7 +22,7 @@ function OutputNodeInner({ data }) {
     }
   }
   return (
-    <NodeShell title={t('node.output')} color="output" status={data.status}>
+    <NodeShell title={t('node.output')} color="output" status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
       <Handle
         type="target"
         position={Position.Left}

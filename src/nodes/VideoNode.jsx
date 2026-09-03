@@ -19,6 +19,8 @@ function VideoNodeInner({ data }) {
       title={t('node.video')}
       color="video"
       status={data.status}
+      runStartedAt={data.runStartedAt}
+      finishedAt={data.finishedAt}
       actions={<RunButton onRun={() => data.onRun?.()} running={busy} />}
     >
       <NodeHandleTarget id="prompt" top={26} label={t('handle.prompt')} />

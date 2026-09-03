@@ -24,7 +24,7 @@ function UploadNodeInner({ data }) {
     reader.readAsDataURL(file)
   }
   return (
-    <NodeShell title={t('node.upload')} color="upload" status={data.status}>
+    <NodeShell title={t('node.upload')} color="upload" status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
       <NodeHandleSource id="output" top={50} label={t('handle.image')} />
       <input
         ref={inputRef}
