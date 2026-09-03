@@ -86,6 +86,7 @@ function CanvasApp() {
   const saveHintRef = useRef(null)
   const [ctxMenu, setCtxMenu] = useState(null)
   const [rightTab, setRightTab] = useState('node')
+  const [rightOpen, setRightOpen] = useState(true)
   const [settings, setSettings] = useState(() => loadSettings())
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [tourOpen, setTourOpen] = useState(() => {
@@ -1009,40 +1010,63 @@ const updateNodeConfig = useCallback(
             <MiniMap pannable zoomable nodeColor={(n) => nodeColor(n.type)} maskColor="rgba(10,12,20,0.75)" />
           </ReactFlow>
         </div>
-        <div className="right-col">
-          <div className="right-tabs">
-            <button type="button" className={rightTab === 'node' ? 'active' : ''} onClick={() => setRightTab('node')}>
-              {t('panel.tabNode')}
-            </button>
-            <button type="button" className={rightTab === 'agent' ? 'active' : ''} onClick={() => setRightTab('agent')}>
-              {t('panel.tabAgent')}
+        {rightOpen ? (
+          <div className="right-col">
+            <div className="right-tabs">
+              <button type="button" className={rightTab === 'node' ? 'active' : ''} onClick={() => setRightTab('node')}>
+                {t('panel.tabNode')}
+              </button>
+              <button type="button" className={rightTab === 'agent' ? 'active' : ''} onClick={() => setRightTab('agent')}>
+                {t('panel.tabAgent')}
+              </button>
+              <button
+                type="button"
+                className="right-tab-collapse"
+                onClick={() => setRightOpen(false)}
+                title={t('panel.collapseRight')}
+                aria-label={t('panel.collapseRight')}
+              >
+                ▸
+              </button>
+            </div>
+            {rightTab === 'node' ? (
+              <Inspector
+                node={selectedNode}
+                settings={settings}
+                onSelectApi={selectCategoryApi}
+                onOpenSettings={() => setSettingsOpen(true)}
+                onTest={testNode}
+                onClose={() => setSelectedId(null)}
+                testing={testingId === selectedId}
+                onOpenExamples={() => loadExample(EXAMPLES[0])}
+              />
+            ) : (
+              <AgentPanel
+                snapshot={canvasSnapshot}
+                agentApi={agentApi}
+                agentSettings={settings.agent}
+                onAgentUpdate={updateSettings}
+                onOpenSettings={() => setSettingsOpen(true)}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="right-rail">
+            <button
+              type="button"
+              className="right-rail-btn active"
+              onClick={() => setRightOpen(true)}
+              title={t('panel.expandRight')}
+              aria-label={t('panel.expandRight')}
+            >
+              <span>{rightTab === 'agent' ? '🤖' : '⚙️'}</span>
             </button>
           </div>
-          {rightTab === 'node' ? (
-            <Inspector
-              node={selectedNode}
-              settings={settings}
-              onSelectApi={selectCategoryApi}
-              onOpenSettings={() => setSettingsOpen(true)}
-              onTest={testNode}
-              onClose={() => setSelectedId(null)}
-              testing={testingId === selectedId}
-            />
-          ) : (
-            <AgentPanel
-              snapshot={canvasSnapshot}
-              agentApi={agentApi}
-              agentSettings={settings.agent}
-              onAgentUpdate={updateSettings}
-              onOpenSettings={() => setSettingsOpen(true)}
-            />
-          )}
+        )}
         </div>
-      </div>
-
-      <input
-        ref={fileInputRef}
-        type="file"
+        <input
+          ref={fileInputRef}
+          type="file"
         accept="application/json"
         style={{ display: 'none' }}
         onChange={(e) => {

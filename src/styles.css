@@ -989,3 +989,77 @@ body {
   .toolbar { gap: 8px; padding: 8px 10px; }
   .brand-name { font-size: 13px; }
 }
+/* ---------- 右侧栏折叠 / rail ---------- */
+.right-tabs button.right-tab-collapse {
+  flex: 0 0 auto;
+  width: 34px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: color 0.15s, border-color 0.15s;
+}
+.right-tabs button.right-tab-collapse:hover { color: var(--text); background: var(--panel-2); }
+.right-rail {
+  width: 46px;
+  border-left: 1px solid var(--border);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  gap: 8px;
+}
+.right-rail-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.right-rail-btn:hover { border-color: var(--accent); box-shadow: 0 2px 10px rgba(123,155,255,0.2); }
+
+/* ---------- 节点库分组 ---------- */
+.palette-head { text-transform: none; }
+.palette-count {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0;
+}
+.palette-group { display: flex; flex-direction: column; gap: 5px; }
+.palette-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 2px;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+.palette-group-head:hover { background: var(--panel-2); color: var(--accent); }
+.palette-group-title { display: inline-flex; align-items: center; gap: 6px; }
+.palette-group-icon { font-size: 12px; opacity: 0.9; }
+.palette-chevron { color: var(--text-dim); font-size: 11px; }
+.palette-items { display: flex; flex-direction: column; gap: 6px; }
+.palette-group + .palette-group { margin-top: 2px; }
+.palette-tip { border-top: 1px dashed var(--border); padding-top: 8px; }
+.inspector-empty { color: var(--text-dim); line-height: 1.7; }
+.inspector-quick-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.inspector-quick-actions .btn { justify-content: center; display: flex; }

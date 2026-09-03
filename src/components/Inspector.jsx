@@ -3,7 +3,7 @@ import { CATEGORY_MAP, GEN_CATS } from '../categorySettings.js'
 import { useTranslation } from '../i18n.js'
 
 // 节点配置面板：API 已上收到“板块设置”（右上角 ⚙️），这里只负责查看与选择当前板块使用的 API/模型
-export default function Inspector({ node, settings, onSelectApi, onOpenSettings, onTest, onClose, testing }) {
+export default function Inspector({ node, settings, onSelectApi, onOpenSettings, onTest, onClose, testing, onOpenExamples }) {
   const { t } = useTranslation()
 
   if (!node) {
@@ -17,6 +17,12 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
               <br />
             </span>
           ))}
+        </div>
+        <div className="inspector-quick-actions">
+          <button type="button" className="btn" onClick={onOpenSettings}>{t('inspector.openSettings')}</button>
+          {onOpenExamples && (
+            <button type="button" className="btn" onClick={onOpenExamples}>{t('inspector.openExamples')}</button>
+          )}
         </div>
       </div>
     )
