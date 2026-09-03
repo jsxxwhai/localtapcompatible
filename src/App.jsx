@@ -18,6 +18,7 @@ import '@xyflow/react/dist/style.css'
 import Toolbar from './components/Toolbar.jsx'
 import Palette from './components/Palette.jsx'
 import Inspector from './components/Inspector.jsx'
+import CanvasEmpty from './components/CanvasEmpty.jsx'
 import AgentPanel from './components/AgentPanel.jsx'
 import HelpModal from './components/HelpModal.jsx'
 import TourModal from './components/TourModal.jsx'
@@ -1009,6 +1010,13 @@ const updateNodeConfig = useCallback(
             <Controls showInteractive={false} />
             <MiniMap pannable zoomable nodeColor={(n) => nodeColor(n.type)} maskColor="rgba(10,12,20,0.75)" />
           </ReactFlow>
+          {nodes.length === 0 && (
+            <CanvasEmpty
+              onAdd={addNode}
+              onOpenExamples={() => loadExample(EXAMPLES[0])}
+              onTour={() => setTourOpen(true)}
+            />
+          )}
         </div>
         {rightOpen ? (
           <div className="right-col">

@@ -387,4 +387,12 @@ export default {
   'settings.modeHint': '간단 모드는 자주 쓰는 항목만, 고급 모드는 모든 설정 표시',
 
   'agent.systemPrompt': "당신은 \"local-tap-compatible\" 무한 캔버스(노드형 AI 워크플로)의 캔버스 제어 Agent입니다.\n작업: 사용자 지시에 따라 캔버스 작업을 계획하고 엄격한 JSON을 반환하세요.\n\n사용 가능한 노드 유형:\n- text 프롬프트(텍스트 출력, 출구 handle=output)\n- image 이미지 생성(입력 handle: prompt=프롬프트, image=참조 이미지; 출구 output)\n- video 비디오 생성(입력 handle: prompt, image; 출구 output)\n- reverse 역방향 프롬프트(입력 handle: image; 텍스트 출력, 출구 output)\n- upload 이미지 업로드(출구 output)\n- output 미리보기 출력(입력 handle: media)\n\n현재 캔버스 상태(JSON):\n{snapshot}\n\n요구사항:\n1. JSON 객체 하나만 반환하세요. Markdown 코드 블록이나 추가 텍스트 금지.\n2. 형식: {\"summary\":\"변경 사항 한 줄 설명\",\"actions\":[{...}]}\n3. 사용 가능한 작업 op(각 작업에 importance:\"high\" 또는 \"low\" 지정 가능):\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"임시 ID(예: n1)\", text?:\"프롬프트 텍스트\", position?:{x,y}, config?:{임의 노드 설정 필드} }\n   - connect:  { op, from:\"기존/임시 ID\", to:\"대상 ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"노드 ID\" 또는 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 기존 노드는 상태의 id를 참조; 새 노드는 임시 id(n1, n2...)를 사용하고 이후 작업에서 참조.\n5. importance 규칙: 삭제·초기화·기존 설정/텍스트 변경·전체 실행 등 영향이 큰 작업은 \"high\"; 새로 만들기·연결·이동 등 저위험은 \"low\".\n6. 사용자 의도를 실현하기 위해 전체 흐름을 계획하세요. 질문하지 말고 바로 작업을 출력하세요.",
+
+  'empty.title': '첫 워크플로우를 시작하세요',
+  'empty.subtitle': '캔버스가 비어 있습니다. 노드를 추가해 연결하거나 내장 예제를 불러와 시작하세요.',
+  'empty.addFirst': '➕ 프롬프트 노드 추가',
+  'empty.loadExample': '✨ 내장 예제 불러오기',
+  'empty.takeTour': '🎓 빠른 가이드 보기',
+  'empty.hint': '팁: 왼쪽 팔레트에서 드래그하거나 캔버스를 우클릭해 노드를 추가하세요.',
+
 }

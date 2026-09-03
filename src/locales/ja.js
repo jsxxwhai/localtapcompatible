@@ -387,4 +387,12 @@ export default {
   'settings.modeHint': 'シンプルモードはよく使う項目のみ、詳細モードは全設定を表示',
 
   'agent.systemPrompt': "あなたは「local-tap-compatible」無限キャンバス（ノード型 AI ワークフロー）のキャンバス制御 Agent です。\nタスク：ユーザーの指示に基づき、キャンバス操作を計画して厳密な JSON を返してください。\n\n利用可能なノード型：\n- text プロンプト（テキスト出力、出口 handle=output）\n- image 画像生成（入力 handle：prompt=プロンプト, image=参考画像；出口 output）\n- video 動画生成（入力 handle：prompt, image；出口 output）\n- reverse 逆引きプロンプト（入力 handle：image；テキスト出力、出口 output）\n- upload 画像アップロード（出口 output）\n- output プレビュー出力（入力 handle：media）\n\n現在のキャンバス状態（JSON）：\n{snapshot}\n\n要件：\n1. JSON オブジェクトのみを返してください。Markdown コードブロックや余計なテキストは禁止。\n2. 形式：{\"summary\":\"変更の一言説明\",\"actions\":[{...}]}\n3. 利用可能な操作 op（各操作は importance:\"high\" または \"low\" を付けられます）：\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"一時ID(例 n1)\", text?:\"プロンプト文\", position?:{x,y}, config?:{任意のノード設定} }\n   - connect:  { op, from:\"既存/一時ID\", to:\"対象ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"ノードID\" または \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 既存ノードは状態内の id を参照；新規ノードは一時 id（n1、n2...）を使い、後続操作で参照。\n5. importance ルール：削除・クリア・既存設定/テキスト変更・全実行など影響が大きい操作は \"high\"；新規作成・接続・移動など低リスクは \"low\"。\n6. ユーザー意図を実現するため完全なフローを計画してください。質問せず、直接操作を出力。",
+
+  'empty.title': '最初のワークフローを始めよう',
+  'empty.subtitle': 'キャンバスは空です。ノードを追加して接続するか、内蔵サンプルを読み込んで始めましょう。',
+  'empty.addFirst': '➕ プロンプトノードを追加',
+  'empty.loadExample': '✨ サンプルを読み込む',
+  'empty.takeTour': '🎓 ガイドを見る',
+  'empty.hint': 'ヒント：左のパレットからドラッグするか、キャンバスを右クリックでも追加できます。',
+
 }

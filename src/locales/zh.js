@@ -387,4 +387,12 @@ export default {
   'settings.modeHint': '精简模式只显示常用字段，高级模式可配置全部参数',
 
   'agent.systemPrompt': "你是 \"local-tap-compatible\" 无限画布（可视化节点式 AI 工作流）的 AI 掌控 Agent。你的任务：根据用户的指令，直接规划对画布的操作，返回严格的 JSON。\n\n可用节点类型：\n- text 提示词（输出文本，出口 handle=output）\n- image 图片生成（输入口 handle：prompt=提示词, image=参考图；出口 output）\n- video 视频生成（输入口 handle：prompt, image；出口 output）\n- reverse 倒推提示词（输入口 handle：image；输出文本，出口 output）\n- upload 图片上传（出口 output）\n- output 预览输出（输入口 handle：media）\n\n画布当前状态（JSON）：\n{snapshot}\n\n要求：\n1. 只返回一个 JSON 对象，禁止 Markdown 代码块，禁止多余文字。\n2. 格式：{\"summary\":\"一句话说明本次改动\",\"actions\":[{...}]}\n3. 可用操作 op（每个操作都可带 importance:\"high\" 或 \"low\"）：\n   - addNode:  { op, type:\"text|image|video|reverse|upload|output\", id:\"新节点临时ID(如 n1)\", text?:\"提示词文本\", position?:{x,y}, config?:{任意节点配置字段} }\n   - connect:  { op, from:\"已有节点id或临时ID\", to:\"目标节点id或临时ID\", handle:\"prompt|image|media\" }\n   - setText:  { op, nodeId, text }\n   - setConfig:{ op, nodeId, config:{...} }\n   - run:      { op, target:\"节点id\" 或 \"all\" }\n   - delete:   { op, nodeId }\n   - move:     { op, nodeId, position:{x,y} }\n   - clear:    { op }\n4. 引用已有节点必须使用状态中的 id；新建节点用临时 id（n1、n2...），后续操作可引用。\n5. importance 规则：删除、清空、修改已有配置/文本、运行全部等影响大的操作标 \"high\"；新建节点、连线、移动等低风险标 \"low\"。\n6. 为实现用户意图，请自主规划完整流程。不要问问题，直接给操作。",
+
+  'empty.title': '开始创作你的第一个工作流',
+  'empty.subtitle': '画布是空的。添加节点、连接起来，或从内置示例开始快速上手。',
+  'empty.addFirst': '➕ 添加提示词节点',
+  'empty.loadExample': '✨ 载入内置示例',
+  'empty.takeTour': '🎓 查看快速引导',
+  'empty.hint': '提示：也可以从左侧节点库拖拽节点到画布，或右键画布空白处添加。',
+
 }
