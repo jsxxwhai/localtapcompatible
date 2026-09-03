@@ -11,7 +11,7 @@ Cloud SaaS routes your data and keys through third-party servers, while traditio
 ## Highlights
 
 - 🧩 Node workflow: prompt, text-to-image, text-to-video, reverse prompt, upload, asset, preview
-- 🔌 Any API: OpenAI / SiliconFlow / Kling / Seedance / Runway or any HTTP endpoint; multiple APIs per category
+- 🔌 Any API: works with any custom HTTP endpoint (bring your own Base URL & key); multiple APIs per category
 - 🖥️ Infinite canvas: zoom, pan, box-select, drag-connect node graph
 - 🌐 Multilingual: zh / en / ja / ko, follows system locale, switchable in the toolbar
 - 🛡️ Privacy-first: keys stored only in local browser localStorage
