@@ -750,6 +750,11 @@ const updateNodeConfig = useCallback(
       mediaCacheRef.current.clear()
       const nodes = ex.canvas.nodes.map(normalizeNode).filter(Boolean)
       if (!nodes.length) return
+      // 预填提示词：让示例载入即可直接「运行全部」
+      const promptText = ex.promptKey ? t(ex.promptKey) : ''
+      for (const n of nodes) {
+        if (n.type === 'text' && promptText) n.data.text = promptText
+      }
       setNodes(nodes)
       setEdges(normalizeEdges(ex.canvas.edges, nodes.map((n) => n.id)))
       setSelectedId(null)

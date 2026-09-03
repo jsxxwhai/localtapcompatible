@@ -1,6 +1,6 @@
 // 内置示例工作流：可在 文件 → 加载示例 中一键载入画布
 // 每个示例的结构与「导出 JSON」完全一致（app/version/nodes/edges），可直接复用导入逻辑
-// 节点 data 里的 text/images 有意留空，由用户在节点上自行输入/选择，避免示例失效
+// 载入时 text 节点的提示词会按当前语言从 locales（promptKey）预填，images 素材留空由用户自行选择
 
 export const EXAMPLES = [
   {
@@ -8,6 +8,7 @@ export const EXAMPLES = [
     icon: '🖼️',
     key: 'example.t2i.title',
     descKey: 'example.t2i.desc',
+    promptKey: 'example.t2i.prompt',
     canvas: {
       app: 'local-tap-compatible',
       version: 1,
@@ -45,6 +46,7 @@ export const EXAMPLES = [
     icon: '🎬',
     key: 'example.i2v.title',
     descKey: 'example.i2v.desc',
+    promptKey: 'example.i2v.prompt',
     canvas: {
       app: 'local-tap-compatible',
       version: 1,
@@ -135,6 +137,7 @@ export const EXAMPLES = [
     icon: '📂',
     key: 'example.multi.title',
     descKey: 'example.multi.desc',
+    promptKey: 'example.multi.prompt',
     canvas: {
       app: 'local-tap-compatible',
       version: 1,
