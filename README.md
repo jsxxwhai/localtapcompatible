@@ -5,7 +5,7 @@
 
 > 无限画布 + 节点式 AI 工作流，接入你自己的任意 API。图片、视频、倒推提示词，一条连线跑通。
 
-[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
 [![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
 

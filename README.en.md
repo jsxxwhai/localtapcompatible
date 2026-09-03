@@ -2,7 +2,7 @@
 
 > An infinite canvas + node-based AI workflow. Plug in **your own API keys** for image generation, video generation, reverse prompting, and more.
 
-[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=7b9bff)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/jsxxwhai/localtapcompatible?style=for-the-badge&color=29b6f2)](https://github.com/jsxxwhai/localtapcompatible/stargazers)
 [![License](https://img.shields.io/github/license/jsxxwhai/localtapcompatible?style=for-the-badge)](./LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/jsxxwhai/localtapcompatible/ci.yml?branch=main&style=for-the-badge)](https://github.com/jsxxwhai/localtapcompatible/actions)
 
