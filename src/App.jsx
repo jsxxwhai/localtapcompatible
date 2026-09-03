@@ -9,6 +9,7 @@ import {
   MiniMap,
   addEdge,
   ConnectionMode,
+  MarkerType,
   useNodesState,
   useEdgesState,
   useReactFlow,
@@ -74,6 +75,23 @@ function starterCanvas(t) {
   }
 }
 
+// Edge styling defaults: subtle arrowhead caps + a slightly wider interactive halo
+const EDGE_DEFAULT_OPTIONS = {
+  type: 'default',
+  markerEnd: { type: MarkerType.ArrowClosed, width: 15, height: 15, color: 'rgba(109,146,190,0.9)' },
+  style: { strokeWidth: 2 },
+}
+
+// Per-source-type tint for idle edges (cyan family), so every connection reads as directional DNA
+const EDGE_SOURCE_TINT = {
+  text: 'rgba(139,156,247,0.8)',
+  image: 'rgba(77,194,235,0.9)',
+  video: 'rgba(124,199,255,0.9)',
+  reverse: 'rgba(56,189,248,0.9)',
+  upload: 'rgba(251,191,36,0.85)',
+  asset: 'rgba(74,222,128,0.85)',
+  output: 'rgba(45,212,191,0.85)',
+}
 function CanvasApp() {
   const { t } = useTranslation()
   const initial = useMemo(() => loadFromLocalStorage() || starterCanvas(t), [t])
@@ -1034,17 +1052,38 @@ const updateNodeConfig = useCallback(
     return s
   }, [nodes])
 
-  // Mark edges that are really "flowing" as animated (drives the pulse visuals)
+  // Mark edges that are really "flowing" as animated (drives the pulse visuals),
+  // and tint every connection by the source node type so the DAG direction reads clearly
   const displayEdges = useMemo(() => {
+    const nodeTypeById = new Map(nodes.map((n) => [n.id, n.type]))
     let changed = false
     const next = edges.map((e) => {
       const lit = activeNodeIds.has(e.source)
-      if (e.animated === lit) return e
-      changed = true
-      return lit ? { ...e, animated: true } : { ...e, animated: false }
+      const tint = EDGE_SOURCE_TINT[nodeTypeById.get(e.source)] || 'rgba(109,146,190,0.8)'
+      const arrowColor = lit ? 'rgba(125,211,252,0.98)' : tint
+      const marker = { type: MarkerType.ArrowClosed, width: 15, height: 15, color: arrowColor }
+      const prevMarker = e.markerEnd
+      const sameMarker =
+        prevMarker && prevMarker.type === marker.type && prevMarker.color === marker.color
+      const stroke = e.style?.stroke
+      const patch = {}
+      if (e.animated !== lit) {
+        patch.animated = lit
+        changed = true
+      }
+      if (!sameMarker) {
+        patch.markerEnd = marker
+        changed = true
+      }
+      if (stroke !== tint) {
+        patch.style = { ...(e.style || {}), stroke: tint }
+        changed = true
+      }
+      if (!patch.animated && !patch.markerEnd && !patch.style) return e
+      return { ...e, ...patch }
     })
     return changed ? next : edges
-  }, [edges, activeNodeIds])
+  }, [edges, activeNodeIds, nodes])
 
   // Inject interactive callbacks into node objects
   const displayNodes = useMemo(
@@ -1141,6 +1180,7 @@ const updateNodeConfig = useCallback(
             edges={displayEdges}
             nodeTypes={nodeTypes}
             connectionMode={ConnectionMode.Loose}
+            defaultEdgeOptions={EDGE_DEFAULT_OPTIONS}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -1302,3 +1342,8 @@ function nodeColor(type) {
     }[type] || '#7a8499'
   )
 }
+
+
+
+
+

@@ -201,6 +201,25 @@ body {
 .app-body { display: flex; flex: 1; min-height: 0; }
 .canvas-wrap { flex: 1; position: relative; min-width: 0; }
 
+/* 画布背景：暗底 + 双层辉光，营造“无限深空工作台”氛围（不与节点争夺注意力） */
+.canvas-wrap {
+  background:
+    radial-gradient(900px 520px at 18% 12%, rgba(41, 182, 242, 0.055), transparent 62%),
+    radial-gradient(1100px 640px at 92% 88%, rgba(99, 102, 241, 0.05), transparent 60%),
+    radial-gradient(700px 420px at 72% 8%, rgba(56, 189, 248, 0.03), transparent 55%),
+    linear-gradient(180deg, #0b0e15 0%, var(--bg) 55%, #0a0d14 100%);
+}
+.canvas-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(600px 300px at 50% -5%, rgba(125, 211, 252, 0.06), transparent 60%),
+    radial-gradient(1000px 500px at 100% 120%, rgba(41, 182, 242, 0.04), transparent 55%);
+}
+
 /* ---------- 节点面板 ---------- */
 .palette {
   width: 216px;
@@ -498,10 +517,16 @@ body {
 
 /* React Flow 覆盖 */
 .react-flow__attribution { background: transparent; color: var(--text-dim); }
-.react-flow__edge-path { stroke: var(--accent); stroke-width: 2; }
-.react-flow__edge.selected .react-flow__edge-path { stroke: #fff; }
-.react-flow__controls { box-shadow: none; }
-.react-flow__controls-button { background: var(--panel-2) !important; border-bottom: 1px solid var(--border) !important; fill: var(--text) !important; }
+.react-flow__edge-path {
+  stroke: var(--accent);
+  stroke-width: 2;
+  transition: stroke 0.18s ease, filter 0.18s ease;
+}
+.react-flow__edge-path:hover { filter: drop-shadow(0 0 3px rgba(125, 211, 252, 0.35)); }
+.react-flow__edge.selected .react-flow__edge-path { stroke: #fff !important; filter: none; }
+.react-flow__controls { box-shadow: none; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.react-flow__controls-button { background: rgba(18, 21, 28, 0.86) !important; border-bottom: 1px solid var(--border) !important; fill: var(--text) !important; width: 26px; height: 26px; transition: background 0.15s, fill 0.15s; }
+.react-flow__controls-button:hover { background: var(--panel-3) !important; fill: var(--accent-2) !important; }
 .react-flow__minimap { background: var(--bg-2) !important; border: 1px solid var(--border); }
 .react-flow__handle-connecting { background: var(--danger) !important; }
 
@@ -1334,13 +1359,23 @@ body {
 /* Live edges: glowing flow while a source node is active */
 .react-flow__edge.animated .react-flow__edge-path {
   stroke: var(--run-2) !important;
-  stroke-width: 2.4;
-  filter: drop-shadow(0 0 4px var(--accent-glow));
+  stroke-width: 2.6;
+  filter: drop-shadow(0 0 6px var(--accent-glow)) drop-shadow(0 0 2px rgba(125, 211, 252, 0.8));
 }
 .react-flow__edge.animated .react-flow__edge-interaction {
   stroke: transparent !important;
 }
 
+/* Flow dashes travel toward the arrowhead so the run direction is unmistakable */
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 6 4;
+  animation-duration: 0.42s;
+}
+/* Tint each connection by its source type even when idle (inline style carries the color) */
+.react-flow__edge .react-flow__edge-path {
+  stroke-width: 2;
+  stroke-linecap: round;
+}
 /* Selected edge still shows visible white selection marker */
 .react-flow__edge.selected .react-flow__edge-path { stroke: #fff !important; filter: none; }
 
