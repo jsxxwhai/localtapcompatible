@@ -169,9 +169,13 @@ export function normalizeApi(raw, cat) {
   const base = profile(uidApi(), '', { nameKey: 'api.name.unnamed' })
   if (!raw || typeof raw !== 'object') return base
   const { _busyFetch, _busyTest, testMsg, testStatus, ...rest } = raw
+  // 自定义 API 存的是 name（无 nameKey）；若继承的占位 nameKey 仍在，
+  // 会覆盖用户命名的展示（标题/下拉都显示“未命名 API”）。用户给了 name 就移除占位。
+  const hasOwnName = typeof rest.name === 'string' && rest.name.trim() !== ''
   return {
     ...base,
     ...rest,
+    nameKey: hasOwnName ? undefined : rest.nameKey,
     id: typeof rest.id === 'string' && rest.id ? rest.id : uidApi(),
     poll: rest.poll && typeof rest.poll === 'object' ? { ...base.poll, ...rest.poll } : rest.poll || null,
     models: Array.isArray(rest.models) ? rest.models : [],
