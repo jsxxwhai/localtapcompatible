@@ -97,6 +97,7 @@ export default {
   'asset.remove': '移除这张图',
   'asset.tip': '拖线到图片/视频节点的「参考图」输入口，可多张一起用',
   'inspector.title': '节点配置',
+  'inspector.heroNone': '选择一个节点后，在此配置其 API / 模型',
   'inspector.empty': '在画布中选择一个节点，\n可在这里切换该板块使用的 API / 模型。\n所有 API 在右上角 ⚙️ 设置 里统一管理。',
   'inspector.nodeText': '提示词节点',
   'inspector.nodeUpload': '上传节点',

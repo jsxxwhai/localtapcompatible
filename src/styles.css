@@ -2003,3 +2003,66 @@ body {
   background: rgba(30, 36, 48, 0.8);
   box-shadow: 0 0 0 1px rgba(41, 182, 242, 0.15), 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.05);
 }
+
+
+/* ============ Inspector type-tinted hero (node config rail) ============ */
+/* A colored identity header per node type, mirroring the canvas card rails,
+   so the inspector reads as the same "colored module" the user just clicked. */
+.inspector-hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--insp-tint, var(--accent)) 16%, transparent), rgba(20, 24, 35, 0.6) 70%),
+    rgba(20, 24, 35, 0.75);
+  border: 1px solid color-mix(in srgb, var(--insp-tint, var(--accent)) 34%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--insp-tint, var(--accent)) 10%, transparent),
+    0 6px 18px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+.inspector-hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(180deg, var(--insp-tint, var(--accent)), color-mix(in srgb, var(--insp-tint, var(--accent)) 45%, transparent));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--insp-tint, var(--accent)) 55%, transparent);
+  pointer-events: none;
+}
+.inspector-hero-icon {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--insp-tint, var(--accent)) 18%, rgba(18, 21, 28, 0.7));
+  border: 1px solid color-mix(in srgb, var(--insp-tint, var(--accent)) 45%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--insp-tint, var(--accent)) 25%, transparent), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.inspector-hero-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.inspector-hero-title { font-size: 13px; font-weight: 800; letter-spacing: 0.2px; color: var(--text); }
+.inspector-hero-sub {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--insp-tint, var(--accent)) 62%, var(--text-dim));
+  line-height: 1.45;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inspector-hero-close { flex: none; }
+.inspector-hero-none { --insp-tint: #8fa3b8; }
+.inspector-hero-none .inspector-hero-icon {
+  background: rgba(143, 163, 184, 0.12);
+  border-color: rgba(143, 163, 184, 0.35);
+}
+.inspector-hero-none .inspector-hero-sub { color: var(--text-dim); }

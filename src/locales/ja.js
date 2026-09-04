@@ -97,6 +97,7 @@ export default {
   'asset.remove': 'この画像を削除',
   'asset.tip': '画像/動画ノードの「参照画像」入力へ接続すると複数枚利用可能',
   'inspector.title': 'ノード設定',
+  'inspector.heroNone': 'ノードを選んで API / モデルを設定',
   'inspector.empty': 'キャンバスでノードを選択すると\nこのカテゴリの API / モデルを切り替えられます。\nAPI は右上 ⚙️ 設定で一括管理します。',
   'inspector.nodeText': 'プロンプトノード',
   'inspector.nodeUpload': 'アップロードノード',

@@ -97,6 +97,7 @@ export default {
   'asset.remove': 'Remove this image',
   'asset.tip': 'Wire to the "Ref Image" input of an image/video node to use multiple images',
   'inspector.title': 'Node Config',
+  'inspector.heroNone': 'Pick a node to configure its API / model',
   'inspector.empty': 'Select a node on the canvas\nto switch its category API / model.\nAll APIs are managed in ⚙️ Settings.',
   'inspector.nodeText': 'Prompt Node',
   'inspector.nodeUpload': 'Upload Node',

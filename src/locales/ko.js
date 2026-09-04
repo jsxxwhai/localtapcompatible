@@ -97,6 +97,7 @@ export default {
   'asset.remove': '이 이미지 제거',
   'asset.tip': '이미지/비디오 노드의「참조 이미지」입력에 연결하면 여러 장 사용 가능',
   'inspector.title': '노드 설정',
+  'inspector.heroNone': '노드를 선택해 API / 모델을 설정하세요',
   'inspector.empty': '캔버스에서 노드를 선택하면\n해당 카테고리의 API / 모델을 전환할 수 있습니다.\n모든 API는 오른쪽 위 ⚙️ 설정에서 관리합니다.',
   'inspector.nodeText': '프롬프트 노드',
   'inspector.nodeUpload': '업로드 노드',

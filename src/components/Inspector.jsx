@@ -1,15 +1,23 @@
 import { ApiSelect } from '../nodes/CanvasNode.jsx'
+import { NODE_TYPE_MAP } from '../utils.js'
 import { CATEGORY_MAP, GEN_CATS } from '../categorySettings.js'
 import { useTranslation } from '../i18n.js'
 
 // 节点配置面板：API 已上收到“板块设置”（右上角 ⚙️），这里只负责查看与选择当前板块使用的 API/模型
 export default function Inspector({ node, settings, onSelectApi, onOpenSettings, onTest, onClose, testing, onOpenExamples }) {
   const { t } = useTranslation()
+  const tintMap = { text:'#8b9cf7', image:'#4dc2eb', video:'#7cc7ff', reverse:'#c4b5fd', upload:'#fbbf24', asset:'#4ade80', output:'#2dd4bf' }
 
   if (!node) {
     return (
       <div className="inspector">
-        <div className="panel-title">{t('inspector.title')}</div>
+        <div className="inspector-hero inspector-hero-none">
+          <span className="inspector-hero-icon">◇</span>
+          <div className="inspector-hero-meta">
+            <div className="inspector-hero-title">{t('inspector.title')}</div>
+            <div className="inspector-hero-sub">{t('inspector.heroNone')}</div>
+          </div>
+        </div>
         <div className="inspector-empty">
           {t('inspector.empty').split(/\n|\\n/).map((line, i) => (
             <span key={i}>
@@ -40,9 +48,13 @@ export default function Inspector({ node, settings, onSelectApi, onOpenSettings,
 
   return (
     <div className="inspector">
-      <div className="panel-title">
-        {title}
-        <button type="button" className="btn-icon" onClick={onClose} title={t('common.close')} aria-label={t('common.close')}>×</button>
+      <div className="inspector-hero" style={{ '--insp-tint': tintMap[node.type] || 'var(--accent)' }}>
+        <span className="inspector-hero-icon">{NODE_TYPE_MAP[node.type]?.icon || '✦'}</span>
+        <div className="inspector-hero-meta">
+          <div className="inspector-hero-title">{title}</div>
+          <div className="inspector-hero-sub">{t('node.' + node.type + '.desc')}</div>
+        </div>
+        <button type="button" className="btn-icon inspector-hero-close" onClick={onClose} title={t('common.close')} aria-label={t('common.close')}>×</button>
       </div>
 
       {!isGen ? (
