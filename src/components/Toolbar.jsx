@@ -61,8 +61,9 @@ export default function Toolbar({
         <span className="brand-sub">{t('app.brandSub')}</span>
       </div>
       <div className="toolbar-actions">
-        <button type="button" className="btn btn-primary" onClick={onRunAll} disabled={running} title={t('app.kbdRunAll')}>
-          {t('app.runAll')}
+        <button type="button" className="btn btn-primary btn-run-all" onClick={onRunAll} disabled={running} title={t('app.kbdRunAll')}>
+          <span className="run-all-shine" aria-hidden="true" />
+          <span className="run-all-label">{t('app.runAll')}</span>
         </button>
         <div className="menu-wrap" ref={fileRef}>
           <button type="button"
