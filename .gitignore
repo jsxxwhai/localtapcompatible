@@ -31,3 +31,6 @@ desktop/wwwroot/
 .ap.txt
 .app.txt
 .sm*.txt
+
+# probe scratch
+.probe/
