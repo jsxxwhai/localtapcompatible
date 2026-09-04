@@ -17,7 +17,7 @@ function ImageNodeInner({ data }) {
   return (
     <NodeShell
       title={t('node.image')}
-      color="image" pathLit={data.pathLit}
+      color="image" pathLit={data.pathLit} pathDim={data.pathDim}
       status={data.status}
       runStartedAt={data.runStartedAt}
       finishedAt={data.finishedAt}

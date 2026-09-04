@@ -1085,10 +1085,13 @@ const updateNodeConfig = useCallback(
     return lit
   }, [edges, activeNodeIds])
 
+  const focusMode = anyRunning && litNodeIds.size > 0 && litNodeIds.size < nodes.length
+
   // Mark edges that are really "flowing" as animated (drives the pulse visuals),
   // and tint every connection by the source node type so the DAG direction reads clearly
   const displayEdges = useMemo(() => {
     const nodeTypeById = new Map(nodes.map((n) => [n.id, n.type]))
+    const edgeDimming = focusMode
     let changed = false
     const next = edges.map((e) => {
       const lit = activeNodeIds.has(e.source) || litNodeIds.has(e.source)
@@ -1112,11 +1115,18 @@ const updateNodeConfig = useCallback(
         patch.style = { ...(e.style || {}), stroke: tint }
         changed = true
       }
+      const dim = edgeDimming && !lit
+      const opacity = dim ? 0.18 : 1
+      const curOpacity = e.style?.opacity
+      if (curOpacity !== opacity) {
+        patch.style = { ...(e.style || {}), opacity }
+        changed = true
+      }
       if (!patch.animated && !patch.markerEnd && !patch.style) return e
       return { ...e, ...patch }
     })
     return changed ? next : edges
-  }, [edges, activeNodeIds, litNodeIds, nodes])
+  }, [edges, activeNodeIds, litNodeIds, nodes, anyRunning])
 
   // Inject interactive callbacks into node objects
   const displayNodes = useMemo(
@@ -1134,6 +1144,11 @@ const updateNodeConfig = useCallback(
         cache.clear() // 运行路径点亮变化需让 idle 祖先节点拿到新 pathLit
         displayLitRef.current = litNodeIds
       }
+      const dimming = focusMode
+      if (displayDimRef.current !== dimming) {
+        cache.clear() // 聚焦模式开关变化时重渲全部节点
+        displayDimRef.current = dimming
+      }
       const byId = new Map(nodes.map((x) => [x.id, x]))
       const countConnectedImages = (nodeId) =>
         edges.reduce((sum, e) => {
@@ -1150,6 +1165,7 @@ const updateNodeConfig = useCallback(
         data: {
           ...n.data,
           pathLit: litNodeIds.has(n.id),
+          pathDim: dimming && !litNodeIds.has(n.id) && n.data.status != "running" && n.data.status != "queued" && n.data.status != "error",
           onRun: () => runSingle(n.id),
           onConfig: () => setSelectedId(n.id),
           onText: (text) => notifyNode(n.id, { text, status: 'idle' }),
@@ -1191,7 +1207,7 @@ const updateNodeConfig = useCallback(
       }
       return next
     },
-    [nodes, edges, litNodeIds, runSingle, notifyNode, setNodes, settings, selectCategoryApi]
+    [nodes, edges, litNodeIds, runSingle, notifyNode, setNodes, settings, selectCategoryApi, anyRunning]
   )
 
   return (
@@ -1212,7 +1228,7 @@ const updateNodeConfig = useCallback(
       />
       <div className="app-body">
         <Palette onAdd={addNode} />
-        <div className="canvas-wrap">
+        <div className={`canvas-wrap${focusMode ? ' focus-canvas' : ''}`}>
           <ReactFlow
             nodes={displayNodes}
             edges={displayEdges}

@@ -220,6 +220,21 @@ body {
     radial-gradient(1000px 500px at 100% 120%, rgba(41, 182, 242, 0.04), transparent 55%);
 }
 
+
+/* Focus mode: while a batch runs, everything outside the live path recedes so the
+   executing dataflow is the single bright thing on the canvas. */
+.canvas-wrap.focus-canvas .react-flow__background {
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+}
+.canvas-wrap.focus-canvas .react-flow__controls {
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+.canvas-wrap.focus-canvas .react-flow__minimap {
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
 /* ---------- 节点面板 ---------- */
 .palette {
   width: 216px;
@@ -1565,3 +1580,32 @@ body {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+/* Focus mode: while a batch runs, idle nodes outside the live path recede so the
+   executing dataflow is the single bright thing on the canvas. */
+.tn-node.dim {
+  opacity: 0.62;
+  filter: saturate(0.55) brightness(0.8);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+.tn-node.dim .tn-node-head {
+  background: rgba(15, 18, 26, 0.6) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+}
+.tn-node.dim .tn-handle,
+.tn-node.dim .handle-label {
+  opacity: 0.45;
+}
+.tn-node.dim .status-badge {
+  opacity: 0.75;
+}
+.tn-node.dim .tn-node-head::after,
+.tn-node.dim .tn-node-head {
+  background-image: none !important;
+}
+.react-flow__edge .react-flow__edge-path {
+  transition: opacity 0.3s ease;
+}
+.react-flow__edge .react-flow__edge-interaction {
+  transition: opacity 0.3s ease;
+}
+

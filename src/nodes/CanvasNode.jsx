@@ -70,9 +70,9 @@ export function MediaView({ media, maxHeight }) {
 }
 
 // NodeShell：节点外壳
-export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children, pathLit }) {
+export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children, pathLit, pathDim }) {
   return (
-    <div className={'tn-node tn-node-' + color + (pathLit ? ' path-lit' : '')} data-status={status}>
+    <div className={'tn-node tn-node-' + color + (pathLit ? ' path-lit' : '') + (pathDim ? ' dim' : '')} data-status={status}>
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">
