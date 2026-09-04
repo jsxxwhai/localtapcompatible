@@ -220,6 +220,31 @@ body {
     radial-gradient(1000px 500px at 100% 120%, rgba(41, 182, 242, 0.04), transparent 55%);
 }
 
+/* Nebula drift: slow-moving aurora gradients above the static canvas glow so the
+   infinite-canvas backdrop feels alive without competing with nodes or edges. */
+.canvas-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(520px 320px at 22% 32%, rgba(99, 102, 241, 0.10), transparent 62%),
+    radial-gradient(640px 380px at 74% 20%, rgba(56, 189, 248, 0.07), transparent 60%),
+    radial-gradient(760px 460px at 60% 82%, rgba(168, 85, 247, 0.05), transparent 62%),
+    radial-gradient(420px 260px at 40% 68%, rgba(45, 212, 191, 0.045), transparent 60%);
+  filter: saturate(1.05);
+  animation: nebula-drift 26s ease-in-out infinite alternate;
+}
+@keyframes nebula-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0.82; }
+  50%  { transform: translate3d(2.2%, -1.4%, 0) scale(1.04); opacity: 1; }
+  100% { transform: translate3d(-1.6%, 1.8%, 0) scale(1.02); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canvas-wrap::before { animation: none; opacity: 0.85; }
+}
+
 
 /* Focus mode: while a batch runs, everything outside the live path recedes so the
    executing dataflow is the single bright thing on the canvas. */
