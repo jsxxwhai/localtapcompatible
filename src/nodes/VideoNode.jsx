@@ -17,7 +17,7 @@ function VideoNodeInner({ data }) {
   return (
     <NodeShell
       title={t('node.video')}
-      color="video"
+      color="video" pathLit={data.pathLit}
       status={data.status}
       runStartedAt={data.runStartedAt}
       finishedAt={data.finishedAt}

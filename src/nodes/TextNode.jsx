@@ -6,7 +6,7 @@ import { useTranslation } from '../i18n.js'
 function TextNodeInner({ data }) {
   const { t } = useTranslation()
   return (
-    <NodeShell title={t('node.text')} color="text" status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
+    <NodeShell title={t('node.text')} color="text" pathLit={data.pathLit} status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
       <NodeHandleSource id="output" top={50} label={t('handle.text')} />
       <textarea
         className="tn-textarea"

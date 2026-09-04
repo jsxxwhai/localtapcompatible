@@ -14,6 +14,7 @@ export function statusMeta(t) {
   }
 }
 
+
 function fmtElapsed(ms) {
   if (ms == null || !Number.isFinite(ms)) return ''
   const s = Math.max(0, Math.round(ms / 1000))
@@ -69,9 +70,9 @@ export function MediaView({ media, maxHeight }) {
 }
 
 // NodeShell：节点外壳
-export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children }) {
+export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children, pathLit }) {
   return (
-    <div className={'tn-node tn-node-' + color} data-status={status}>
+    <div className={'tn-node tn-node-' + color + (pathLit ? ' path-lit' : '')} data-status={status}>
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">

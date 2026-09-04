@@ -9,7 +9,7 @@ function ReverseNodeInner({ data }) {
   return (
     <NodeShell
       title={t('node.reverse')}
-      color="reverse"
+      color="reverse" pathLit={data.pathLit}
       status={data.status}
       runStartedAt={data.runStartedAt}
       finishedAt={data.finishedAt}

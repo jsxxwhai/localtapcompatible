@@ -33,7 +33,7 @@ function AssetNodeInner({ data }) {
   }
 
   return (
-    <NodeShell title={name} color="asset" status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
+    <NodeShell title={name} color="asset" pathLit={data.pathLit} status={data.status} runStartedAt={data.runStartedAt} finishedAt={data.finishedAt}>
       <NodeHandleSource id="output" top={50} label={t('handle.image')} />
       <input
         ref={inputRef}

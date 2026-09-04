@@ -128,6 +128,7 @@ function CanvasApp() {
   const displayCacheRef = useRef(new Map()) // nodeId -> { node, nodeData }（拖拽时只重渲变化的节点）
   const displaySettingsRef = useRef(null)
   const displayEdgesRef = useRef(null)
+  const displayLitRef = useRef(null)
   const selectedIdsRef = useRef([]) // 当前框选/点选的所有节点 id
   const canvasRef = useRef({ nodes, edges })
   canvasRef.current = { nodes, edges }
@@ -1056,13 +1057,41 @@ const updateNodeConfig = useCallback(
     return s
   }, [nodes])
 
+  // Trace every active node's upstream chain: whole input path feeding a live node stays lit,
+  // so you can read the executing dataflow at a glance (broadcast from sources to each active sink).
+  const litNodeIds = useMemo(() => {
+    const lit = new Set(activeNodeIds)
+    const outByNode = new Map() // nodeId -> Set(sourceId)
+    const inByNode = new Map() // nodeId -> Set(sourceId)
+    for (const e of edges) {
+      if (e.source == null || e.target == null) continue
+      if (!outByNode.has(e.target)) outByNode.set(e.target, new Set())
+      outByNode.get(e.target).add(e.source)
+      if (!inByNode.has(e.source)) inByNode.set(e.source, new Set())
+      inByNode.get(e.source).add(e.target)
+    }
+    let frontier = [...activeNodeIds]
+    while (frontier.length) {
+      const next = []
+      for (const id of frontier) {
+        for (const src of outByNode.get(id) || []) {
+          if (lit.has(src)) continue
+          lit.add(src)
+          next.push(src)
+        }
+      }
+      frontier = next
+    }
+    return lit
+  }, [edges, activeNodeIds])
+
   // Mark edges that are really "flowing" as animated (drives the pulse visuals),
   // and tint every connection by the source node type so the DAG direction reads clearly
   const displayEdges = useMemo(() => {
     const nodeTypeById = new Map(nodes.map((n) => [n.id, n.type]))
     let changed = false
     const next = edges.map((e) => {
-      const lit = activeNodeIds.has(e.source)
+      const lit = activeNodeIds.has(e.source) || litNodeIds.has(e.source)
       const tint = EDGE_SOURCE_TINT[nodeTypeById.get(e.source)] || 'rgba(109,146,190,0.8)'
       const arrowColor = lit ? 'rgba(125,211,252,0.98)' : tint
       const marker = { type: MarkerType.ArrowClosed, width: 15, height: 15, color: arrowColor }
@@ -1087,7 +1116,7 @@ const updateNodeConfig = useCallback(
       return { ...e, ...patch }
     })
     return changed ? next : edges
-  }, [edges, activeNodeIds, nodes])
+  }, [edges, activeNodeIds, litNodeIds, nodes])
 
   // Inject interactive callbacks into node objects
   const displayNodes = useMemo(
@@ -1100,6 +1129,10 @@ const updateNodeConfig = useCallback(
       if (displayEdgesRef.current !== edges) {
         cache.clear() // 连线变化会影响 inputImageCount 等派生信息
         displayEdgesRef.current = edges
+      }
+      if (displayLitRef.current !== litNodeIds) {
+        cache.clear() // 运行路径点亮变化需让 idle 祖先节点拿到新 pathLit
+        displayLitRef.current = litNodeIds
       }
       const byId = new Map(nodes.map((x) => [x.id, x]))
       const countConnectedImages = (nodeId) =>
@@ -1116,6 +1149,7 @@ const updateNodeConfig = useCallback(
         ...n,
         data: {
           ...n.data,
+          pathLit: litNodeIds.has(n.id),
           onRun: () => runSingle(n.id),
           onConfig: () => setSelectedId(n.id),
           onText: (text) => notifyNode(n.id, { text, status: 'idle' }),
@@ -1157,7 +1191,7 @@ const updateNodeConfig = useCallback(
       }
       return next
     },
-    [nodes, edges, runSingle, notifyNode, setNodes, settings, selectCategoryApi]
+    [nodes, edges, litNodeIds, runSingle, notifyNode, setNodes, settings, selectCategoryApi]
   )
 
   return (
