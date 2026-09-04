@@ -1,6 +1,12 @@
 import { NODE_TYPES } from '../utils.js'
 import { useTranslation } from '../i18n.js'
 
+// QuickStart 按钮与画布节点共享同源类型色
+const NODE_TINT = {
+  text: '#8b9cf7', image: '#4dc2eb', video: '#7cc7ff', reverse: '#c4b5fd',
+  upload: '#fbbf24', asset: '#4ade80', output: '#2dd4bf',
+}
+
 // 画布空态：节点全部删除/清空时显示的 QuickStart，canvas-first 引导
 export default function CanvasEmpty({ onAdd, onOpenExamples, onTour }) {
   const { t } = useTranslation()
@@ -29,6 +35,7 @@ export default function CanvasEmpty({ onAdd, onOpenExamples, onTour }) {
               type="button"
               key={item.type}
               className="canvas-empty-node"
+              style={{ '--node-tint': NODE_TINT[item.type] || 'var(--accent)' }}
               title={t(item.descKey)}
               onClick={() => onAdd(item.type)}
             >
