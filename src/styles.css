@@ -1766,3 +1766,91 @@ body {
   opacity: 0.9;
   box-shadow: 0 0 8px color-mix(in srgb, var(--node-tint) 55%, transparent);
 }
+/* ============ Ultra-immersive node chassis (always-on canvas presence) ============ */
+/* Running nodes project a large cyan "engine aura" toward the canvas; a per-type
+   halo + glow ellipse keeps every card reading as a live colored module even idle. */
+
+/* Running aura: wide radial engine-glow that bleeds out around the card */
+.tn-node[data-status="running"] {
+  border-color: rgba(56, 189, 248, 0.92);
+  box-shadow:
+    0 0 0 1px var(--run),
+    0 0 22px rgba(56, 189, 248, 0.55),
+    0 0 56px 10px rgba(41, 182, 242, 0.22),
+    0 14px 40px rgba(0, 0, 0, 0.55);
+  animation: tn-run-breathe 1.6s ease-in-out infinite;
+}
+
+/* Lift running/queued cards above their neighbours so the glow reads clearly */
+.react-flow__node:has(.tn-node[data-status="running"]),
+.react-flow__node:has(.tn-node[data-status="queued"]) {
+  z-index: 8;
+}
+
+/* Type-colored canvas aura: an ellipse of the node's type hue hovering behind
+   each card, subtly breathing at idle and flaring while running. */
+.react-flow__node:has(.tn-node[data-status="running"])::after,
+.react-flow__node:has(.tn-node[data-status="queued"])::after {
+  width: 500px;
+  height: 330px;
+  opacity: 1;
+  animation: node-engine-breathe 1.6s ease-in-out infinite;
+}
+.react-flow__node:has(.tn-node[data-status="success"])::after {
+  opacity: 0.55;
+}
+.react-flow__node:has(.tn-node[data-status="error"])::after {
+  opacity: 0.4;
+}
+.react-flow__node {
+  filter: none;
+}
+.react-flow__node .tn-node {
+  box-shadow: none;
+}
+.tn-node {
+  box-shadow: none;
+}
+.tn-node {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 8px 26px rgba(0, 0, 0, 0.5);
+}
+.react-flow__node::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 300px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--node-tint) 15%, transparent),
+      transparent 78%);
+  opacity: 0.45;
+  transition: opacity 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+.react-flow__node:hover::after,
+.react-flow__node.selected::after {
+  width: 400px;
+  height: 270px;
+  opacity: 0.9;
+}
+
+@keyframes node-engine-breathe {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); }
+  50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* Map type tints onto the ReactFlow wrapper so outer aura/hover glows inherit the right hue */
+.react-flow__node-text    { --node-tint: #8b9cf7; isolation: isolate; }
+.react-flow__node-image   { --node-tint: #4dc2eb; isolation: isolate; }
+.react-flow__node-video   { --node-tint: #7cc7ff; isolation: isolate; }
+.react-flow__node-upload  { --node-tint: #fbbf24; isolation: isolate; }
+.react-flow__node-asset   { --node-tint: #4ade80; isolation: isolate; }
+.react-flow__node-output  { --node-tint: #2dd4bf; isolation: isolate; }
+.react-flow__node-reverse { --node-tint: #c4b5fd; isolation: isolate; }
+
