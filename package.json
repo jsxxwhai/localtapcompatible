@@ -1,6 +1,6 @@
 {
   "name": "local-tap-compatible",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "本地运行的无限画布式节点 AI 工作流：图片/视频生成、倒推提示词等节点均可自定义任意 API",
   "type": "module",
   "license": "MIT",

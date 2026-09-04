@@ -15,6 +15,9 @@ export default function Toolbar({
   onSettings,
   running,
   saveHint,
+  nodeCount,
+  selStatus,
+  selStatusColor,
 }) {
   const { t, localePref, setLocale } = useTranslation()
   const [fileOpen, setFileOpen] = useState(false)
@@ -107,6 +110,21 @@ export default function Toolbar({
           </select>
         </label>
         <button type="button" className="btn" onClick={onSettings} title={t('app.kbdSettings')} aria-label={t('app.settings')}>{t('app.settings')}</button>
+      </div>
+      <div className="statusbar">
+        <span className="statusbar-item statusbar-brand-dot" title={t('hud.ready')} aria-hidden="true" />
+        <span className="statusbar-item statusbar-engine">{t('hud.engine')}</span>
+        <span className="statusbar-item statusbar-version">{t('hud.version')}</span>
+        <span className="statusbar-sep" />
+        <span className="statusbar-item statusbar-nodes">{nodeCount} {t('hud.nodes')}</span>
+        {selStatus ? (
+          <span className="statusbar-item statusbar-sel" style={{ color: selStatusColor }}>
+            <span className="statusbar-sel-dot" style={{ background: selStatusColor, boxShadow: `0 0 6px ${selStatusColor}` }} />
+            {selStatus}
+          </span>
+        ) : null}
+        <span className="statusbar-sep" />
+        <span className="statusbar-item statusbar-motd">{t('hud.motd')}</span>
       </div>
       {saveHint && <span className="save-hint">{saveHint}</span>}
     </div>

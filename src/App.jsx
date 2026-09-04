@@ -157,6 +157,13 @@ function CanvasApp() {
     }
     return { running, queued, ok, err }
   }, [nodes])
+  const statusMetaMap = {
+    idle: { label: t('status.idle'), color: 'var(--status-idle)' },
+    queued: { label: t('status.queued'), color: 'var(--status-queued)' },
+    running: { label: t('status.running'), color: 'var(--status-running)' },
+    success: { label: t('status.success'), color: 'var(--status-ok)' },
+    error: { label: t('status.error'), color: 'var(--status-error)' },
+  }
   const runActiveCount = statusCounts.running + statusCounts.queued
   const runDoneCount = statusCounts.ok + statusCounts.err
   const runTotal = runActiveCount + runDoneCount
@@ -1265,6 +1272,9 @@ const updateNodeConfig = useCallback(
         onSettings={() => setSettingsOpen(true)}
         running={anyRunning}
         saveHint={saveHint}
+        nodeCount={nodes.length}
+        selStatus={selectedNode && selectedNode.data ? (statusMetaMap[selectedNode.data.status] ? statusMetaMap[selectedNode.data.status].label : null) : null}
+        selStatusColor={selectedNode && selectedNode.data ? (statusMetaMap[selectedNode.data.status] ? statusMetaMap[selectedNode.data.status].color : null) : null}
       />
       <div className="app-body">
         <Palette onAdd={addNode} />
