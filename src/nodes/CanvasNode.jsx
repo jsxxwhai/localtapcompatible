@@ -73,6 +73,7 @@ export function MediaView({ media, maxHeight }) {
 export function NodeShell({ title, color, status, runStartedAt, finishedAt, actions, children, pathLit, pathDim }) {
   return (
     <div className={'tn-node tn-node-' + color + (pathLit ? ' path-lit' : '') + (pathDim ? ' dim' : '')} data-status={status}>
+      <span className='tn-node-accent' aria-hidden='true' />
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">

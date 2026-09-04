@@ -1630,3 +1630,43 @@ body {
   stroke-width: 3 !important;
 }
 .react-flow__node .tn-node { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+/* ============ Type-tinted node glow (visible even when idle) ============ */
+/* A per-type colored hairline + soft corner glow makes every node card read
+   as a distinct "colored module" on the canvas at a glance. */
+.tn-node-accent {
+  position: absolute;
+  top: -1px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, var(--node-tint), transparent);
+  opacity: 0.9;
+}
+.tn-node {
+  --node-tint: var(--accent);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 6px 22px rgba(0, 0, 0, 0.35);
+}
+.tn-node-text    { --node-tint: #8b9cf7; }
+.tn-node-image   { --node-tint: #4dc2eb; }
+.tn-node-video   { --node-tint: #7cc7ff; }
+.tn-node-upload  { --node-tint: #fbbf24; }
+.tn-node-asset   { --node-tint: #4ade80; }
+.tn-node-output  { --node-tint: #2dd4bf; }
+.tn-node-reverse { --node-tint: #c4b5fd; }
+.tn-node[data-status="idle"] {
+  border-color: color-mix(in srgb, var(--node-tint) 38%, var(--border));
+  background:
+    radial-gradient(140% 70% at 12% 0%, color-mix(in srgb, var(--node-tint) 7%, transparent), transparent 55%),
+    var(--panel);
+}
+.tn-node-head {
+  border-bottom-color: color-mix(in srgb, var(--node-tint) 22%, transparent);
+}
+.tn-node[data-status="idle"] .tn-handle {
+  border-color: color-mix(in srgb, var(--node-tint) 78%, #fff) !important;
+}
