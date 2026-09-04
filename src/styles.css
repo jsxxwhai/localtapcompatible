@@ -662,6 +662,17 @@ body {
 .modal-body li { margin: 4px 0; }
 
 /* React Flow 覆盖 */
+/* Connection preview line: dragging a handle shows the pending link glowing in
+   the source module colour, brightening to white over a valid drop target. */
+.tn-conn-line .react-flow__edge-path,
+.react-flow__connectionline .tn-conn-line path {
+  pointer-events: none;
+}
+.tn-conn-valid .react-flow__edge-path,
+.react-flow__connectionline .tn-conn-line.tn-conn-valid path {
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.55)) drop-shadow(0 0 12px rgba(125,211,252,0.7));
+}
+
 .react-flow__attribution { background: transparent; color: var(--text-dim); }
 .react-flow__edge-path {
   stroke: var(--accent);

@@ -10,6 +10,8 @@ import {
   addEdge,
   ConnectionMode,
   MarkerType,
+  BaseEdge,
+  getBezierPath,
   useNodesState,
   useEdgesState,
   useReactFlow,
@@ -92,6 +94,26 @@ const EDGE_SOURCE_TINT = {
   asset: 'rgba(74,222,128,0.85)',
   output: 'rgba(45,212,191,0.85)',
 }
+// Connection preview line while dragging from a handle: a dual-layer bezier that
+// inherits the source node type colour and glows harder once it hovers a valid
+// target, so the pending dataflow reads as a live extension of the source rail.
+function TintedConnectionLine({ fromX, fromY, toX, toY, fromPosition, toPosition, connectionStatus, fromNode }) {
+  const tint = (fromNode && EDGE_SOURCE_TINT[fromNode.type]) || 'rgba(109,146,190,0.8)'
+  const valid = connectionStatus === 'valid'
+  const [path] = getBezierPath({ sourceX: fromX, sourceY: fromY, sourcePosition: fromPosition, targetX: toX, targetY: toY, targetPosition: toPosition, curvature: 0.42 })
+  const core = valid ? 'rgba(255,255,255,0.95)' : tint
+  return (
+    <g className={'tn-conn-line' + (valid ? ' tn-conn-valid' : '')}>
+      {/* soft wide under-glow: source module colour bleeding outward */}
+      <BaseEdge path={path} interactionWidth={0} style={{ stroke: core, strokeWidth: 6, opacity: 0.16, fill: 'none' }} />
+      {/* mid halo */}
+      <BaseEdge path={path} interactionWidth={0} style={{ stroke: core, strokeWidth: 3, opacity: 0.5, fill: 'none' }} />
+      {/* bright core */}
+      <BaseEdge path={path} interactionWidth={0} style={{ stroke: core, strokeWidth: 1.8, fill: 'none' }} />
+    </g>
+  )
+}
+
 function CanvasApp() {
   const { t } = useTranslation()
   const initial = useMemo(() => loadFromLocalStorage() || starterCanvas(t), [t])
@@ -1284,6 +1306,7 @@ const updateNodeConfig = useCallback(
             edges={displayEdges}
             nodeTypes={nodeTypes}
             connectionMode={ConnectionMode.Loose}
+            connectionLineComponent={TintedConnectionLine}
             defaultEdgeOptions={EDGE_DEFAULT_OPTIONS}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
