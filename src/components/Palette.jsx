@@ -3,6 +3,16 @@ import { NODE_TYPES } from '../utils.js'
 import { useTranslation } from '../i18n.js'
 
 // 左侧节点面板：按功能分组展示；点击添加、可拖拽、点击分组标题可折叠
+// 与画布节点卡片共享同一套类型色，让左侧节点库也呈现“彩色模块”视觉
+const NODE_TINT = {
+  text: '#8b9cf7',
+  image: '#4dc2eb',
+  video: '#7cc7ff',
+  reverse: '#c4b5fd',
+  upload: '#fbbf24',
+  asset: '#4ade80',
+  output: '#2dd4bf',
+}
 const GROUPS = [
   { key: 'input', icon: '📥', types: ['text', 'upload'] },
   { key: 'generate', icon: '✨', types: ['image', 'video', 'reverse'] },
@@ -68,6 +78,7 @@ export default function Palette({ onAdd }) {
                     type="button"
                     key={item.type}
                     className="palette-item"
+                    style={{ "--node-tint": NODE_TINT[item.type] || "var(--accent)" }}
                     title={t(item.descKey)}
                     aria-label={t(item.labelKey)}
                     draggable
