@@ -74,6 +74,7 @@ export function NodeShell({ title, color, status, runStartedAt, finishedAt, acti
   return (
     <div className={'tn-node tn-node-' + color + (pathLit ? ' path-lit' : '') + (pathDim ? ' dim' : '')} data-status={status}>
       <span className='tn-node-accent' aria-hidden='true' />
+      <span className='tn-node-rail' aria-hidden='true' />
       <div className="tn-node-head">
         <span className="tn-node-title">{title}</span>
         <div className="tn-node-head-right">

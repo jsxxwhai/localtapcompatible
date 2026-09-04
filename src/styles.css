@@ -1695,3 +1695,19 @@ body {
 .tn-node[data-status="idle"] .tn-handle {
   border-color: color-mix(in srgb, var(--node-tint) 78%, #fff) !important;
 }
+
+/* Node type rail: a 3px colored left bar per type so each card reads as a
+   distinct colored module even before running. Runs the full card height. */
+.tn-node-rail {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 999px 999px 0;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(180deg, var(--node-tint), color-mix(in srgb, var(--node-tint) 55%, transparent));
+  opacity: 0.9;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node-tint) 55%, transparent);
+}
