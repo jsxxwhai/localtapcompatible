@@ -99,6 +99,7 @@ function CanvasApp() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges)
 
   const [selectedId, setSelectedId] = useState(null)
+  const [hoverId, setHoverId] = useState(null)
   const [presets, setPresets] = useState([])
   const [helpOpen, setHelpOpen] = useState(false)
   const [testingId, setTestingId] = useState(null)
@@ -129,6 +130,8 @@ function CanvasApp() {
   const displaySettingsRef = useRef(null)
   const displayEdgesRef = useRef(null)
   const displayLitRef = useRef(null)
+  const displayDimRef = useRef(null)
+  const displayHoverRef = useRef(null)
   const selectedIdsRef = useRef([]) // 当前框选/点选的所有节点 id
   const canvasRef = useRef({ nodes, edges })
   canvasRef.current = { nodes, edges }
@@ -1087,46 +1090,73 @@ const updateNodeConfig = useCallback(
 
   const focusMode = anyRunning && litNodeIds.size > 0 && litNodeIds.size < nodes.length
 
+  // Hover focus: highlight the direct neighbours of the hovered node so its dataflow
+  // dependencies light up without selecting anything.
+  const hoverRel = useMemo(() => {
+    if (!hoverId) return { nodes: new Set(), edges: new Set() }
+    const nodeset = new Set([hoverId])
+    const edgeset = new Set()
+    for (const e of edges) {
+      if (e.source === hoverId || e.target === hoverId) {
+        edgeset.add(e.id)
+        nodeset.add(e.source)
+        nodeset.add(e.target)
+      }
+    }
+    return { nodes: nodeset, edges: edgeset }
+  }, [hoverId, edges])
+
   // Mark edges that are really "flowing" as animated (drives the pulse visuals),
-  // and tint every connection by the source node type so the DAG direction reads clearly
+  // tint every connection by source type, dim off-path edges in focus mode,
+  // and brighten the edges touching a hovered node so its dataflow is easy to trace.
   const displayEdges = useMemo(() => {
     const nodeTypeById = new Map(nodes.map((n) => [n.id, n.type]))
     const edgeDimming = focusMode
     let changed = false
     const next = edges.map((e) => {
+      const hovered = hoverRel.edges.has(e.id)
       const lit = activeNodeIds.has(e.source) || litNodeIds.has(e.source)
       const tint = EDGE_SOURCE_TINT[nodeTypeById.get(e.source)] || 'rgba(109,146,190,0.8)'
-      const arrowColor = lit ? 'rgba(125,211,252,0.98)' : tint
-      const marker = { type: MarkerType.ArrowClosed, width: 15, height: 15, color: arrowColor }
+      const baseStroke = hovered ? 'rgba(56,189,248,1)' : (lit ? 'rgba(125,211,252,0.98)' : tint)
+      const markerColor = hovered ? 'rgba(56,189,248,1)' : (lit ? 'rgba(125,211,252,0.98)' : tint)
+      const marker = { type: MarkerType.ArrowClosed, width: hovered ? 17 : 15, height: hovered ? 17 : 15, color: markerColor }
       const prevMarker = e.markerEnd
-      const sameMarker =
-        prevMarker && prevMarker.type === marker.type && prevMarker.color === marker.color
+      const sameMarker = prevMarker && prevMarker.type === marker.type && prevMarker.color === marker.color && prevMarker.width === marker.width
       const stroke = e.style?.stroke
+      const dim = edgeDimming && !hovered && !lit
+      const opacity = dim ? 0.18 : 1
+      const curOpacity = e.style?.opacity
       const patch = {}
-      if (e.animated !== lit) {
-        patch.animated = lit
+      if (e.animated !== (lit || hovered)) {
+        patch.animated = lit || hovered
         changed = true
       }
       if (!sameMarker) {
         patch.markerEnd = marker
         changed = true
       }
-      if (stroke !== tint) {
-        patch.style = { ...(e.style || {}), stroke: tint }
+      if (stroke !== baseStroke || curOpacity !== opacity) {
+        patch.style = { ...(e.style || {}), stroke: baseStroke, opacity }
         changed = true
       }
-      const dim = edgeDimming && !lit
-      const opacity = dim ? 0.18 : 1
-      const curOpacity = e.style?.opacity
-      if (curOpacity !== opacity) {
-        patch.style = { ...(e.style || {}), opacity }
+      if (hovered !== !!e.data?.hovered) {
+        patch.data = { ...(e.data || {}), hovered: !!hovered }
         changed = true
       }
-      if (!patch.animated && !patch.markerEnd && !patch.style) return e
+      const cls = e.className || ''
+      const hasRel = cls.split(' ').includes('rel-hover')
+      if (hovered && !hasRel) {
+        patch.className = (cls + ' rel-hover').trim()
+        changed = true
+      } else if (!hovered && hasRel) {
+        patch.className = cls.split(' ').filter((x) => x !== 'rel-hover').join(' ')
+        changed = true
+      }
+      if (!patch.animated && !patch.markerEnd && !patch.style && !patch.data && !patch.className) return e
       return { ...e, ...patch }
     })
     return changed ? next : edges
-  }, [edges, activeNodeIds, litNodeIds, nodes, anyRunning])
+  }, [edges, activeNodeIds, litNodeIds, nodes, anyRunning, focusMode, hoverRel])
 
   // Inject interactive callbacks into node objects
   const displayNodes = useMemo(
@@ -1149,6 +1179,10 @@ const updateNodeConfig = useCallback(
         cache.clear() // 聚焦模式开关变化时重渲全部节点
         displayDimRef.current = dimming
       }
+      if (displayHoverRef.current !== hoverRel) {
+        cache.clear() // 悬停对象变化需重渲以刷新依赖高亮
+        displayHoverRef.current = hoverRel
+      }
       const byId = new Map(nodes.map((x) => [x.id, x]))
       const countConnectedImages = (nodeId) =>
         edges.reduce((sum, e) => {
@@ -1160,9 +1194,14 @@ const updateNodeConfig = useCallback(
           }
           return sum + (src.data.media?.value ? 1 : 0)
         }, 0)
-      const inject = (n) => ({
-        ...n,
-        data: {
+      const inject = (n) => {
+        const hovered = hoverRel.nodes.has(n.id)
+        const cls = [n.className || '']
+        if (hovered) cls.push('rel-hover')
+        return {
+          ...n,
+          className: cls.filter(Boolean).join(' ') || undefined,
+          data: {
           ...n.data,
           pathLit: litNodeIds.has(n.id),
           pathDim: dimming && !litNodeIds.has(n.id) && n.data.status != "running" && n.data.status != "queued" && n.data.status != "error",
@@ -1193,7 +1232,8 @@ const updateNodeConfig = useCallback(
             : {}),
           ...(n.type === 'image' || n.type === 'video' ? { inputImageCount: countConnectedImages(n.id) } : {}),
         },
-      })
+        }
+      }
       const next = nodes.map((n) => {
         const hit = cache.get(n.id)
         if (hit && hit.node === n) return hit.nodeData
@@ -1207,7 +1247,7 @@ const updateNodeConfig = useCallback(
       }
       return next
     },
-    [nodes, edges, litNodeIds, runSingle, notifyNode, setNodes, settings, selectCategoryApi, anyRunning]
+    [nodes, edges, litNodeIds, runSingle, notifyNode, setNodes, settings, selectCategoryApi, anyRunning, hoverRel]
   )
 
   return (
@@ -1248,6 +1288,9 @@ const updateNodeConfig = useCallback(
             onConnectEnd={onConnectEnd}
             onPaneContextMenu={onPaneContextMenu}
             onNodeContextMenu={onNodeContextMenu}
+            onNodeMouseEnter={(_, n) => setHoverId(n?.id || null)}
+            onNodeMouseLeave={() => setHoverId(null)}
+            onPaneMouseLeave={() => setHoverId(null)}
             onDragOver={onDragOver}
             onDrop={onDrop}
             selectionOnDrag

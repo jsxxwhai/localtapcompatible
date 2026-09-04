@@ -1609,3 +1609,24 @@ body {
   transition: opacity 0.3s ease;
 }
 
+
+/* Hover focus: node under the cursor and its direct neighbours get a soft
+   shared highlight so the dependency chain reads instantly. */
+.react-flow__node.rel-hover .tn-node {
+  border-color: rgba(56, 189, 248, 0.9);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6), 0 0 16px rgba(41, 182, 242, 0.22), 0 8px 26px rgba(0,0,0,0.4);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+.react-flow__node.rel-hover.dim .tn-node,
+.react-flow__node.rel-hover .tn-node.dim {
+  opacity: 1;
+  filter: none;
+}
+.react-flow__node.rel-hover { z-index: 2; }
+.react-flow__edge .react-flow__edge-path {
+  transition: stroke 0.15s ease, opacity 0.25s ease, stroke-width 0.15s ease;
+}
+.react-flow__edge.rel-hover .react-flow__edge-path {
+  stroke-width: 3 !important;
+}
+.react-flow__node .tn-node { transition: border-color 0.15s ease, box-shadow 0.15s ease; }
