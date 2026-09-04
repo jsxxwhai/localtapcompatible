@@ -63,7 +63,7 @@ export default {
   'media.empty': '尚无输出',
   'run.button': '▶ 运行',
   'hud.running': '运行中 {active} · 已完成 {done}',
-  'hud.version': 'v0.2.1',
+  'hud.version': 'v0.3.0',
   'hud.engine': 'Infinite Canvas Engine',
   'hud.ready': 'Ready',
   'hud.nodes': '节点',
